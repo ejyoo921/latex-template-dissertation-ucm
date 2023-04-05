@@ -61,6 +61,16 @@
 \usepackage{pdfpages}
 \usepackage{graphbox}
 
+%--Additional packages--------------------------------------------------------------
+\usepackage{mathtools}
+\usepackage{arydshln}
+\usepackage{epsfig}
+\usepackage{framed}
+\usepackage{bm}
+\usepackage{palatino,verbatim}
+\usepackage{indentfirst}
+%-----------------------------------------------------------------------------------
+
 %% LATIN MODERN FONTS (replacements for Computer Modern)
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
@@ -68,7 +78,7 @@
 \usepackage{url}
 \usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=black, citecolor=black, urlcolor=black,plainpages=false,pdfpagelabels]{hyperref}
 \usepackage{cleveref}
-\usepackage[backend=biber,style=apa,sortcites=false,minnames=1,maxnames=3,maxbibnames=4]{biblatex}
+\usepackage[backend=biber,style=numeric,sortcites=false,minnames=1,maxnames=3,maxbibnames=4]{biblatex}
 \makeatletter
 \DeclareCiteCommand{\fullcite}
 {\defcounter{maxnames}{\blx@maxbibnames}%
@@ -100,7 +110,7 @@
 
 \begin{document}
 
-\title{Fluid Dynamics}
+\title{Applied Mathematical Fluid Dynamics}
 \author{Eunji Yoo}
 \degreeyear{2023}
 \degree{Doctor of Philosophy}  
@@ -110,7 +120,7 @@
 \chair{François Blanchette and Shilpa Khatri}
 \memberone{Camille Carvalho}
 \membertwo{Chagho Kim}
-\memberthree{Ishan Srivastava}
+\memberthree{Ishan Srivastava (Lawrence Berkeley National Laboratory)}
 % \memberfour{<COMMITTEE MEMBER 4>}
 
 \begin{frontmatter}
@@ -120,17 +130,22 @@
 \listoffigures
 \listoftables
 
+%% DEDICATION
+\begin{dedication}
+    % For my family and Valentin Dallerit
+\end{dedication}
+
 %% ACKNOWLEDGEMENTS
 \begin{acknowledgements} 
     \input{0_acknowledgements.tex}
 \end{acknowledgements}
 
 %% Vita
-{
-\phantomsection
-\addcontentsline{toc}{chapter}{\protect\numberline{}Curriculum Vitae}%
-\includepdf[pages=1-,pagecommand={\thispagestyle{preliminary}}]{cv/cv.pdf}
-} 
+% {
+% \phantomsection
+% \addcontentsline{toc}{chapter}{\protect\numberline{}Curriculum Vitae}%
+% \includepdf[pages=1-,pagecommand={\thispagestyle{preliminary}}]{cv/cv.pdf}
+% } 
 
 %% Abstract
 \begin{abstract}  
@@ -144,14 +159,23 @@
 \label{ch:intro}
 \input{1_introduction.tex}
 
-\chapter{Chapter 2}
+\chapter{Settling marine aggregates in a homogeneous fluid}
+\label{ch:2}
 \input{2_chap2.tex}
 
 %% Add more chapters here if necessary
 
-\chapter{Conclusion and future work}
+\chapter{Settling marine aggregates in a stratified fluid}
+\label{ch:3}
+\input{3_chap3.tex} 
+
+\chapter{Continuum modeling of a complex fluid with a second-order rheology}
+\label{ch:4}
+\input{4_chap4.tex} 
+
+\chapter{Conclusion}
 \label{ch:conclusion}
-\input{3_conclusion.tex} 
+\input{5_conclusion.tex} 
 
 %% BIBLIOGRAPHY
 \addcontentsline{toc}{chapter}{Bibliography}
