@@ -717,7 +717,7 @@ For the thermal diffusivity, $D_{heat}$, we cosider the value referred by {\it N
 (We can also find the pdf file of the seawater properties on \href{http://web.mit.edu/seawater/}{{\color{blue}Thermophysical properties of seawater}.})
 Note that this could differ by the size of the aggregate we simulate. This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
 %---------Some results----------------------------------
-\section{Forces on aggregates}
+\section{Results}
 $\ \ \ \ \ $  
 In order to study the dynamics of marine aggregates in the fluid, we are interested in measuring the forces acting on the aggregates as a response to a background flow. We consider the fluid  flow that is derived from the Taylor expansion of a velocity \cite{guazzelli_physical_2011},
 \[
@@ -804,6 +804,7 @@ For the straining force, we expect to observe a quadratic dependence on the aggr
 This methodology and analysis of forces on settling aggregates has been published in Physical Review Fluids \cite{yoo_hydrodynamic_2020}.
 I mainly contributed to comparing the boundary integral equations and implementing the methods to validate, including the streamline simulations. 
 %=============concentration simulations================
+\subsection{Concentration simulations}
 Initially, we set the concentration to zero throughout the fluid domain and higher concentration inside and on the aggregate. For this sample test, an aggregate model made with 10 cubes is used. We first prescribe values of $1$ for the inside of each cube and $0.5$ for all square faces. Also, we put $0.25$ and $0.125$ for all edges and corners of cubes, respectively. This is an intuitive setup for the initial condition to get preliminary results of the advection-diffusion code. However, this might cause a stability problem due to the discontinuity at the aggregate boundaries. Thus, we also simulate with continuous initial concentration using a Gaussian function that has a peak at the center of mass of an aggregate. We adjust the pre-factor of the Gaussian function to have a similar concentration around the aggregate to the discontinuous case. 
 
 Besides the initial concentration, the following conditions are set:
@@ -831,11 +832,10 @@ Note that the settling velocity of an aggregate in a fluid at rest is equivalent
 % This can differ by the size of the aggregate we consider. This is close to the maximum Peclet number we may expect.However, 
 For the Peclet number we set for the sample simulation, in case it is necessary to observe a larger Peclet number which could have more numerical error, we set Pe $=100$ for the initial test case here.
 We compute the fluid velocity field once using the boundary integral method and keep it fixed while we update the concentration. 
-\subsubsection{Comparison of time integrations}
+\par
 We simulated this problem using both the implicit (trapezoid), and the explicit (RK2) time integration. Under the conditions provided above, we get an advection CFL condition number of approximately 0.03 and a diffusion one as 0.08. Since the CFL numbers are less than 1, we can use the RK2 method with no stability issue. 
 The main reason we wanted to try the explicit method is to reduce computing time if possible. However, we found that both time integration methods gave us similar results in terms of computing time. Before we officially decide which method we are going to use for further research, we will check the order convergence.
-\subsubsection{Simulations}
-$\ \ \ \ \ $  
+\par
 We present the snapshots of simulations using the discontinuous and continuous initial concentration in Figure \ref{fig_ic4_trap_snap} and \ref{fig_icG_trap_snap}, respectively. It is a three-dimensional simulation, however, for clear visualization, we slice the domain at $x= -0.8$ which is the middle of $x-$axis.
 % We can observe more clearly the aggregate shape in Figure \ref{fig_ic4_trap_snap} due to the discontinuity of the initial concentration.
 On the other hand, we see smoother concentration around the aggregate in Figure \ref{fig_icG_trap_snap}. Note that we are using a moving frame of reference such that the surrounding fluid is flowing upward to represent the settling aggregate motion. Assuming $C$ is the concentration of CO$_2$, we can interpret this simulation as dissolving the CO$_2$ gas from the aggregate to the fluid column. 
