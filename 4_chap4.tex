@@ -14,9 +14,9 @@ We use AMReX framework, developed at LBNL , NREL , and ANL, to solve flow motion
 
 
 %section2----------------------------------------------------------------------------------------------------
-\section{Description of the Research Project}
-In this section, we explain the details of methodology to compute granular flow velocity when external pressure presents. We introduce a stress tensor with a higher-order strain rates that can describe non-isotropic flow effects. A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found. With the new deviatoric stress tensor, we solve for incompressible graular flow using incflo. 
-\subsection{Governing equations}
+\section{Governing equations}
+% In this section, we explain the details of methodology to compute granular flow velocity when external pressure presents. We introduce a stress tensor with a higher-order strain rates that can describe non-isotropic flow effects. A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found. With the new deviatoric stress tensor, we solve for incompressible graular flow using incflo. 
+% \par
 The incompressible flow motion is governed by the law of conservation of mass and momentum,
 \begin{equation}
   \frac{\partial {\bm u}}{\partial t} 
@@ -196,7 +196,7 @@ By introducing a small parameter, denoted as $\varepsilon$, we can regularize th
 for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
 The detailed mathematics and analysis can be found in Sverdrup 2018 \cite{sverdrup_highly_2018}
 %section3----------------------------------------------------------------------------------------------------
-\section{Contributions Made to the Research Project}
+\section{Numerical methods}
 Main job for this summer project was implementation of a new stress tensor with higher-order strain rates effect in AMReX-incflo. The followings are the parts modified in the incflo code: 
 \begin{itemize}
 	\item Add a new rheology for granular flows: Compute a pressure-dependent apparent viscosity.
@@ -347,6 +347,8 @@ We then have
     -\nabla p + \nabla \cdot \left( {\bm \tau_1} + {\bm \tau_2} \right)\right) + {\bm g}.
   \label{eq_momentum2}
 \end{equation}
+{\color{red} The grid system may have changed - viscosity is stored on nodes.}
+\\
 We use a standard marker-and-cell (MAC) grid; See Figure 
 \begin{figure}[ht]
 	\begin{center}
@@ -356,8 +358,8 @@ We use a standard marker-and-cell (MAC) grid; See Figure
 	\label{fig_mac_grid}
 	\end{center}
 \end{figure}
-The AMReX-incflo allows us to use either implicit, explicit, or Crank-Nicolson method to solve for velocity and pressure. Due to our non-linear stress tensor, we were not able to use any implicit-kind methods directly. At the same time, explicit method shows quite slow computation. We thus splitted the tensor terms into ${\bm tau_1}$ and
-${\bm tau_2}$ so that we can use partly implicit method, particularly backward-Euler, with ${\bm tau_1}$ and consider ${\bm tau_2}$ as a part of external force. This method seems working, yet more concrete validation should be done. We found that we were not able to have second order which is expected in the backward-Euler method due to the splitting. See Figure \ref{fig_infError_vel}.
+The AMReX-incflo allows us to use either implicit, explicit, or Crank-Nicolson method to solve for velocity and pressure. Due to our non-linear stress tensor, we were not able to use any implicit-kind methods directly. At the same time, explicit method shows quite slow computation. We thus splitted the tensor terms into ${\bm \tau_1}$ and
+${\bm \tau_2}$ so that we can use partly implicit method, particularly backward-Euler, with ${\bm \tau_1}$ and consider ${\bm \tau_2}$ as a part of external force. This method seems working, yet more concrete validation should be done. We found that we were not able to have second order which is expected in the backward-Euler method due to the splitting. See Figure \ref{fig_infError_vel}.
 \begin{figure}[ht]
 	\begin{center}
 	
@@ -368,5 +370,68 @@ ${\bm tau_2}$ so that we can use partly implicit method, particularly backward-E
 \end{figure}
 To avoid order reduction, we want to use predictor-corrector method. This work is in progress.
 \section{Predictor-Corrector method}
+This is the same idea as the 2-stage Runge-Kutta method. We denote the advection term, ${\bm u} \cdot \nabla {\bm u}$ as ${\bm A}$. 
+\\
+$<${\bf Predictor}$>$
+\\
+First, consider the non-linear stress tensor, ${\bm \tau_2}$ as a force term, and solve for the first predictor values, that are ${\bm u}^*$ and ${\bm u}^*$:
+\[
+\frac{{\color{blue}{\bm u}^*} - {\bm u}^n}{\Delta t} 
++  {\bm A}^{n+1/2} 
+=- \frac{1}{\rho}  \biggl(
+\frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*} + \nabla \cdot{\bm \tau}_1^n}{2} 
++ \nabla \cdot {\bm \tau}_2^n 
+- \nabla p^n
++{\bm g}
+\biggr)
+\]
+We solve for blue terms - 
+\[
+{\color{blue}{\bm u}^*} +
+\frac{1}{\rho} 
+\left( 
+\frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*}}{2}
+\right)
+=
+{\bm u}^n
+- {\bm A}^{n+1/2} \Delta t
+- \frac{\Delta t}{\rho} \biggl(
+\frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
++ \nabla \cdot {\bm \tau}_2^n 
+- \nabla p^n
++{\bm g}
+\biggr)
+\]
+\\
+$<${\bf Corrector}$>$
+\\
+Once we obtain the predictor (star) velocity, we use it to compute the second order stress tensor, ${\bm \tau}_2^*$.
+\[
+\frac{{\color{red}{\bm u}^{n+1}} - {\bm u}^n}{\Delta t} 
++  {\bm A}^{n+1/2} 
+=- \frac{1}{\rho}  \biggl(
+\frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}} + \nabla \cdot{\bm \tau}_1^n}{2} 
++ \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
+- \nabla p^n
+\biggr)
+\]
+
+Now, we need to solve for red - next time step values:
+\[
+{\color{red}{\bm u}^{n+1}} 
++\frac{1}{\rho} 
+\left(
+\frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}}}{2}
+\right)
+=
+{\bm u}^n 
+ -{\bm A}^{n+1/2} \Delta t
+- \frac{\Delta t}{\rho}  \biggl(
+\frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
++ \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
+- \nabla p^n
+\biggr)
+\]
+Note that ${\bm \tau}_i^* = {\bm \tau}({\bm u}^*, \eta_i)$.
 \section{Validation}
 \section{Example}

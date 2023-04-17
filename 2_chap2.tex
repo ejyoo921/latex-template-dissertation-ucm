@@ -1,94 +1,36 @@
-We consider the settling aggregate in a constant density fluid. To describe the incompressible fluid flow, it is general to consider the Navier-Stokes equations,
-\begin{align}
-\nabla \cdot \vec{u}(\vec{y}) = 0 
-\\
-\rho \frac{D\vec{u}(\vec{y})}{Dt}
- =\mu \nabla^2 \vec{u}(\vec{y}) - \nabla P(\vec{y}) + \rho  \vec{g} ,
-\label{eq_momentum_NS}
-\end{align}
-where $\vec{u}, \ \mu, \ P, \ \rho$ are fluid velocity, viscosity, pressure, and constant density, respectively. Also, the gravitaty vector is $\vec{g} = - g\hat{k} \approx (0,0,-9.8$m/$s^2)$ and $\vec{y} \in \mathbb{R}^3$ represents an arbitrary point in the fluid domain. 
-Note that $D$ is the material derivative, defined as
+{\color{blue}ADD LITERATURE REVIEW}
+
+\section{Aggregate model}
+We consider marine aggregates composed of cubic particles, as shown in Figure \ref{fig_cube10}. The dimensionless length of each cube side is $L=2$.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.25]{figures/fig_cube10_CC.pdf}
+	\end{center}
+	\caption{Example aggregate model with 10 cubes. We denote $S$ as the particle surface and $\hat{n}$ as its normal. The vectors $\vec{x}_s$ and $\vec{x}_0$ represent points on and outside of $S$. }
+	\label{fig_cube10}
+\end{figure}
+Since the aggregates have a fractal structure, it is not straightforward to measure their sizes. Two options we consider are the gyration and maximum radii denoted by $R_g$ and $R_m$, respectively. They are defined as,
 \begin{equation}
-\frac{D}{Dt} = \frac{\partial}{\partial t} + \vec{u}\cdot \nabla.
+R_g  = \sqrt{\frac{1}{NC} \sum_{i=1}^{NC} \| \vec{x}_i - \vec{x}_{cm} \|^2},
+\label{eq_Rg}
 \end{equation}
-Considering the settling speed and size of a typical aggregate, we may linearize the momentum equation (\ref{eq_momentum_NS}) in the limit of zero Reynolds number. We begin with introducing the Reynolds number we obtain in the following section. 
-\section{Governing equations}
-{\color{blue} MAKE SURE THE NUMBERS ARE CONSISTENT WITH THE CODE.}
-The marine aggregates are typically small and porous with a maximum radius, $R_a$, of about $ 500 \mu \text{m}$.
-%porosities on the order of 99$\%$ of the aggregates. 
-With all the values given, we obtain a maximum Reynolds number of,
-\begin{equation*}
-    \text{Re} = \frac{\rho U_s R_a}{\mu} 
-	% \approx 5 \times 10^{-2} 
-	\ll 1.
-\end{equation*}
-Note that $U_s$ is a reference Stokes settling speed of an aggregate, defined by, 
+and
 \begin{equation}
-    U_s =  \frac{gR_a^2}{\mu} (\rho_a-\rho) \approx 3 \times 10^{-4} ({\text{m/s}}),
-	\label{eq_U_s}
+R_m = 1+ \max_{i = 1, \cdots, NC} \| \vec{x}_i - \vec{x}_{cm} \|,
+\label{eq_Rm}
 \end{equation}
-where $\rho_a$ is the aggregate mass density. Since the Reynolds number is fairly small, we can use the Stokes equations, ignoring the inertial effects.
- We thus consider the Stokes equations to describe the fluid flow around the settling aggregates,
- \begin{align}
-	\nabla \cdot \vec{u} (\vec{y}) = 0  \label{eq_conti2}
-	\\
-	\mu \nabla^2 \vec{u} (\vec{y})   - \nabla P(\vec{y}) \ + \rho  \vec{g} = 0
-	\label{eq_stokes2}
-\end{align}
-where $\mu$ and $\rho$ are the viscosity and density of the fluid, respectively. The solutions of the equations are the fluid velocity, $\vec{u}$, and pressure, $P$. For the parameters, we assume typical seawater quantities:  $\rho \approx 1020 \text{kg/m}^3$ and $\mu = 1.5 \times 10^{-3}\text{kg}/\text{ms}$. Also, $g \approx 9.8 \text{m/s}^2$ is the gravitational acceleration.
-%
-%
-%
-%===SECTION 2.2=========================================
-\section{Boundary integral equation (BIE) formulations} 
-$\ \ \ \ $ 
-We use a BIE formulation to represent the solution of the Stokes equations. One advantage of this form is the reduction of dimension; we solve a three-dimensional flow with a two-dimensional integral equation. 
-In order to use a BIE, we assume that the velocity vanishes at infinity and the aggregate is solid. Although marine aggregates are porous, the solid boundary condition is reasonable to apply due to their is low permeability. This condition prevents a flow through the aggregate, acting like a solid particle. For this reason, any flow inside of the aggregate is out of our interest.  
+where $NC$ is the number of cubes in the aggregate, $\vec{x}_i$ is the center of each cube.
+We obtain the center of the aggregate, $\vec{x}_{cm}$, by taking mean values of each element of $\vec{x}_i$ for $i = 1, \cdots, NC$.
 \par
-The representation formula for the velocity solution, $\vec{u}$, to the Stokes equations at any point $\vec{y} \in \mathbb{R}^3$ that is outside of a solid object boundary, $S(\vec{x})$, is
-% around a solid object is expressed, using the stress vector, $\vec{f}$, 
-\begin{equation}
-   \vec{u}(\vec{y}) =
-	- \frac{1}{8 \pi \mu} \int_S  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{y}) \ \text{d}S(\vec{x}) 
-+ \frac{1}{8 \pi} \int_S
-\vec{u}(\vec{x}) \cdot  \bar{\bar{T}}(\vec{x},\vec{y})  
-\cdot \hat{n} ( \vec{x})
-\ \text{d}S(\vec{x}),
-\label{eq_BIE}
-\end{equation}
-where  $\vec{f}$ is the stress vector \cite{pozrikidis_boundary_1992}.
-The first integral distribution on the right-hand side of equation (\ref{eq_BIE}) is called the \textit{single-layer potential} and the second one is called the \textit{double-layer potential}. 
-To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$, we have 
-\begin{equation}
-   \vec{u}(\vec{x}_s) = - \frac{1}{4 \pi \mu} \int_S  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{x}_s) \ \text{d}S(\vec{x}) 
-+ \frac{1}{4 \pi} 
-\int_S
-\vec{u}(\vec{x}) \cdot  \bar{\bar{T}}(\vec{x},\vec{x}_s)  
-\cdot \hat{n} ( \vec{x})
-\ \text{d}S(\vec{x}).
-\label{eq_BIE_onS}
-\end{equation}
-The second order tensors in equation (\ref{eq_BIE}) are the Green's function,  $\bar{\bar{G}}(\vec{x},\vec{y})$,
-\begin{align}
-  \bar{\bar{G}}(\vec{x},\vec{y}) =   
-  \frac{\bar{\bar{I}}}{||\vec{x}-\vec{y}||} + \frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y})}{||\vec{x}-\vec{y}||^3},
-  \label{eq_stokeslet}
-  \end{align}
-  and the stress tensor, $\bar{\bar{T}}(\vec{x},\vec{y})$ , associated with the Green's function of the Stokes equations,
-  %
-  \begin{align}
-  \bar{\bar{T}}(\vec{x},\vec{y}) = 
-  -6\frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y}) (\vec{x}-\vec{y})}{||\vec{x}-\vec{y}||^5},
-  \label{eq_stresslet}
-  \end{align}
-where $\| \cdot \|$ is the $L^2$ norm. 
-Note that $ \bar{\bar{G}}(\vec{x},\vec{y})$ and $ \bar{\bar{T}}(\vec{x},\vec{y}) $ are called  the {\textit{Stokeslet}} and {\textit{Stresslet}}, respectively.
-\par
-From the representation formula (\ref{eq_BIE}), we are able to simplify by eliminating one of layer potentials. 
-In the rest of this section, we derive the equations with either the single- or double-layer potential only. 
+We obtain randomly shaped aggregates with two different methods that are well established, individually-added-aggregates (IAA) and cluster-to-cluster aggregates (CCA). 
+To form an aggregate with IAA method, we introduce a single cube in the periodic box and add another cube, one at a time. For CCA method, on the other hand, we initially position all $N$ cubes, non-adjacent, within the periodic domain and let all cubes undergo an unbiased random walk. If any two cubes form a cluster, the cluster can form another cluster.
+Typically, the IAA method gives a more compact form of aggregates, with dimension $\sim 2.56$, than the CCA case which has dimension $\sim 1.79$ \cite{witten_diffusion-limited_1981, kaye_random_2008}.
+ We will compare a length scale to the forces acting on the aggregates formed with these two different methods.
+%
 %--------------------------------------------------------
-\subsection{Single-layer potential}
-$\ \ \ \ \ $ 
+\section{Elimination of single- and double-layer potentials}
+{\color{blue} why do we do this? from the fundamental solution we introduced in Chapter 1?}
+\subsection{Derivation of single-layer potential}
 We first derive the velocity with the single-layer potential alone.
 The solid boundary allows us to express its velocity as 
 \begin{equation}
@@ -251,7 +193,7 @@ To analyze the force and torque, we use the stress $\vec{f}$ in equation (\ref{e
 % \end{thm}
 % Although our aggregate model is not smooth overall with edges and corners, the idea of theorem (\ref{eq_thm1}) is valid for our approximation since we only use the boundary integral equations on the center of each discretized square face. We discuss details in the next chapter.
 
-\subsection{Double-layer potential}
+\subsection{Derivation of double-layer potential}
 $\ \ \ \ \ $ 
 In this section, we derive a velocity formulation, $\vec{u}$, using the double-layer potential. We shall consider a complimentary flow $\vec{u}_c$ 
 % (not to be confused with the derivative prime notation) 
@@ -394,14 +336,13 @@ For convenience of further study, we write all equations in non-dimensional form
 \end{equation}
 We use the maximum aggregate size we mentioned in the previous section, $R_a = 500 \mu$m for the characteristic length scale, $L$. For the velocity scale, we use the Stokes settling velocity, equation (\ref{eq_U_s}). 
 Then the system of equations becomes
-\begin{equation}
+\begin{align}
     -\nabla' P_d' +  \nabla'^2 \vec{u}'  = \vec{0}
 	\label{eq_momentum_noD}
-\end{equation}
-\begin{equation}
+	\\
     \nabla' \cdot \vec{u}' = 0,
 	\label{eq_conti_noD}
-\end{equation}
+\end{align}
 where we define the dynamic pressure as 
 $P_d(\vec{x}) =  P(\vec{x}) + \rho g \hat{k} \cdot \vec{x}$.
 Then, the dimensionless forms of single-layer potential formula for the velocity at a point outside of the surface $S$, is 
@@ -449,7 +390,7 @@ become
  \end{align}
  for the points on the surface $S$.
 We consider both single- and double-layer potentials at this point. In the next section, we compare both methods and see the results. For simplicity, we drop the prime symbols in this chapter.
-\section{Numerical method}
+\section{Numerical methods}
 In this section, we first explain how we use a BIE formulation as a solution to the Stokes equations, presenting the linear system. We then validate our methods and compare the single- and double-layer potentials to choose the main formulation we want to use for further simulations. We note that it is natural to discretize the aggregate surface into square faces since our aggregate model is a collection of cubes as shown in Figure \ref{fig_cube10}. In this approximation, we assume that the vectors $\vec{f}$ and $\vec{\psi}$ are constant on each square face.
 \subsection{Linear system}
  The quantities of interest to obtain in our modeling are 1) forces respoding to the background fluid flow, and 2) velocity field outside of the aggregate surface. 
@@ -644,7 +585,93 @@ Also, higher resolutions result in streamlines following the cube boundary more 
 	\caption{Streamlines around a cube with varying resolution moving in the $z'$-direction. The resolution is: (a) $\Delta x = 2$, (b) $\Delta x = 1$, (c) $\Delta x = 0.5$, and (d) $\Delta x = 0.25$. }
 	\label{fig_streamlines_all}
 \end{figure}
-\subsection{Concentration dynamics}
+
+
+ 
+%---------Some results----------------------------------
+\section{Hydrodynamic forces: Drag, Torque, and Straining force}
+$\ \ \ \ \ $  
+In order to study the dynamics of marine aggregates in the fluid, we are interested in measuring the forces acting on the aggregates as a response to a background flow. We consider the fluid  flow that is derived from the Taylor expansion of a velocity \cite{guazzelli_physical_2011},
+\[
+ \vec{U'}_{bg}(\vec{x})
+  =  \vec{U'}_{bg}(\vec{x}_0) + 
+  \nabla  \vec{U'}_{bg}(\vec{x}_0) \cdot (\vec{x} - \vec{x}_0) + \cdots,
+\]
+ disturbance up to first-order in space which includes translation, rotation, and extensional flows,
+\begin{equation}
+ \vec{U'}_{bg}(\vec{x}) = -\vec{U'}_a -  \vec{\Omega'} \times \vec{x'}+\Bar{\Bar{M'}} \cdot \vec{x'},
+ \label{eq_bg_flow}
+\end{equation}
+where $-\vec{U'}_a$ and $\vec{\Omega'}$ are the translational and angular velocities, respectively. 
+Moreover, $\bar{\bar{M'}}$ represents a traceless, symmetric second-order tensor that induces extensional or stretching flow. In particular, we consider $\bar{\bar{M'}}$ as compressing in the horizontal direction and stretching in the vertical direction at the same time. 
+Note that the background flow, $\vec{U'}_{bg}$, is equivalent to the aggregate's velocity on the surface we prescribed when changing the frame of reference.
+We observe each background flow individually in the absence of the other two flows. For example, when we set $\vec{\Omega'} \times \vec{x'} = \vec{0}$ and $\bar{\bar{M'}} \cdot \vec{x'} = \vec{0}$, we observe the force only in the direction of translational flow. 
+\par
+There are three types of forces are induced by each background flow (\ref{eq_bg_flow}):
+ 1) drag, 2) torque, and 3) straining forces. We analyze these forces acting on aggregates that show better relation with either length scale, $R_g$, defined in equation (\ref{eq_Rg}), or $R_m$, from equation (\ref{eq_Rm}). 
+\\
+We compute the drag as,
+\begin{equation}
+\text{D}' =  \Biggl( \int_S' \vec{f'} (\vec{x'}) \ \text{d} S'(\vec{x'}) \Biggr) \cdot \hat{k},
+\end{equation}
+when setting $\vec{\Omega'}$ and $\bar{\bar{M'}}$ to zero, 
+where $\vec{f'}$ is the stress on aggregate surface. 
+We expect to see a linear relationship between the drag and a well-chosen length scale, i.e., D$' \sim R$. 
+ We present the resulting drag with respect to the gyration radius since we found a clear linear relationship between the two for both IAA and CCA aggregates in Figure \ref{fig_drag}. 
+ \begin{figure}[h]
+ \begin{center}
+    \epsfig{figure=./figures/fig_drag_all_rescaledprime, scale=1}
+ \end{center}
+ \caption{Drag versus gyration radius. (Left) IAA and (right) CCA aggregates.}
+ \label{fig_drag}
+ \end{figure}
+\par
+To observe the torque (T$'$) in the direction of the angular velocity of the aggregate, we now let $\vec{U}'_a$ and $\bar{\bar{M'}}\cdot \vec{x}$ be zero. 
+We then calculate the torque as,
+\begin{equation}
+\text{T}' = 
+\int_S' \left( \vec{x'} - \vec{x'}_{cm}  \right) \times \vec{f}(\vec{x'}) \ \text{d}S' (\vec{x'})
+ \cdot \frac{\vec{\Omega'}}{\|\vec{\Omega'}\|}.
+ \end{equation}
+\newline
+From the non-dimensional analysis, we expect to see a cubic relationship between torque and a length scale, i.e., $T' \sim R^3$. Figure \ref{fig_torque} shows that both IAA and CCA methods capture the cubic relation with the gyration radius better. We also recognize that IAA shows a more clear relationship than the CCA, since it forms larger aggregates. 
+ \begin{figure}[h]
+ \begin{center}
+    \epsfig{figure=./figures/fig_torque_all, scale=1.05}
+ \end{center}
+ \caption{Torque versus gyration radius. (Left) IAA and (right) CCA aggregates.}
+ \label{fig_torque}
+ \end{figure}
+\par
+We now compute the straining force ($S_f'$) as the response of an aggregate to an extensional flow,
+\begin{equation}
+S_f' = \vec{E'} \cdot \hat{k}
+\end{equation}
+where
+\begin{equation}
+\vec{E'} = \frac{1}{2} \left( 
+\int_{S'} \left|\vec{f'} \cdot \hat{v}_i \right| \ \text{d}S'-
+\left| \int_S' \vec{f'} \ \text{d} S' \right|\cdot \hat{v}_i
+ \right)  \hat{v}_i
+ \cdot \frac{\vec{\Omega'}}{\|\vec{\Omega'}\|}.
+\end{equation}
+Here,  $\vec{f'}$ is the projection of the stress vector in the direction of the eigenvector $\hat{v}_i$.
+This eigenvector can be found while we non-dimensionalize this force using the largest eigenvalue in magnitude of $\bar{ \bar{M} }$.
+We can decompose the straining force vector as $\vec{E'} = \sum_{i=1}^3 E'_i \hat{v_i}$. 
+For the straining force, we expect to observe a quadratic dependence on the aggregate's size. In contrast to the drag and torque, we found a better fit, i.e., $S'_f \sim R^2$ using the maximum radius ($R_m$) as seen in Figure \ref{fig_straining}. 
+\begin{figure}[h]
+\begin{center}
+   \epsfig{figure=./figures/fig_strain_allprime, scale =1}
+\end{center}
+\caption{Straining forces versus maximum radius. (Left) IAA and (right) CCA aggregates.}
+\label{fig_straining}
+\end{figure}
+\\
+\\
+This methodology and analysis of forces on settling aggregates has been published in Physical Review Fluids \cite{yoo_hydrodynamic_2020}.
+I mainly contributed to comparing the boundary integral equations and implementing the methods to validate, including the streamline simulations. 
+%=============concentration simulations================
+\section{Concentration dynamics}
 To quantify the efficiency of transferring organic carbon via settling aggregates, the depth of the fluid or shape of aggregates are typically considered.
 In the euphotic zone, which is the uppermost layer of the oceans, the majority of marine aggregates are remineralized by metabolic processes \cite{henson_global_2012}. Omand {\it{et al.}} presented a model to study the sensitivity of the shape of the aggregates with its remineralization rate and density \cite{omand_sinking_2020}. 
 Our model of the gravitational sinking aggregates can contribute to understanding the oceanic carbon cycle. We, thus, use the three-dimensional advection-diffusion equation to keep track of concentration dynamics
@@ -716,95 +743,38 @@ For the thermal diffusivity, $D_{heat}$, we cosider the value referred by {\it N
 \end{align}
 (We can also find the pdf file of the seawater properties on \href{http://web.mit.edu/seawater/}{{\color{blue}Thermophysical properties of seawater}.})
 Note that this could differ by the size of the aggregate we simulate. This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
-%---------Some results----------------------------------
-\section{Results}
-$\ \ \ \ \ $  
-In order to study the dynamics of marine aggregates in the fluid, we are interested in measuring the forces acting on the aggregates as a response to a background flow. We consider the fluid  flow that is derived from the Taylor expansion of a velocity \cite{guazzelli_physical_2011},
-\[
- \vec{U'}_{bg}(\vec{x})
-  =  \vec{U'}_{bg}(\vec{x}_0) + 
-  \nabla  \vec{U'}_{bg}(\vec{x}_0) \cdot (\vec{x} - \vec{x}_0) + \cdots,
-\]
- disturbance up to first-order in space which includes translation, rotation, and extensional flows,
-\begin{equation}
- \vec{U'}_{bg}(\vec{x}) = -\vec{U'}_a -  \vec{\Omega'} \times \vec{x'}+\Bar{\Bar{M'}} \cdot \vec{x'},
- \label{eq_bg_flow}
-\end{equation}
-where $-\vec{U'}_a$ and $\vec{\Omega'}$ are the translational and angular velocities, respectively. 
-Moreover, $\bar{\bar{M'}}$ represents a traceless, symmetric second-order tensor that induces extensional or stretching flow. In particular, we consider $\bar{\bar{M'}}$ as compressing in the horizontal direction and stretching in the vertical direction at the same time. 
-Note that the background flow, $\vec{U'}_{bg}$, is equivalent to the aggregate's velocity on the surface we prescribed when changing the frame of reference.
-We observe each background flow individually in the absence of the other two flows. For example, when we set $\vec{\Omega'} \times \vec{x'} = \vec{0}$ and $\bar{\bar{M'}} \cdot \vec{x'} = \vec{0}$, we observe the force only in the direction of translational flow. 
-
-
-
-
-\subsection{Drag, Torque, and Straining forces}
-$\ \ \ \ \ $  
-There are three types of forces are induced by each background flow (\ref{eq_bg_flow}):
- 1) drag, 2) torque, and 3) straining forces. We analyze these forces acting on aggregates that show better relation with either length scale, $R_g$, defined in equation (\ref{eq_Rg}), or $R_m$, from equation (\ref{eq_Rm}). 
-\\
-We compute the drag as,
-\begin{equation}
-\text{D}' =  \Biggl( \int_S' \vec{f'} (\vec{x'}) \ \text{d} S'(\vec{x'}) \Biggr) \cdot \hat{k},
-\end{equation}
-when setting $\vec{\Omega'}$ and $\bar{\bar{M'}}$ to zero, 
-where $\vec{f'}$ is the stress on aggregate surface. 
-We expect to see a linear relationship between the drag and a well-chosen length scale, i.e., D$' \sim R$. 
- We present the resulting drag with respect to the gyration radius since we found a clear linear relationship between the two for both IAA and CCA aggregates in Figure \ref{fig_drag}. 
- \begin{figure}[h]
- \begin{center}
-    \epsfig{figure=./figures/fig_drag_all_rescaledprime, scale=1}
- \end{center}
- \caption{Drag versus gyration radius. (Left) IAA and (right) CCA aggregates.}
- \label{fig_drag}
- \end{figure}
-\par
-To observe the torque (T$'$) in the direction of the angular velocity of the aggregate, we now let $\vec{U}'_a$ and $\bar{\bar{M'}}\cdot \vec{x}$ be zero. 
-We then calculate the torque as,
-\begin{equation}
-\text{T}' = 
-\int_S' \left( \vec{x'} - \vec{x'}_{cm}  \right) \times \vec{f}(\vec{x'}) \ \text{d}S' (\vec{x'})
- \cdot \frac{\vec{\Omega'}}{\|\vec{\Omega'}\|}.
- \end{equation}
-\newline
-From the non-dimensional analysis, we expect to see a cubic relationship between torque and a length scale, i.e., $T' \sim R^3$. Figure \ref{fig_torque} shows that both IAA and CCA methods capture the cubic relation with the gyration radius better. We also recognize that IAA shows a more clear relationship than the CCA, since it forms larger aggregates. 
- \begin{figure}[h]
- \begin{center}
-    \epsfig{figure=./figures/fig_torque_all, scale=1.05}
- \end{center}
- \caption{Torque versus gyration radius. (Left) IAA and (right) CCA aggregates.}
- \label{fig_torque}
- \end{figure}
-\par
-We now compute the straining force ($S_f'$) as the response of an aggregate to an extensional flow,
-\begin{equation}
-S_f' = \vec{E'} \cdot \hat{k}
-\end{equation}
-where
-\begin{equation}
-\vec{E'} = \frac{1}{2} \left( 
-\int_{S'} \left|\vec{f'} \cdot \hat{v}_i \right| \ \text{d}S'-
-\left| \int_S' \vec{f'} \ \text{d} S' \right|\cdot \hat{v}_i
- \right)  \hat{v}_i
- \cdot \frac{\vec{\Omega'}}{\|\vec{\Omega'}\|}.
-\end{equation}
-Here,  $\vec{f'}$ is the projection of the stress vector in the direction of the eigenvector $\hat{v}_i$.
-This eigenvector can be found while we non-dimensionalize this force using the largest eigenvalue in magnitude of $\bar{ \bar{M} }$.
-We can decompose the straining force vector as $\vec{E'} = \sum_{i=1}^3 E'_i \hat{v_i}$. 
-For the straining force, we expect to observe a quadratic dependence on the aggregate's size. In contrast to the drag and torque, we found a better fit, i.e., $S'_f \sim R^2$ using the maximum radius ($R_m$) as seen in Figure \ref{fig_straining}. 
+%===SECTION 1.2=========================================
+\subsection{Frame of reference}
+$\ \ \ \ \ $ 
+Throughout this work, we use two frames of reference: 1) lab and 2) moving frame of reference. First, for the fluid velocity computation, we use the lab frame of reference to take advantage of the zero velocity boundary condition at infinity, as shown in Figure \ref{fig_frame_ref} (left). 
 \begin{figure}[h]
-\begin{center}
-   \epsfig{figure=./figures/fig_strain_allprime, scale =1}
-\end{center}
-\caption{Straining forces versus maximum radius. (Left) IAA and (right) CCA aggregates.}
-\label{fig_straining}
+	\begin{center}
+		\includegraphics[scale=0.25]{figures/fig_frame_ref}
+	\end{center}
+	\caption{Schematics of frames of reference. (Left) lab frame and (right) moving frame of reference }
+	\label{fig_frame_ref}
 \end{figure}
+{\color{blue} CHANGE THE FIGURE -> NO FIXED Us}
 \\
-\\
-This methodology and analysis of forces on settling aggregates has been published in Physical Review Fluids \cite{yoo_hydrodynamic_2020}.
-I mainly contributed to comparing the boundary integral equations and implementing the methods to validate, including the streamline simulations. 
-%=============concentration simulations================
-\subsection{Concentration simulations}
+This condition implies that the domain is large enough, compared to the aggregate.
+We solve for the stress on the aggregate boundary, by prescribing the constant velocity or the body force of the aggregate, in order to compute the fluid velocity field. 
+% We then solve for the fluid equations.
+% Note that the position of the aggregate at time $t$, $\vec{x}_L(t)$, can be expressed as
+% \begin{equation}
+% \vec{x}_L(t) = \vec{x}_L(0) + \vec{u}_s t.
+% \label{eq_xl_pos}
+% \end{equation}
+% Note that $\vec{u}(\vec{x}, \ t)$ represents the velocity inside of the fluid domain at time $t$.
+\par
+On the other hand, we use the moving frame to model a concentration dynamics.
+In this setting, we fix the aggregate in the middle of the fluid domain and move the fluid upward to describe the settling motion, as shown in Figure \ref{fig_frame_ref} (right).
+This can be done by change of variable from the velocities in the lab frame; we simply add $-\vec{u}_s$ to all velocities in the lab frame of reference,
+\[
+\vec{u}_M = \vec{u}_L - \vec{u}_s.
+\]
+ The velocity at the boundary of the fluid domain becomes the same speed as $\vec{u}_s$ but in the opposite direction, i.e., $-\vec{u}_s = (0, \ 0, \ 1)$. We also can see that now the aggregate has zero velocity in the moving frame of reference.
+
+\subsection{Simulations}
 Initially, we set the concentration to zero throughout the fluid domain and higher concentration inside and on the aggregate. For this sample test, an aggregate model made with 10 cubes is used. We first prescribe values of $1$ for the inside of each cube and $0.5$ for all square faces. Also, we put $0.25$ and $0.125$ for all edges and corners of cubes, respectively. This is an intuitive setup for the initial condition to get preliminary results of the advection-diffusion code. However, this might cause a stability problem due to the discontinuity at the aggregate boundaries. Thus, we also simulate with continuous initial concentration using a Gaussian function that has a peak at the center of mass of an aggregate. We adjust the pre-factor of the Gaussian function to have a similar concentration around the aggregate to the discontinuous case. 
 
 Besides the initial concentration, the following conditions are set:
