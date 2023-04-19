@@ -1,16 +1,8 @@
-Complex fluids shows many interesting behaviors that are quite different from Newtonian fluids. In viscoplastic fluid, particularly, one of main quantities of interst we focus to study their motion is yield stress. 
-Depending on the level of stress, viscoplastic fluids either flows or act like a rigid solid. The minimum value that makes viscoplastic fluids move is called the yield stress. 
-We can find viscoplastic materials in our lives; For example, toothpastes, whipped cream. 
-Among many different types, we particularly study those granular materials.
-We can also consider granular materials as a viscoplastic fluids, depending on their states. For instance, a medicine tablet is considered as a solid. However, the powder of ingredients act as a fluid since it flows. 
-There are many factors we need to learn to have a full understanding about granular materials' behavior.
-Since the yield stress is the main value to understand different phases (liquid vs solid) of continuum granular flow, we focus on computing more accurate stress, by taking pressure into account. The source of pressure can be a friction bewteen graular matters or an external forces.  
+Any intro for this section - 
 \par
-With a constitutive rheology code, we can capture such complex continuum hydrodynamics, such as a) curvature in free-surface flows,
- b) Anomalous stress profile in cylindrical Couette flows, and c) Negative rod climbing effect (Weissenberg effect).
-We thus consider both shear stress rate and the pressure onto the granular materials as the sources of the yield stress. 
-We use AMReX framework, developed at LBNL , NREL , and ANL, to solve flow motion. We implement the granular material viscosity computation in \verb+incflo+, which is an AMReX-based code for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
-
+{\color{red} This following goes to the future work.}
+We propose to extend this work by incorporating elastic effects through the implementation of elastoviscoplastic (EVP) models in this numerical framework. The robustness of the numerical implementation will be extensively tested in various flow scenarios (such as Poiseuille and Couette flows) for a range Weissenberg and Bingham numbers.  Another potential avenue for development will involve implementing immersed boundary methods (IBM) to model a suspension of solid particles in such complex fluids, which is an important application area that has received significant research interest lately. 
+% Further developments included modeling solid boundaries in viscoplastic fluids using embedded boundary methods.
 
 
 %section2----------------------------------------------------------------------------------------------------

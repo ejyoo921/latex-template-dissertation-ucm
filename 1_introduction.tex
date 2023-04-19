@@ -12,24 +12,28 @@ Our research is centered on computing the velocity field of the settling marine 
 In chapter 2, we introduce the governing equations and the velocity solutions to the system. This includes the comparison of two BIE formulations. We then show the numerical methods for solving the velocity field and compuations of forces. We analyze the drag, torque, straining forces acting on the different sizes of aggregates with three types of background flows.
  To simulate concentration dynamics, we couple the velocity obtained using the BIE method with the advection-diffusion equation.
 \par
-In chapter 3, we consider a varying density fluid in the vertical direction. Due to the fluid density gradient, we modify the fluid momentum equation. We also derive the particular velocity solution in addition to the homogeneous solution. Since the new velovity solution has the volume integral term which is computationally expensive to evaluate, we use the fast multipole method (FMM). In section XX, we give a brief introduction to the FMM and its open-source library. 
+In chapter 3, we consider a varying density fluid in the vertical direction. Due to the fluid density gradient, we modify the fluid momentum equation. We also derive the particular velocity solution in addition to the homogeneous solution. Since the new velovity solution has the volume integral term which is computationally expensive to evaluate, we use the fast multipole method (FMM). In section XX, we give an introduction to the FMM and its open-source library. 
 \par
 {\color{blue} ADD DESCRIPTION OF CHAPTER 4 AND 5}
 
 \section{Fluid momentum equations}
 To describe the incompressible fluid motion, it is general to consider the Navier-Stokes equations,
 \begin{align}
-\nabla \cdot \vec{u}(\vec{y}) = 0 
+\nabla \cdot \vec{u} = 0 
 \label{eq_conserv_mass} \\
-\rho \frac{D\vec{u}(\vec{y})}{Dt}
- =\mu \nabla^2 \vec{u}(\vec{y}) - \nabla P(\vec{y}) + \rho  \vec{g} ,
+\rho 
+\left( 
+   \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
+\right)
+  = \nabla \cdot \boldsymbol{\tau} - \nabla P+ \rho  \vec{g} ,
 \label{eq_momentum_NS}
 \end{align}
-where $\vec{u}, \ \mu, \ P, \ \rho$ are fluid velocity, viscosity, pressure, and constant density, respectively. 
-Note that $D$ is the material derivative, defined as
+where $\vec{u}, \ P, \ \rho$ are fluid velocity, pressure, and constant density, respectively. Note that a seawater is Newtonian fluid, following the Newton's law of viscosity, defined as
 \begin{equation}
-\frac{D}{Dt} \equiv \frac{\partial}{\partial t} + \vec{u}\cdot \nabla.
+\boldsymbol{\tau} = \frac{\mu}{2} \left( \nabla \vec{u} + (\nabla  \vec{u})^T \right)  = \mu \nabla \vec{u},
+\label{eq_newton_viscosity}
 \end{equation}
+where $\mu$ is fluid dynamic viscosity.
 The first equation (\ref{eq_conserv_mass}) shows the conservation of mass and the equation (\ref{eq_momentum_NS}) describes the momentum conservation. 
 For a typical seawater, it is reasonable to say $\rho \approx 1025 \text{kg/m}^3$ and $\mu = 1.2 \times 10^{-3}\text{kg}/\text{ms}$.
 Also, the gravitaty vector is $\vec{g} = - g\hat{k} \approx (0,0,-9.8$m/$s^2)$ and $\vec{y} \in \mathbb{R}^3$ represents an arbitrary point in the fluid domain. 
@@ -44,8 +48,11 @@ Also, the gravitaty vector is $\vec{g} = - g\hat{k} \approx (0,0,-9.8$m/$s^2)$ a
 where $\rho_a \approx 1400\text{kg/m}^3$ is the aggregate mass density. 
 When we non-dimensionalize the momentum equation using the length scale, $R_a$ and velocity, $U_s$, we can obtain the following equation:
 \begin{equation}
-	\left(\frac{\rho U_s R_a}{\mu} \right) \frac{D\vec{u}'(\vec{y})}{Dt'}
- = {\nabla'}^2 \vec{u}'(\vec{y}) - \nabla' P'(\vec{y}) + \frac{\rho}{\mu}  \vec{g},
+	\left(\frac{\rho U_s R_a}{\mu} \right) 
+   \left( 
+   \frac{\partial \vec{u}'}{\partial t'} + \vec{u}'\cdot \nabla' \vec{u}'
+\right)
+ = {\nabla'}^2 \vec{u}' - \nabla' P' + \frac{\rho}{\mu}  \vec{g},
  \label{eq_NS_moment_noD}
 \end{equation}
 where we find and compute the Reynolds number (Re),
@@ -57,18 +64,21 @@ Note that we use the prime symbol to represent a dimensionless value.
 Since we have fairly small Reynolds number, we may neglect the inertial effect, limiting the left-hand side of equation (\ref{eq_NS_moment_noD}) to zero.
 In this thesis, we therefore consider the following Stokes equations to describe the fluid flow around the settling aggregates,
  \begin{align}
-	\nabla \cdot \vec{u} (\vec{y}) = 0  
+	\nabla \cdot \vec{u}  = 0  
 	% \label{eq_conti2}
 	\nonumber \\
-	\mu \nabla^2 \vec{u} (\vec{y})   - \nabla P(\vec{y}) \ + \rho  \vec{g} = 0.
+	\mu \nabla^2 \vec{u}    - \nabla P\ + \rho  \vec{g} = 0.
 	\label{eq_stokes2}
 \end{align}
-The solutions of the system of equations are the fluid velocity, $\vec{u}$, and pressure, $P$. In our simulation, we soley focus on the velocity field computation. {\color{blue}WHY NO PRESSURE?}
+The solutions of the system of equations are the fluid velocity, $\vec{u}$, and pressure, $P$. In our simulation, we focus on the velocity field and hydrodynamic forces around the marine aggregate model. 
+% {\color{blue}WHY NO PRESSURE?}
 %
 %
 %
 %===SECTION 2.2=========================================
 \section{Boundary integral equation (BIE) formulations} 
+Although marine aggregates are porous, the solid boundary condition is reasonable to apply due to their is low permeability. This condition prevents a flow through the aggregate, acting like a solid particle. For this reason, any flow inside of the aggregate is out of our interest.  
+\par
 The fundamental solution $\vec{u}(\vec{y})$, to the Stokes equations, (\ref{eq_stokes2}), at any point $\vec{y} \in \mathbb{R}^3$ that is outside of a solid object boundary, $S(\vec{x})$, is
 % around a solid object is expressed, using the stress vector, $\vec{f}$, 
 \begin{equation}
@@ -80,19 +90,7 @@ The fundamental solution $\vec{u}(\vec{y})$, to the Stokes equations, (\ref{eq_s
 \ \text{d}S(\vec{x}),
 \label{eq_BIE}
 \end{equation}
-where  $\vec{f}(\vec{x})$ is the stress vector that describes a point force at $\vec{x} \in S$ \cite{pozrikidis_boundary_1992}.
-The first integral distribution on the right-hand side of equation (\ref{eq_BIE}) is called the \textit{single-layer potential} and the second one is called the \textit{double-layer potential}. 
-To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$, we have 
-\begin{equation}
-   \vec{u}(\vec{x}_s) = - \frac{1}{4 \pi \mu} \int_S  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{x}_s) \ \text{d}S(\vec{x}) 
-+ \frac{1}{4 \pi} 
-\int_S
-\vec{u}(\vec{x}) \cdot  \bar{\bar{T}}(\vec{x},\vec{x}_s)  
-\cdot \hat{n} ( \vec{x})
-\ \text{d}S(\vec{x}).
-\label{eq_BIE_onS}
-\end{equation}
-The second order tensors in equation (\ref{eq_BIE}) are the Green's function,  $\bar{\bar{G}}(\vec{x},\vec{y})$,
+where  $\vec{f}(\vec{x})$ is the stress vector that describes a point force at $\vec{x} \in S$ \cite{pozrikidis_boundary_1992}. Additionally, the second order tensors in equation (\ref{eq_BIE}) are the Green's function,  $\bar{\bar{G}}(\vec{x},\vec{y})$,
 \begin{align}
   \bar{\bar{G}}(\vec{x},\vec{y}) =   
   \frac{\bar{\bar{I}}}{||\vec{x}-\vec{y}||} + \frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y})}{||\vec{x}-\vec{y}||^3},
@@ -107,12 +105,63 @@ The second order tensors in equation (\ref{eq_BIE}) are the Green's function,  $
   \end{align}
 where $\| \cdot \|$ is the $L^2$ norm. 
 Note that $ \bar{\bar{G}}(\vec{x},\vec{y})$ and $ \bar{\bar{T}}(\vec{x},\vec{y}) $ are called  the {\textit{Stokeslet}} and {\textit{Stresslet}}, respectively.
-\par 
-One advantage of this form is the reduction of dimension; we solve a three-dimensional flow with a two-dimensional integral equation. 
-In order to use a BIE, we assume that the velocity vanishes at infinity and the aggregate is solid. Although marine aggregates are porous, the solid boundary condition is reasonable to apply due to their is low permeability. This condition prevents a flow through the aggregate, acting like a solid particle. For this reason, any flow inside of the aggregate is out of our interest.  
-\par
-From the representation formula (\ref{eq_BIE}), we are able to simplify by eliminating one of layer potentials. 
-In the rest of this section, we derive the equations with either the single- or double-layer potential only. 
+The first integral distribution on the right-hand side of equation (\ref{eq_BIE}) is called the \textit{single-layer potential} and the second one is called the \textit{double-layer potential}. 
+To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$, we use 
+\begin{equation}
+   \vec{u}(\vec{x}_s) = - \frac{1}{4 \pi \mu} \int_S  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{x}_s) \ \text{d}S(\vec{x}) 
++ \frac{1}{4 \pi} 
+\int_S
+\vec{u}(\vec{x}) \cdot  \bar{\bar{T}}(\vec{x},\vec{x}_s)  
+\cdot \hat{n} ( \vec{x})
+\ \text{d}S(\vec{x}).
+\label{eq_BIE_onS}
+\end{equation}
+Depending on the fluid domain characteristics and/or type of the object's surface, we can simplify the fundamental equation (\ref{eq_BIE}).
+For our simulations, we assume that the velocity vanishes at infinity and the aggregate is solid. These conditions allow us to eliminate one of the integrals. The detailed derivation is provided in section 2. 
 
 \section{Non-Newtonian fluid}
-Main difference between Newtonian vs Non-Newtonian. Explain the yield stress. Basic idea of rheology, and importnace of the secondary flow we want to capture. 
+% Main difference between Newtonian vs Non-Newtonian. Explain the yield stress. Basic idea of rheology, and importnace of the secondary flow we want to capture.
+We now turn our attention to a non-Newtonian fluid. This topic is added to my thesis as an extension of one summer internship at the Lawrence Berkeley National Lab in 2022. 
+\par
+A non-Newtonian fluid shows many interesting behaviors quite different than Newtonian fluids. It has variable viscosity that changes the state of a fluid under a particular pressure, i.e., the viscosity term in equation (\ref{eq_newton_viscosity}) is not a constant; rahter it is a function of the shear rate ($\dot{\gamma}$), that is
+\begin{equation}
+   \dot{\gamma} = \left| 
+   {\boldsymbol{D}}
+   \right|,
+\end{equation}
+where we denote
+\[
+   {\boldsymbol{D}} = 
+   \frac{1}{2} \left( \nabla \vec{u} + (\nabla  \vec{u})^T \right).    
+\]
+Due to this varying viscosity, the constitutive behavior of non-Newtonian fluids is highly complex. They show intriguing phenomena such as shear thickening, shear thinning, jamming, shear banding, and normal stress differences. This broad class of fluids encompasses various materials of industrial and natural importance, such as granular fluids, polymeric fluids, gels, and suspensions. Complex fluids exhibit two phases as responses to applied stress. This thesis examines the time-dependent coexistence between a fluid's solid and liquid states: the study for this particular fluid type is called {\textit{rheology}}. As the viscosity of a non-Newtonian fluid can be a function of the shear rate, a defining feature of many complex fluids is the presence of yield stress: for an insufficiently stressed material, they behave like an elastic solid, but once the yield stress is exceeded, they flow like a fluid. 
+% \begin{figure}[h]
+% 	\begin{center}
+% 		\includegraphics[scale=0.2]{figures/fig_Rheology_of_time_independent_fluids.pdf}
+% 	\end{center}
+%    \caption{Rheology graph - need to change}
+%     %https://link.springer.com/referenceworkentry/10.1007/978-0-387-92897-5_143 
+% 	\label{fig_rheology}
+% \end{figure}
+\par
+Determining one's yield stress is critical to understand rheological behavior accurately. Typically, the stress for a complex fluid can be computed as,
+\begin{equation}
+   \boldsymbol{\tau} = \eta(\dot{\gamma}) \boldsymbol{D}.
+\end{equation}
+It was brought to our attention that there are characteristics that could be neglected when we consider the stress linear in $\boldsymbol{D}$. For instance, curvature in free-surface flows, anomalous stress profile in cylindrical Couette flows, or negative rod climbing effect (Weissenberg effect). We thus propose to implement the computational tools to study these secondary flow using the following stress tensor expression:
+\begin{align}
+  {\bm  \tau}
+  =  \ &\eta_1 {\bm D} 
+  + \eta_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
+  \nonumber \\
+  & + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
+  + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
+  - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
+\end{align}
+The terms $\eta_i$ and $\kappa_i$ ($i, j = 1,2,$)coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
+\par
+With a constitutive rheology code, we can capture such complex continuum hydrodynamics. We thus consider both shear stress rate and the pressure onto the materials of interest as the sources of the yield stress. 
+We use AMReX framework, developed at LBNL, NREL, and ANL, to solve flow motion. We implement the granular material viscosity computation in \verb+incflo+, which is an AMReX-based code for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
+
+
+
