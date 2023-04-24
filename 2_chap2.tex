@@ -674,16 +674,17 @@ I mainly contributed to comparing the boundary integral equations and implementi
 \section{Concentration dynamics}
 To quantify the efficiency of transferring organic carbon via settling aggregates, the depth of the fluid or shape of aggregates are typically considered.
 In the euphotic zone, which is the uppermost layer of the oceans, the majority of marine aggregates are remineralized by metabolic processes \cite{henson_global_2012}. Omand {\it{et al.}} presented a model to study the sensitivity of the shape of the aggregates with its remineralization rate and density \cite{omand_sinking_2020}. 
-Our model of the gravitational sinking aggregates can contribute to understanding the oceanic carbon cycle. We, thus, use the three-dimensional advection-diffusion equation to keep track of concentration dynamics
-Note that this model allows us to apply it for any type of concentration, such as salt or temperature. 
-In this section, we introduce numerical methods to solve for the concentration, $C$, in time and space and present preliminary results.
+Our model of the gravitational sinking aggregates can contribute to understanding the oceanic carbon cycle. We, thus, use the three-dimensional advection-diffusion equation, that is 
 \begin{equation}
-	\frac{\partial  }{\partial t} C(\vec{x}, t)
-	= -\vec{u}(\vec{x}) \cdot \nabla C(\vec{x}, t)
-	+ \frac{1}{\text{Pe}} \nabla^2 C(\vec{x}, t),
+	\frac{\partial C(\vec{y}, t) }{\partial t} 
+	= - \vec{u}(\vec{y}) \cdot \nabla C(\vec{y}, t)
+	+ D \nabla^2 C(\vec{y}, t),
 	\label{eq_ad_diff_3D}
-\end{equation}
-where $\vec{x} = (x, \ y, z)$ and Pe represents Peclet number describing the ratio between advection and diffusion of the aggregate. 
+\end{equation} 
+to track marine aggregate's concentration dynamics.
+Note that this model allows us to apply it for any type of concentration, such as salt or temperature. 
+{\color{blue}Non-Dimensionalization for AD equation.}
+WePe represents Peclet number describing the ratio between advection and diffusion of the aggregate. 
 Note that equation (\ref{eq_ad_diff_3D}) is dimensionless. We non-dimensionalize the time parameter with 
 \[
 t' = \frac{U_s}{L} t.
