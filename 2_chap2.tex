@@ -1,38 +1,34 @@
-{\color{blue}ADD LITERATURE REVIEW}
-
-\section{Aggregate model}
-We consider marine aggregates composed of cubic particles, as shown in Figure \ref{fig_cube10}. The dimensionless length of each cube side is $L=2$.
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[scale=0.25]{figures/fig_cube10_CC.pdf}
-	\end{center}
-	\caption{Example aggregate model with 10 cubes. We denote $S$ as the particle surface and $\hat{n}$ as its normal. The vectors $\vec{x}_s$ and $\vec{x}_0$ represent points on and outside of $S$. }
-	\label{fig_cube10}
-\end{figure}
-Since the aggregates have a fractal structure, it is not straightforward to measure their sizes. Two options we consider are the gyration and maximum radii denoted by $R_g$ and $R_m$, respectively. They are defined as,
+%
+{\color{red} Question: Can I somewhere mention that this is published and a reader can find some details I do not write here can be found in the paper?}
+While the ocean water is density stratified due to temperature or salinity, we begin with simplifying assumptions to understand settling aggregate's dynamics. As marine aggregates have fractal structures, it is important to find an appropriate length scale to see a better agreement with their settling speed. We thus consider a homogeneous fluid in this chapter to choose an effective hydrodynamic radius. 
+\par
+Two length scales we consider are the dimensionless gyration and maximum radii denoted by $R_g$ and $R_m$, respectively. They are defined as,
 \begin{equation}
-R_g  = \sqrt{\frac{1}{NC} \sum_{i=1}^{NC} \| \vec{x}_i - \vec{x}_{cm} \|^2},
+{R'}_g  = \sqrt{\frac{1}{NC} \sum_{i=1}^{NC} \| \vec{x}_i - \vec{x}_{cm} \|^2},
 \label{eq_Rg}
 \end{equation}
 and
 \begin{equation}
-R_m = 1+ \max_{i = 1, \cdots, NC} \| \vec{x}_i - \vec{x}_{cm} \|,
+{R'}_m = 1+ \max_{i = 1, \cdots, NC} \| \vec{x}_i - \vec{x}_{cm} \|,
 \label{eq_Rm}
 \end{equation}
 where $NC$ is the number of cubes in the aggregate, $\vec{x}_i$ is the center of each cube.
-We obtain the center of the aggregate, $\vec{x}_{cm}$, by taking mean values of each element of $\vec{x}_i$ for $i = 1, \cdots, NC$.
+We obtain the center of mass of the aggregate, $\vec{x}_{cm}$, by taking mean values of each element of $\vec{x}_i$ for $i = 1, \cdots, NC$.
+Note that most of experimental studies use the projected area method to describe the size of an aggregate. However, since this project is done computationally, which has more freedom than physical experiments, we choose to use those formulations, (\ref{eq_Rg}) and (\ref{eq_Rm}) without reduction of dimension.
+We will later show the results of different forces acting on the aggregates and examine which measurement captures better characteristics.
 \par
-We obtain randomly shaped aggregates with two different methods that are well established, individually-added-aggregates (IAA) and cluster-to-cluster aggregates (CCA). 
-To form an aggregate with IAA method, we introduce a single cube in the periodic box and add another cube, one at a time. For CCA method, on the other hand, we initially position all $N$ cubes, non-adjacent, within the periodic domain and let all cubes undergo an unbiased random walk. If any two cubes form a cluster, the cluster can form another cluster.
+We model randomly shaped aggregates with two different methods that are well established: 1) individually-added-aggregates (IAA) and 2) cluster-to-cluster aggregates (CCA). 
+For IAA method, we introduce a single cube in the periodic box domainand  repeatedly add another cube, one at a time. For CCA method, on the other hand, we initially position all $NC$ cubes, non-adjacent, within the periodic domain and let all cubes undergo an unbiased random walk. If any two cubes become close enough, then they form a cluster. The cluster also can also form a larger cluster by attaching another one. 
+This process constantly occurs until we get one aggregate. 
 Typically, the IAA method gives a more compact form of aggregates, with dimension $\sim 2.56$, than the CCA case which has dimension $\sim 1.79$ \cite{witten_diffusion-limited_1981, kaye_random_2008}.
- We will compare a length scale to the forces acting on the aggregates formed with these two different methods.
+
 %
 %--------------------------------------------------------
 \section{Elimination of single- and double-layer potentials}
-{\color{blue} why do we do this? from the fundamental solution we introduced in Chapter 1?}
+We introduced the equation, (\ref{eq_BIE_onS}), as a solution form to the Stokes equations in chapter \ref{ch:intro},. As we have a solid boundary surface of a marine aggregate model, we are able to use a simplifed version of the fundamental solution.
 \subsection{Derivation of single-layer potential}
 We first derive the velocity with the single-layer potential alone.
-The solid boundary allows us to express its velocity as 
+The solid boundary condition allows us to express its velocity as 
 \begin{equation}
 	\vec{u}_s \left( \vec{x} \right) 
 	= \vec{U}_a + \vec{\Omega} \times \vec{x}  ,
@@ -194,18 +190,32 @@ To analyze the force and torque, we use the stress $\vec{f}$ in equation (\ref{e
 % Although our aggregate model is not smooth overall with edges and corners, the idea of theorem (\ref{eq_thm1}) is valid for our approximation since we only use the boundary integral equations on the center of each discretized square face. We discuss details in the next chapter.
 
 \subsection{Derivation of double-layer potential}
-$\ \ \ \ \ $ 
-In this section, we derive a velocity formulation, $\vec{u}$, using the double-layer potential. We shall consider a complimentary flow $\vec{u}_c$ 
+The second approace we can take is removing the single-layer potential. 
+To derive the double-layer potential formulation, we consider a complimentary flow $\vec{u}_c$ 
 % (not to be confused with the derivative prime notation) 
-for the points inside of the aggregate surface boundary $S$, having the same force on the boundary as $\vec{u}$. Before we proceed, we need to prove the existence of the complimentary flow.
-The new flow $\vec{u}_c$ can be found when the velocity $\vec{u}(\vec{x})$ at the boundary satisfies
+for the points \textit{inside} of the aggregate surface boundary $S$, having the same force on the boundary as $\vec{u}$. More specifically, the velocity $\vec{u}$  has the representation form, equation (\ref{eq_BIE}) and the complimentary flow $\vec{u}_c$ has the same stress, $\vec{f}$, on the boundary as $\vec{u}$. Before we proceed, we shall justify the existence of the complimentary flow.
+The new flow $\vec{u}_c$ can be found when the velocity $\vec{u}$ on the boundary satisfies
 \begin{equation}
  	\int_S \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x})=0. 
 	\label{eq_dlp_constraint}
 \end{equation}
 This condition is taken from \cite{pozrikidis_boundary_1992}.
 This can be fulfilled with our problem due to the continuity equation, $\nabla \cdot \vec{u}= 0$ and divergence theorem.
-% By the divergence theorem, equation \ref{eq_constraint} is equivalent to
+By the conservation of mass, we can say
+\begin{equation}
+ 	\int_V  \nabla \cdot \vec{u}(\vec{x}) \ \text{d}V (\vec{x}) 
+		=0. 
+	\label{eq_constraint_v}
+\end{equation}
+By the divergence theorem, we have
+\begin{equation}
+	\int_V  \nabla \cdot \vec{u}(\vec{y}) \ \text{d}V (\vec{y})   = 
+\int_{S } \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x})
++ \int_{S_f} \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x})=0,
+\label{eq_div}
+\end{equation}
+where $S_f$ is the surface of the control volume of the fluid, $V$, surrounding the solid particle. See Figure \ref{fig_dlp_volume}.
+Note that the fluid volume $V$ is strictly outside of the aggregate boundary $S$. 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.4]{./figures/fig_dlp_volume}
@@ -214,27 +224,12 @@ This can be fulfilled with our problem due to the continuity equation, $\nabla \
 	\label{fig_dlp_volume}
 \end{center}
 \end{figure}
-We first see that
-\begin{equation}
- 	\int_V  \nabla \cdot \vec{u}(\vec{x}) \ \text{d}V (\vec{x}) 
-		=0. 
-	\label{eq_constraint_v}
-\end{equation}
-By divergence theorem, we have
-\begin{equation}
-	\int_V  \nabla \cdot \vec{u}(\vec{x}) \ \text{d}V (\vec{x})   = 
-\int_{S } \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x})
-+ \int_{S_f} \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x})=0,
-\label{eq_div}
-\end{equation}
-where $S_f$ is the surface of the control volume of the fluid surrounding the solid particle. 
-We consider the surface $S_f$ as a large sphere with a radius $r_f$. Then the velocity $\vec{u}$ on $S_f$ approaches to zero with the order of $\mathcal{O}(1/r_f)$ and its associated stress tensor decays with the rate $\mathcal{O} (1/r_f^2)$. Once the surface integral on $S_f$ in equation (\ref{eq_div}) becomes zero, it implies that
+The control volume could be a large sphere with its radius $r_f$. Then the velocity $\vec{u}$ on $S_f$ approaches to zero with the order of $\mathcal{O}(1/r_f)$ and its associated stress tensor decays with the rate $\mathcal{O} (1/r_f^2)$. Once the surface integral on $S_f$ in equation (\ref{eq_div}) becomes zero, it implies that
 \[
 \int_{S} \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x}) = 0.
 \]
- It also means that the net force on the surface $S$ is zero. 
-
-More specifically, the velocity $\vec{u}$  has the representation form, equation (\ref{eq_BIE}) and the complimentary flow $\vec{u}_c$ has the same stress, $\vec{f}$, on the boundary as $\vec{u}$. By the Lorentz reciprocal identity, any two flows having the same force on the boundary satisfy
+%  It also means that the net force on the surface $S$ is zero. 
+Now, we have a complementary flow $\vec{u}_c$.  By the Lorentz reciprocal identity, any two flows having the same force on the boundary satisfy
 % pozrikidis equation (2.3.26)
 \begin{equation}
 	\int_{S}  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{x}_o) \ \text{d}S(\vec{x})  
@@ -674,23 +669,23 @@ I mainly contributed to comparing the boundary integral equations and implementi
 \section{Concentration dynamics}
 To quantify the efficiency of transferring organic carbon via settling aggregates, the depth of the fluid or shape of aggregates are typically considered.
 In the euphotic zone, which is the uppermost layer of the oceans, the majority of marine aggregates are remineralized by metabolic processes \cite{henson_global_2012}. Omand {\it{et al.}} presented a model to study the sensitivity of the shape of the aggregates with its remineralization rate and density \cite{omand_sinking_2020}. 
-Our model of the gravitational sinking aggregates can contribute to understanding the oceanic carbon cycle. We, thus, use the three-dimensional advection-diffusion equation, that is 
+Our model of the gravitational sinking aggregates can contribute to understanding the oceanic carbon cycle. 
+To understand this application and track marine aggregate's concentration dynamics, we may couple the three-dimensional advection-diffusion equation, that is 
 \begin{equation}
-	\frac{\partial C(\vec{y}, t) }{\partial t} 
-	= - \vec{u}(\vec{y}) \cdot \nabla C(\vec{y}, t)
-	+ D \nabla^2 C(\vec{y}, t),
+	\frac{\partial C }{\partial t} 
+	= - \vec{u} \cdot \nabla C
+	+ D \nabla^2 C,
 	\label{eq_ad_diff_3D}
 \end{equation} 
-to track marine aggregate's concentration dynamics.
-Note that this model allows us to apply it for any type of concentration, such as salt or temperature. 
-{\color{blue}Non-Dimensionalization for AD equation.}
-WePe represents Peclet number describing the ratio between advection and diffusion of the aggregate. 
-Note that equation (\ref{eq_ad_diff_3D}) is dimensionless. We non-dimensionalize the time parameter with 
-\[
-t' = \frac{U_s}{L} t.
-\]
-Since we apply the moving frame of reference, the fluid velocity, $\vec{u}$, is the sum of the velocity we obtain from the boundary integral method and the settling velocity we prescribed on the aggregate, $\vec{U_a} = (0, \ 0, \ -1)$.
-Note that this model allows us to apply it for any type of concentration, such as salt or temperature. 
+where $C(\vec{y},t)$ is the concentration for any type of ones interest, such as salt or temperature. 
+We may non-dimensionalize the equation (\ref{eq_ad_diff_3D}) usuing the same parameters as shown in (\ref{eq_nonD}), in addition to the time parameter, $t' = \left(U_s/L \right) t$. As we make dimensionless form, we find the Peclet number that describes the ratio between advection and diffusion of the aggregate. 
+\begin{equation}
+	\frac{\partial C' }{\partial t'} 
+	= - \vec{u}' \cdot \nabla' C'
+	+ \frac{1}{\text{Pe}} \nabla'^2 C',
+	\label{eq_AD_nonD}
+\end{equation}
+Since we apply the moving frame of reference, the fluid velocity, $\vec{u}$, is the sum of the velocity we obtain from the boundary integral method and the settling velocity we prescribed on the aggregate, $\vec{U_a} = (0, \ 0, \ -1)$. 
 In this section, we introduce numerical methods to solve for the concentration, $C$, in time and space and present preliminary results.
 After careful discussions, we decided to use the second order explicit Runge-Kutta method, due to the efficiency, as follows,
 \begin{align}
