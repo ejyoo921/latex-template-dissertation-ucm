@@ -316,20 +316,20 @@ for the points on the surface, $\vec{x}_s \in S$.
 \section{Non-dimensionalization}
 For convenience of further study, we write all equations in non-dimensional form using following parameters:
 \begin{equation}
-\vec{x} = L\vec{x}', 
- \hspace{0.5cm} 
+\vec{x} = R_a\vec{x}', 
+\
  \vec{u} = U_s \vec{u'},
- \hspace{0.5cm}
-  \vec{f} = \frac{\mu U_s}{L} \vec{f'},
-  \hspace{0.5cm}
+ \
+  \vec{f} = \frac{\mu U_s}{R_a} \vec{f'},
+  \
   \vec{\psi} = U_s \vec{\psi}',
-  \hspace{0.5cm}
-  \vec{F_o} = \mu U_s L \vec{F_o}',
-  \hspace{0.5cm}
-  \vec{Q_o} = \mu U_s L^2 \vec{Q_o}'.
+%   \
+%   \vec{F_o} = \mu U_s R_a \vec{F_o}',
+%   \
+%   \vec{Q_o} = \mu U_s R_a^2 \vec{Q_o}'.
 \label{eq_nonD}
 \end{equation}
-We use the maximum aggregate size we mentioned in the previous section, $R_a = 500 \mu$m for the characteristic length scale, $L$. For the velocity scale, we use the Stokes settling velocity, equation (\ref{eq_U_s}). 
+We use the values presented in chapter 1, as we derived the Reynolds number, (\ref{eq_Re}). 
 Then the system of equations becomes
 \begin{align}
     -\nabla' P_d' +  \nabla'^2 \vec{u}'  = \vec{0}
@@ -352,14 +352,14 @@ Then, the dimensionless forms of single-layer potential formula for the velocity
 The equations for the non-dimensional total force and torque, given dimensionally in equations (\ref{eq_total_Force_slp}),  (\ref{eq_total_Torque_slp}),  (\ref{eq_total_Force_dlp}), and (\ref{eq_total_Torque_dlp})
 become
 \begin{equation}
- \vec{F'}_o = \frac{\vec{F}_o}{\mu U_s L} =
+ \vec{F'}_o = \frac{\vec{F}_o}{\mu U_s R_a} =
   \int_{S'} \vec{f'}(\vec{x}') \  \text{d}S'(\vec{x}')
  =\int_{S'}  \vec{\psi'}( \vec{x}') \ \text{d}S'(\vec{x}'),
  \label{eq_total_Force_noD}
  \end{equation} 
  and
  \begin{equation}
- \vec{Q'}_o = \frac{\vec{Q}_o}{\mu U_s L^2}
+ \vec{Q'}_o = \frac{\vec{Q}_o}{\mu U_s R_a^2}
  = \int_{S'} (\vec{x}' - \vec{x}'_{cm}) \times \vec{f'}(\vec{x}')  \ \text{d}S' (\vec{x}')
  =  \int_{S'} (\vec{x}' - \vec{x}'_{cm}) \times \vec{\psi'}(\vec{x}') \ \text{d}S'(\vec{x}').
  \label{eq_total_Torque_noD}
@@ -486,14 +486,15 @@ In order to compare the single- and double-layer methods numerically, we use a s
 \end{figure}
 
 \subsection{BIE formulations comparison}
-{\color{blue} Need to review/edit for writings}\\
+% {\color{blue} Need to review/edit for writings}\\
 In this section, we validate our implementation of both the single- and double-layer methods. We compare both methods since it has been found that the linear system with the single-layer potential formula has larger condition numbers when we integrate its Green's function (Stokeslet) on the aggregate surface, although the single-layer potential has simpler form to use. 
 \\
-{\color{red}Where is the condition number plot? and cite the papers about this argument}
+% Where is the condition number plot? and 
+{\color{red}citation}
 \\
-We compute the total force, $ \vec{F'}_o$, by imposing $\vec{U'}_a = (0,0,-1)$ and $\vec{\Omega'} = (0,0,0)$ in equation (\ref{eq_solid_vel}). To obtain drag ($D'$), we take the settling direction or $z'-$ component of the $ \vec{F'}_o$ on the cube, i.e., 
+We compute the total force, $ \vec{F'}_o$, by imposing $\vec{U'}_a = (0,0,-1)$ and $\vec{\Omega'} = (0,0,0)$ in equation (\ref{eq_solid_vel}). To obtain drag (D'), we take the settling direction or $z'-$ component of the $ \vec{F'}_o$ on the cube, i.e., 
 \begin{align}
-	D' = - \vec{F'}_o\cdot \frac{\vec{U'}_a}{\| \vec{U'}_a\|},
+	\text{D}' = - \vec{F'}_o\cdot \frac{\vec{U'}_a}{\| \vec{U'}_a\|},
 \end{align}
 where $\| \cdot \|$ is $L^2$ norm.
 For both integral methods, the drag values converge to about 25.401. We take this value as our reference drag for error analysis, i.e., $D'_{ex} = 25.401.$
@@ -509,7 +510,7 @@ We first compare the drag obtained with varying $\Delta x$ to the previous resul
 	\label{fig_drag_compare}
 \end{center}
 \end{figure}
-Our drag, $D'_{ex}$ is comparable with the one found by Gurel {\it{et al.}} \cite{gurel_studies_1955} which is $25.311$ and the empirical relation proposed by Johnson {\it{el al.}}  \cite{johnson_drag_1987} that shows a drag of $25.150$. Earlier McNown \& Malaika \cite{mcnown_effects_1950} presented similar but a somewhat smaller value of $24.311$. 
+Our drag, $\text{D}'_{ex}$ is comparable with the one found by Gurel {\it{et al.}} \cite{gurel_studies_1955} which is $25.311$ and the empirical relation proposed by Johnson {\it{el al.}}  \cite{johnson_drag_1987} that shows a drag of $25.150$. Earlier McNown \& Malaika \cite{mcnown_effects_1950} presented similar but a somewhat smaller value of $24.311$. 
 This implies that our numerical implementation is reliable. In Figure \ref{fig_drag_compare} (b),
 we observe the convergence rate that is typically expected to be of a quadratic order when we use the mid-point integration rule in equation (\ref{eq_discretized}). However, we see a convergence rate that is slightly higher than one for both methods. This may come from the presence of edges and corners of cubes. We also notice that the single-layer method shows better accuracy overall.
 %
@@ -674,20 +675,40 @@ To understand this application and track marine aggregate's concentration dynami
 \begin{equation}
 	\frac{\partial C }{\partial t} 
 	= - \vec{u} \cdot \nabla C
-	+ D \nabla^2 C,
+	+ D_{type} \nabla^2 C,
 	\label{eq_ad_diff_3D}
 \end{equation} 
-where $C(\vec{y},t)$ is the concentration for any type of ones interest, such as salt or temperature. 
-We may non-dimensionalize the equation (\ref{eq_ad_diff_3D}) usuing the same parameters as shown in (\ref{eq_nonD}), in addition to the time parameter, $t' = \left(U_s/L \right) t$. As we make dimensionless form, we find the Peclet number that describes the ratio between advection and diffusion of the aggregate. 
+where $C$ represents the concentration for any type of ones interest, such as salt or temperature. We also note that the diffusivity (m$^2$/s) is denoted as $D_{type}$.
+We may non-dimensionalize the equation (\ref{eq_ad_diff_3D}) using the same parameters as shown in (\ref{eq_nonD}), in addition to the time parameter, $t' = \left(U_s/L \right) t$. As we make dimensionless form, we find the Peclet number that describes the ratio between advection and diffusion of the aggregate. 
 \begin{equation}
 	\frac{\partial C' }{\partial t'} 
 	= - \vec{u}' \cdot \nabla' C'
 	+ \frac{1}{\text{Pe}} \nabla'^2 C',
-	\label{eq_AD_nonD}
+	\label{eq_ad_diff_nonD}
 \end{equation}
-Since we apply the moving frame of reference, the fluid velocity, $\vec{u}$, is the sum of the velocity we obtain from the boundary integral method and the settling velocity we prescribed on the aggregate, $\vec{U_a} = (0, \ 0, \ -1)$. 
-In this section, we introduce numerical methods to solve for the concentration, $C$, in time and space and present preliminary results.
-After careful discussions, we decided to use the second order explicit Runge-Kutta method, due to the efficiency, as follows,
+For salinity of seawater, we find the diffusion coefficient, $D_{salt} = 2 \times 10^{-9}  (\text{m}^2\text{/s})$ from \text{\it Wollast and Garrels (1971)} \cite{wollast_diffusion_1971}. In addition, we recall the aggregate's settling speed ($U_s$), its maximum radius ($R_a$),
+\begin{align}
+	\text{Pe} 
+	= \frac{U_s R_a }{D_{salt}} 
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{2 \times 10^{-9} (\text{m}^2\text{/s})} = 9.5
+\end{align}
+\par 
+For the thermal diffusivity, $D_{heat}$, we cosider the value referred by {\it Nayar et. al (2016)} \cite{nayar_thermophysical_2016} and {\it Sharqawy et. al (2010)} \cite{sharqawy_thermophysical_2010},
+\begin{align}
+	\text{Pe} 
+	= \frac{U_s R_a }{D_{heat}} 
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} \approx 10^{-2}.
+\end{align}
+% One can also find the pdf file of the seawater properties on \href{http://web.mit.edu/seawater/}{{\color{blue}Thermophysical properties of seawater}.}
+Note that this could differ by the size of an aggregate and we will explore various Peclet numbers for our simulations within a reasonable range. 
+\par 
+In the following subsection, we explain the numerical methods to solve and couple with the advection-diffusion equation in time and space. We close this chapter by presenting preliminary results of the concentration dynamics in a homogeneous fluid. 
+After careful discussions, we decided to use the second order explicit 
+\subsection{Numerical methods for the advection-diffusion equation}
+% Since we apply the moving frame of reference, the fluid velocity, $\vec{u}$, is the sum of the velocity we obtain from the boundary integral method and the settling velocity we prescribed on the aggregate, $\vec{U}_a = (0, \ 0, \ -1)$. 
+The main role of coupling the advection-diffusion equation is to update the concentration $C$ in time. As the fluid velocity changes in one numerical time step, we feed the velocity into the advection term in equation (\ref{eq_ad_diff_nonD}). This refers that we should solve for $C$ every time step. Since our entire fluid velocity computation is already large and slow, we try to focus on efficiency of the concentration evaluation.
+\par
+For the time integration, we use the second stage explicit Runge-Kutta method as follows,
 \begin{align}
 	k_1 =  f \left( C_j^{n} \right) \Delta t \\ \nonumber
 	\\ 
@@ -723,22 +744,8 @@ Then equation we have
 \end{align}
 \par
 One may concern about the stability of the central difference scheme for advection term. However, the oscillation due to the failure of stability condition occurs when we have zero diffusion or sufficiently large Peclet number to be like zero diffusion. As we mentioned, we consider two different sources of diffusion: 1) salinity and 2) heat in temperature $25  ^{\circ}$C.
-\par
-For salinity of seawater, we find the diffusion coefficient, $D_{salt} = 2 \times 10^{-9}  (\text{m}^2\text{/s})$ from \text{\it Wollast and Garrels (1971)}. In addition, we recall the aggregate's settling speed ($U_s$), its maximum radius ($L$),
-\begin{align}
-	\text{Pe} 
-	= \frac{U_s L }{D_{salt}} 
-	\approx \frac{10^{-4}(\text{m/s}) \times \left(5 \times 10^{-4} \right) (\text{m})}{2 \times 10^{-9} (\text{m}^2\text{/s})} = 25
-\end{align}
-\par 
-For the thermal diffusivity, $D_{heat}$, we cosider the value referred by {\it Nayar et. al (2016)} and {\it Sharqawy et. al (2010)},
-\begin{align}
-	\text{Pe} 
-	= \frac{U_s L }{D_{heat}} 
-	\approx \frac{10^{-4}(\text{m/s}) \times \left(5 \times 10^{-4} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} = \frac{1}{3}
-\end{align}
-(We can also find the pdf file of the seawater properties on \href{http://web.mit.edu/seawater/}{{\color{blue}Thermophysical properties of seawater}.})
-Note that this could differ by the size of the aggregate we simulate. This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
+
+This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
 %===SECTION 1.2=========================================
 \subsection{Frame of reference}
 $\ \ \ \ \ $ 

@@ -54,6 +54,7 @@ Since seawater is Newtonian fluid, following the Newton's law of viscosity, the 
    \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
 \right)
   = -\nabla P  + {\tilde{\mu}} \nabla^2 \vec{u}+  \rho  \vec{g} 
+  \label{eq_stokes_momentum}
 \end{equation}
 For a typical seawater, it is reasonable to say $\rho \approx 1025 \text{kg/m}^3$ and ${\tilde{\mu}} = 1.2 \times 10^{-3}\text{kg}/\text{ms}$.
 Also, the gravitaty vector is $\vec{g} = - g\hat{k} \approx -9.8$m/$s^2 \times (0,0,1)$ where $\hat{k}$ points in the vertical direction (upward). 
@@ -78,6 +79,7 @@ where we find and compute the Reynolds number (Re),
 \begin{equation}
 	\text{Re} = \frac{\rho U_s R_a}{{\tilde{\mu}}} \approx 10^{-2}
 	\ll 1.
+   \label{eq_Re}
 \end{equation}
 Note that we use the prime symbol to represent a dimensionless value.
 Since we have fairly small Reynolds number, we may neglect the inertial effects, limiting the left-hand side of equation (\ref{eq_NS_moment_noD}) to zero,
