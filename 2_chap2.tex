@@ -710,19 +710,32 @@ The main role of coupling the advection-diffusion equation is to update the conc
 \par
 For the time integration, we use the second stage explicit Runge-Kutta method as follows,
 \begin{align}
-	k_1 =  f \left( C_j^{n} \right) \Delta t \\ \nonumber
+	C_{j}^{temp} = C_j^{n} + \frac{1}{2}\Delta t {\bm F} \left( C_j^{n} \right)
 	\\ 
-	k_2 = f \left(C_{j+k_1}^{n} \right) \Delta t\\ \nonumber
-	\\ 
-	C_j^{n+1} = C_j^{n} + \frac{\left(k_1 + k_2 \right)}{2}
+	C_j^{n+1} = C_j^{n} + \Delta t {\bm F} \left( C_j^{temp} \right),
 \end{align}
-An explicit method may cause some stability issues. We therefore need to be careful about and keep tracking the Courant-Friedrichs-Levy (CFL) condition for each advection and diffusion terms,
+where where $C_j^n$  represents the discrete concentration value $C$ at a numerical grid $x_j$ and $n-$th time step.
+Here, the function, $\bm{F}$, represents any choice of spatial discretization method. 
+One may concern about the stability of an explicit time intetration. We therefore want to be careful about and keep tracking the Courant-Friedrichs-Levy (CFL) condition for each advection and diffusion term,
 \begin{equation}
 	\max(|u|) \frac{\Delta t}{\Delta x}  \leq 1 \ \ \ \text{for advection, and,}
 	\ \  \frac{1}{\text{Pe}}\frac{\Delta t}{\Delta x^2}  \leq 1 \ \ \ \text{for diffusion}.
 	\end{equation}
+\subsection{Spatial discretization}
+There are two spatial discretizations we compare: 1) finite differences (central differences) and 2) discrete Fourier transform (DFT). The finite differences method is common and not difficult to implement. 
+It would also allow us to set various boundary conditions. DFT, on the other hand, is well-known method to obtain spectral accuracy on a simple periodic domain with smooth data. Furthermore, when we use a product of a small prime factor as a number of discretization nodes, typically DFT is more efficient than the finite differences. Thus, it is worthwhile to compare both methods before we choose one. 
 \par
-To obtain second order convergence in space with finite differences, we apply  central differences for both the advection and diffusion terms. The first and second derivates of $C$, with respect to $x$, at time level, $n$, can be discretized as
+For simplicity, we consider the one-dimensional (1D) version of the advection-diffusion equation,
+\begin{align}
+	\frac{\partial C}{\partial t} = 
+	- u(x) \frac{\partial C}{\partial x} 
+	+ \frac{1}{\text{Pe}} \frac{\partial^2 C}{\partial x^2}.
+	\label{eq_space_C}
+\end{align}
+To measure the strength of DFT method, we assume to have a periodic boundary condition. In the one-dimensional domain $x \in (-L_x/2, L_x/2]$, with period $L$, we discretize the domain with $N$ points. The step-size, then, $\Delta x$ is$ \Delta x = L_x/N$.
+%-
+\subsubsection{Finite differences}
+To obtain second order convergence in space with finite differences, we apply  central differences for both the advection and diffusion terms. The first and second derivates of $C$, with respect to $x$, at time level, $n$, can be discretized as \cite{olver_introduction_2014}
 \begin{align}
 	\frac{\partial C}{\partial x}  \approx
 	 \frac{C_{j+1}^{n} - C_{ j-1}^{n}}{2 \Delta x}
@@ -737,15 +750,59 @@ and
 	 \label{eq_c2_fd}
 \end{align}
 respectively. 
-Then equation we have
+Then equation (\ref{eq_space_C}) becomes
 \begin{align}
 	 C_{j}^n
 	=  -u(x) C_1^{FD} + \frac{1}{\text{Pe}} C_2^{FD}.
 \end{align}
+%-----DFT-------------------------------------------
+\subsubsection{Discrete Fourier transform (DFT)}
+The discretized version of the Fourier transform using the concept of Riemann sums in a bounded domain, instead of infinite space. 
+We denote each point in the domain as $x_j$, where $j = 0,1,2, \cdots, N-1$. 
 \par
-One may concern about the stability of the central difference scheme for advection term. However, the oscillation due to the failure of stability condition occurs when we have zero diffusion or sufficiently large Peclet number to be like zero diffusion. As we mentioned, we consider two different sources of diffusion: 1) salinity and 2) heat in temperature $25  ^{\circ}$C.
+We define the one dimensional DFT of a function $f$ in this domain \cite{trefethen_spectral_2000} as 
+\begin{equation}
+\hat{f}_k = \Delta x \sum_{j =0}^{N-1}f(x_j) e^{-i k x_j}.
+\label{eq_dft}
+\end{equation}
+We consider the length of the Fourier domain as $N = L_x /\Delta x$ and take $k \in (-L/2 \Delta x, \  L/2 \Delta x]$. Then, the corresponding inverse DFT is
+\begin{equation}
+f_j = \frac{L}{2\pi} \sum_{k = -N/2}^{N/2-1} \hat{f}_k e^{i k x_j}.
+\label{eq_inv_dft}
+\end{equation}
+Note that $f_0 = f_N$ due to periodicity. 
+To solve the advection-diffusion equation using the DFT, we need to know how to differentiate a function in the Fourier space. 
+%For our problem, we specifically want to obtain derivatives of a function using this Fourier space. In other words, we compute the derivatives of $\hat{f}_k$ first in the Fourier space and bring it back to physical space using inverse transform. 
+It is straightforward to obtain the $m^{\text{th}}$ derivatives with respect to $x_j$: 
+\begin{equation}
+\frac{\text{d}^m f_j}{\text{d}x^m} = \frac{L}{2\pi}  \sum_{k = -N/2}^{N/2-1} (ik)^m  \ \hat{f}_k e^{ikx_j}.
+\label{eq_dft_diff}
+\end{equation}
+We use MATLAB built-in tools \verb+fft+ and \verb+ifft+ to compute the DFT and inverse DFT conveniently.
+The output of \verb+fft+ of $f(x_j)$ is $\hat{f}_k$. Once we have values in Fourier space, $\hat{f}_k$, we simply multiply by $ik$ or $-k^2$ to obtain $\hat{f}'_k$ or $\hat{f}''_k$, respectively. 
+\par
+One advantage of the DFT can be seen by letting $N$ with the power of a small prime number, typically 2. This allows the floating point operations to become $\mathcal{O}(N \log N)$ instead of $\mathcal{O}(N^2)$. Additionally, if the solution is $m$ differentiable, the convergence rate for a spectral method is the rate $\mathcal{O}(N^{-m})$. 
+\subsubsection{Comparison between two spatial methods}
+Ideally, an infinite domain would allow the velocity to vanish at the boundaries. 
+However, this is not possible to implement numerically. Thus, our goal is to have boundaries that resemble an infinite domain. The most common options are periodic and Neumann boundary conditions. Although we may not have perfectly periodic or no flux functions, we want the boundary conditions to not affect the solutions or increase errors. 
+Thus, we compare the finite differences and the discrete Fourier transform methods to determine the one best handles the jump at the boundaries. We investigate the error versus computing time by fixing a jump size with various resolutions. We ran the code for $t = 10 \pi$ in the 1D domain $[0, 2\pi].$ In Figure \ref{fig_precision}, each start point represents the error obtained with the largest $\Delta x \approx 0.1$. Note that the finest solution with $\Delta x \approx 0.003$ is used as the reference solution and we take differences between the finest one and other $\Delta x$ solutions.  
+\par
+At a glance, the error decreases and computing time increases with higher resolutions, as we expected. In particular, the left panel of Figure \ref{fig_precision} shows a smaller error due to the jump size that is about $\mathcal{O}(10^{-4})$.
+We note the computing time differences between the two methods. We can see this clearly in the right panel of Figure \ref{fig_precision}. To get a certain error size, for instance, $\mathcal{O}(10^{-5})$, the finite differences scheme requires less time than the DFT method. The gap between the two methods becomes larger as we compute the solution with finer resolution.  
+The reason we got this result is that the MATLAB built-in functions, \verb+fft+, and \verb+ifft+, spend more time than building the sparse matrix for the finite differences to compute derivatives. It shows that the finite differences are more efficient for our situation. As we mentioned in the previous section 8.2.3, the Neumann boundary condition is also an option for us if it describes a more realistic simulation. 
+The finite differences method allows us to have this choice in further research. 
+Thus, we have decided to use the finite differences scheme for spatial discretization of the advection-diffusion equation.
+\begin{figure}[ht]
+	\begin{center}
+		\epsfig{figure=figures/fig_fix_jump_error.pdf,scale=0.23}
+	\end{center}
+	\caption{Error and computing time with jump size (left) $\mathcal{O}(10^{-4})$ and (right) $\mathcal{O}(10^{-3})$ with various resolutions ($\Delta x \approx [0.1, 0.05, 0.025, 0.01, 0.006])$}
+	\label{fig_precision}
+\end{figure}
+% Test problem description
+% We test the two methods with a Gaussian function as the initial concentration and an advection velocity. Details are given in the next two sections. 
 
-This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
+% This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
 %===SECTION 1.2=========================================
 \subsection{Frame of reference}
 $\ \ \ \ \ $ 
@@ -812,8 +869,8 @@ The main reason we wanted to try the explicit method is to reduce computing time
 We present the snapshots of simulations using the discontinuous and continuous initial concentration in Figure \ref{fig_ic4_trap_snap} and \ref{fig_icG_trap_snap}, respectively. It is a three-dimensional simulation, however, for clear visualization, we slice the domain at $x= -0.8$ which is the middle of $x-$axis.
 % We can observe more clearly the aggregate shape in Figure \ref{fig_ic4_trap_snap} due to the discontinuity of the initial concentration.
 On the other hand, we see smoother concentration around the aggregate in Figure \ref{fig_icG_trap_snap}. Note that we are using a moving frame of reference such that the surrounding fluid is flowing upward to represent the settling aggregate motion. Assuming $C$ is the concentration of CO$_2$, we can interpret this simulation as dissolving the CO$_2$ gas from the aggregate to the fluid column. 
-%r
 After time $t \approx 30$ in Figure \ref{fig_icG_trap_snap}, we can see lower concentration is going outside of our numerical domain.  
+{\color{red} RESULTS FIGURES SHOULD BE REPLACED WITH THE ONE USING RK2 METHOD.}
  \begin{figure}[h]
  \begin{center}
 	\includegraphics[scale=0.7]{./figures/fig_ic4_Trap_snap135}
@@ -843,4 +900,14 @@ The results seems to be consistent with our expectation that the mass is conserv
  \caption{(Left) Variation of total concentration in fluid domain in time. (Right) Error between the total concentration at each time and initial sum of concentration.}
  \label{fig_sumC}
  \end{figure}
-
+ \section{Future work}
+ There are several topics we can study further with the homogeneous ambient fluid case. We may continue analyzing the preliminary results for the dissolved CO$_2$ model we presented in section XX. In addition, it is important to perform a convergence study of the numerical methods before we move on to applications. We should then determine the proper domain size, resolution, and time step for the simulations needed.
+ \par
+ As an application of the dissolved CO$_2$ simulation, we consider the remineralization of marine aggregates. In particular, We can apply a method of remineralization and model dissolved CO$_2$ of marine aggregates in order to study the carbon flux profile in a homogeneous fluid.
+ In a recent article, Omand {\it{et al}} \cite{omand_sinking_2020} proposed a derivation of the sinking particle flux model with a sphere.
+ %{FB}
+ Several aspects of this derivation can be improved with a model such as ours and we can provide justifications for features that were assumed or roughly estimated.
+  With our randomly shaped aggregate model, we expect to present more accurate dynamics. 
+%   This analysis can be done with the code we have written. 
+%    I will participate in this study for providing the code and producing figures. The work will be done mainly by my advisors, Blanchette and Khatri.
+ %
