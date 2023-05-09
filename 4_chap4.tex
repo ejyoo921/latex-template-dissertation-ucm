@@ -1,4 +1,6 @@
-Any intro for this section - 
+\par
+With a constitutive rheology code, we can capture such complex continuum hydrodynamics. We thus consider both shear stress rate and the pressure onto the materials of interest as the sources of the yield stress. 
+We use AMReX framework, developed at LBNL, NREL, and ANL, to solve flow motion. We implement the granular material viscosity computation in \verb+incflo+, which is an Adaptive Mesh Refinement (AMReX)-based code for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
 \par
 {\color{red} This following goes to the future work.}
 We propose to extend this work by incorporating elastic effects through the implementation of elastoviscoplastic (EVP) models in this numerical framework. The robustness of the numerical implementation will be extensively tested in various flow scenarios (such as Poiseuille and Couette flows) for a range Weissenberg and Bingham numbers.  Another potential avenue for development will involve implementing immersed boundary methods (IBM) to model a suspension of solid particles in such complex fluids, which is an important application area that has received significant research interest lately. 

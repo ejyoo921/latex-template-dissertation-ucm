@@ -1,32 +1,23 @@
-Previously, we studied the settling aggregate in homogeneous ambient fluid. We could neglect the inertia by setting zero Reynolds number. So, we used Stokes approximation, 
-{\color{blue} just point the previous equation numbers}
-\begin{align}
-	\nabla \cdot \vec{u} (\vec{y}) = 0 
-	%  \label{eq_conti2}
-	\\
-	\mu \nabla^2 \vec{u} (\vec{y})   - \nabla P(\vec{y}) \ + \rho  \vec{g} = 0
-	% \label{eq_stokes2}
-\end{align}
-where $\vec{u}, \ \mu, \ P, \ \rho$ are fluid velocity, viscosity, pressure, and constant density, respectively.
-%  and $|\vec{g}| \approx 9$m/$s^2$ is gravity. 
-Note that $\vec{g} = - g\hat{k} \approx (0,0,-9.8$m/$s^2)$ and $\vec{y} = (x,y,z)$ represents the fluid domain. {\color{blue} ADD figure for the orientation.} 
-% Equation (\ref{eq_conti2}) represents the conservation of mass and (\ref{eq_stokes2}) shows the momentum of fluid.
-%-------------------------------------------------------------
+%some-literature review
+
+
+In the last few decades, several scientists have modeled the dynamics and ecological impact of  marine aggregates \cite{jackson_aggregation_1998, kiorboe_mechanisms_2002}. 
+Their effects on bacterial transport \cite{jackson_simulation_1989} and algal bloom \cite{jackson_model_1990} have been described in models that use simplified descriptions of the aggregates' settling speeds. Moreover, accumulation of aggregates in thin layers where the ambient fluid is stratified have been reported \cite{macintyre_accumulation_1995, alldredge_occurrence_2002} and more recently modeled experimentally \cite{prairie_delayed_2013}, analytically \cite{camassa_retention_2013}, and computationally \cite{panah_simulations_2017}. Understanding the formation and persistence of these thin layers is ecologically important. 
+Therefore, in this chapter, we discuss the dynamics of settling marine aggregates in a density stratified fluid. 
+%---------------------------------------------------------
 \par
-At rest, instead of constant fluid density $\rho$, we suppose that the density varies linearly in the vertical direction,
+Instead of constant density $\rho$, we suppose the background fluid density varies linearly in the vertical direction,
 \begin{equation}
 \rho_{bg}(z) =  \rho_0 \left(1 + \gamma z \right),
 \label{eq_rho_bg}
 \end{equation}
 where $\rho_0$ is the minimum fluid density at rest, which is located at the top of the domain, and $\gamma$ is constant.
-As the aggregate settles over the time $t$, some perturbations, $C(\vec{y},t)$, occur due to the concentration, $\tilde{S}(\vec{y},t)$, difference between the fluid and aggregate. 
-% By letting the concentration  and perturbation $C(\vec{y},t)$,
-The relationship between $C(\vec{y},t)$ and $\tilde{S}(\vec{y},t)$ then can be expressed as
+Over the time $t$, some perturbations, $C(\vec{y},t)$, occur due to the concentration, $\tilde{S}(\vec{y},t)$, difference between the background fluid and settling aggregate,
 \begin{equation}
-C(\vec{y}, t) =  \tilde{S}(\vec{y},t) - \tilde{S}(\vec{y},0).
+C(\vec{y}, t) =  \tilde{S}(\vec{y},t) - \rho_{bg}(z).
 \label{eq_perturb_C}
 \end{equation}
-From equations (\ref{eq_rho_bg}) and (\ref{eq_perturb_C}),we thus obtain the density variation over the time $t$,
+From equations (\ref{eq_rho_bg}) and (\ref{eq_perturb_C}), we can establish the fluid density variation over the time,
 \begin{equation}
 	\rho(\vec{y},t ) 
 	= \rho_{bg}(z) +  \alpha \rho_0 C(\vec{y},t) 
@@ -34,19 +25,20 @@ From equations (\ref{eq_rho_bg}) and (\ref{eq_perturb_C}),we thus obtain the den
 \label{eq_density}
 \end{equation}
 where the non-zero constant $\alpha $ describes type of solute. Knowing that the concentration is the amount of mole per volume, the density of the fluid would differ by the type of solute or chemicals with the same amount of molecules.
-\par
-The non-constant density $\rho(\vec{y},t)$ plays a role as an external source of the fluid. This changes the momentum equation and the velocity field. To track the perturbation $C(\vec{y},t)$, we couple the advection-diffusion equation with the Stokes system. 
+\begin{figure}[ht]
+	\begin{center}
+	\includegraphics[scale=0.4]{./figures/fig_stratification_schematics}
+	\caption{Description of fluid density stratification.}
+	\label{fig_stratification_schematics}
+	\end{center}
+\end{figure}
+To track the perturbation $C(\vec{y},t)$, we couple the advection-diffusion equation with the modified Stokes equations that we will describe in the next section. 
 %------------------------------------------------------------------------------
 \section{Governing Equations}
+The non-constant density $\rho(\vec{y},t)$ plays a role as an external source of the fluid. This changes the momentum equation,
 	Due to varying density, $\rho(\vec{y}, t)$, 
-	%  the force density in Stokes equations becomes
-	% \begin{equation}
-	% 	\rho(\vec{y}, t)   \vec{g}= 
-	% 	 \rho_0 \biggl( 1 + \gamma z  + \alpha  C(\vec{y},t) \biggr)  \vec{g}.
-	% \end{equation}
-the momentum equation of the Stokes flow becomes
 		 \begin{equation}
-		\ \mu \nabla^2 \vec{u}(\vec{y})
+		\ \tilde{\mu}\nabla^2 \vec{u}(\vec{y})
 		- \nabla P_d (\vec{y}) \ + \  
 		 \rho_0 \alpha C(\vec{y},t) \vec{g} =0 , 
 	\label{eq_extra_C}
@@ -54,42 +46,17 @@ the momentum equation of the Stokes flow becomes
 	where $P_d$ is dynamic pressure, defined as
 \begin{equation}
 	P_d (\vec{y})
-	 = P (\vec{y}) \ {\color{red}-} \int \rho_{bg}(z) g  \ \textrm{d}z.
+	 = P (\vec{y}) \ - \int \rho_{bg}(z) g   \textrm{d}z.
 	\label{eq_Pd}
 \end{equation}
-	When $C(\vec{y}, t)= \gamma = 0$, we return the homogeneous model with $\rho_0 = \rho$. 
-	% we used the single-layer potential formula to get velocity field.
-	 In order to take the perturbation effect into account, we need to find the particular solution to the momentum equation (\ref{eq_extra_C}). Once we have one, simple addition to the homogenous solution would give us the entire solution due to the linearity of the system. 
+
+In order to take the perturbation effect into account, we find the particular solution to the momentum equation (\ref{eq_extra_C}). Once we have one, simple addition to the homogenous solution would give us the entire solution due to the linearity of the system. 
 \par
-We also want to point out that we can no longer impose the velocity of the aggregate since it is not physically valid.
-This implies that the velocity of the aggregate, $\vec{u}(\vec{x}_s, t)$, that is
-\begin{equation}
-	\vec{u} (\vec{x}_s, t)  = \vec{U}_a + \vec{\Omega} \times (\vec{x}_s - \vec{x}_{cm}),
-\end{equation}
-becomes unknown value, where $\vec{x}_s$ is a point on the aggregate. To be specific, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, on the aggregate by prescribing the drag force and total torque. We discuss the details of force balance in section (something).
-% where $\vec{x}_{cm}$ is the center of mass of an aggregate. 
-We then have three unknowns for each face of the aggregate, $\vec{U}_a, \ \vec{\Omega}, $ and $\vec{f}$.
-This should close the system since we have three vector equations to solve for all unknowns. 
-%------------------------------------------------------------------
-
-
-%------------------------------------------------------------------
-\subsection{Particular solution to Stokes equations with the stratification}
-We first recall the homogeneous solution to the Stokes equations. We consider the integral equation for the velocity field,
-\begin{equation}
-	\vec{u}_H \left(\vec{y} \right) 
-		  = - \frac{1}{8 \pi \mu} \int_{S}  
-		 \vec{f}(\vec{x}) 
-		 \cdot \left( 
-	\frac{\bar{\bar{I \ }}}{||\vec{x}-\vec{y}||} + \frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y})^T}{||\vec{x}-\vec{y}||^3}
-		 \right)
-		 \ \textrm{d}S(\vec{x}).
-\label{eq_slp_homogeneous}
-\end{equation} 
+% \subsection{Particular solution to Stokes equations with the stratification}
 %----------------------------------------------------------------------
-To derive the particular solution of modified Stokes equations, including the continuity equation and (\ref{eq_extra_C}), we consider the singularly forced Stokes problem \cite{pozrikidis_boundary_1992},
+To derive the particular solution, we consider the singularly forced Stokes problem \cite{pozrikidis_boundary_1992},
 \begin{equation}
-	\ \mu \nabla^2 \vec{u}(\vec{y})
+	\ \tilde{\mu} \nabla^2 \vec{u}(\vec{y})
 	- \nabla P (\vec{y})
 	+\vec{q} \ \delta \left(\vec{x} - \vec{y} \right) =0,
 \label{eq_single_stokes}
@@ -99,7 +66,7 @@ The problem (\ref{eq_single_stokes})
 describes the effect coming from a single force applied at $\vec{x} = \vec{y}.$
 The fundamental solutions to equation (\ref{eq_single_stokes}) with the continuity equation are
 \begin{equation}
-	\vec{u} (\vec{y}) = \ \frac{1}{8\pi \mu}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
+	\vec{u} (\vec{y}) = \ \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q}.
 \label{eq_fund_u}
 \end{equation}
@@ -117,8 +84,8 @@ where the kernel $\bar{\bar{G \ }}$ is called \textit{Stokeslet}, defined as
 \end{equation} 
 This implies that the solutions (\ref{eq_fund_u}) and (\ref{eq_fund_p}) satisfy equation (\ref{eq_single_stokes}) as
 \begin{equation}
-	\ \mu \nabla^2 
-	\biggl( \frac{1}{8\pi \mu}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
+	\ \tilde{\mu} \nabla^2 
+	\biggl( \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q} \biggr)
 	- \nabla \biggl(\ \frac{1}{4\pi }  
 	\frac{\vec{x} - \vec{y}}{\| \vec{x} - \vec{y}\|^3}
@@ -131,8 +98,8 @@ As we multiply by $\left( C(\vec{x}, t) \right)$ on both sides and integrate the
 \begin{equation}
 	\int_{V}
 	\biggl[
-	\ \mu \nabla^2 
-	\biggl( \frac{1}{8\pi \mu}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
+	\ \tilde{\mu} \nabla^2 
+	\biggl( \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q} \biggr)
 	C(\vec{x}, t)
 	-
@@ -149,9 +116,9 @@ As we multiply by $\left( C(\vec{x}, t) \right)$ on both sides and integrate the
 % Note that the right-hand side of equation (\ref{eq_single_stokes_sub2}) becomes $\vec{q} C(\vec{x},t)$ due to the integral of delta function.
 Note that the operator $\nabla$ is linear and used with respect to $\vec{x}$, we are able to switch the order with the integral operator as following,
 \begin{equation}
-	\mu \ \nabla^2 
+	\tilde{\mu} \ \nabla^2 
 	\int_{V}
-	\biggl( \frac{1}{8\pi \mu}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
+	\biggl( \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q} \biggr)
 	C(\vec{x}, t)
 	\ \textrm{d}V(\vec{x})
@@ -170,7 +137,7 @@ By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find
 tha the particular solutions to our modified Stokes equations, (\ref{eq_extra_C}), as
 \begin{equation}
 	\vec{u} (\vec{y}) =
-	 \frac{\rho_0 \alpha }{8\pi \mu}
+	 \frac{\rho_0 \alpha }{8\pi \tilde{\mu}}
 	\int_{V}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  C(\vec{x}, t) \vec{g} 
 	\ \textrm{d}V(\vec{x}).
@@ -189,11 +156,11 @@ tha the particular solutions to our modified Stokes equations, (\ref{eq_extra_C}
 The entire velocity solution, thus, becomes
 \begin{equation}
 	 \vec{u} \left(\vec{y}, t \right) =
-	 - \frac{1}{8 \pi \mu} \int_{S}  
+	 - \frac{1}{8 \pi \tilde{\mu}} \int_{S}  
 		 \vec{f}(\vec{x}) 
 		 \cdot \bar{\bar{G \ }} (\vec{x},\vec{y}) 
 		 \ \textrm{d}S(\vec{x})
-	+ \frac{ \rho_0 \alpha  }{8\pi \mu} \int_V  C \left(\vec{x},  t \right) \vec{g} \cdot 
+	+ \frac{ \rho_0 \alpha  }{8\pi \tilde{\mu}} \int_V  C \left(\vec{x},  t \right) \vec{g} \cdot 
 	\bar{\bar{G \ }}(\vec{x}, \vec{y} ) 
 	\ \text{d}V(\vec{x}).
 \label{eq_vel_HP}
@@ -202,6 +169,19 @@ As we see, the velocity at a point $\vec{u}$ is now depending on space and time.
 
 %------------------------------------------------------------------
 \subsection{Force balance}
+\label{sec:force_balance}
+\par
+We also want to point out that we can no longer impose the velocity of the aggregate since it is not physically valid.
+This implies that the velocity on the aggregate, equation (\ref{eq_solidbody}), that is
+\begin{equation}
+	\vec{u}_s (\vec{x}, t)  = \vec{U}_a + \vec{\Omega} \times (\vec{x}- \vec{x}_{cm}),
+	\nonumber
+\end{equation}
+becomes unknown value. To be specific, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, by prescribing the total body force and total torque. 
+% We discuss the details of force balance in section \ref{sec:force_balance}.
+% where $\vec{x}_{cm}$ is the center of mass of an aggregate. 
+% We then have three unknowns for each face of the aggregate, $\vec{U}_a, \ \vec{\Omega}, $ and $\vec{f}$.
+This should close the system since we have three vector equations to solve for all unknowns. 
 As we mentioned, to close the system of equations, we prescribe the following total force, $\vec{F}_o$, and torque, $\vec{Q}_o $,
 \begin{equation}
 	\int_S \vec{f} (\vec{x}) \ \textrm{d}S = \vec{F}_o
@@ -209,15 +189,15 @@ As we mentioned, to close the system of equations, we prescribe the following to
 \end{equation}
 and
 \begin{equation}
-	\int_S \vec{f}\times (\vec{x} - \vec{x}_{cm}) \ \textrm{d}S = \vec{Q}_o.
+	\int_S \vec{f}\times (\vec{x} - \vec{x}_{cm}) \ \textrm{d}S = \vec{Q}_o = \vec{0}.
 \label{eq_Qo}
 \end{equation}
  Note that the drag force is induced by the dynamic pressure $P_d$ defined in equation (\ref{eq_Pd}). This implies that 
 \begin{equation}
 	\vec{F}_o 
-	 = {\color{red} - } \int_S \left[ 
+	 = - \int_S \left[ 
 	 - \left( P -  \int \rho_{bg}(z) g \ \textrm{d}z \right) \bar{\bar{I \ }} 
-	 + \mu \left( \nabla \vec{u} + (\nabla \vec{u})^{T} \right)
+	 + \tilde{\mu} \left( \nabla \vec{u} + (\nabla \vec{u})^{T} \right)
 	 \right] \cdot \hat{n} \ \textrm{d}S (\vec{y}).
 \label{eq_Fo_Pd}
 \end{equation}
@@ -225,13 +205,13 @@ As we observe the stress tensor inside of equation (\ref{eq_Fo_Pd}),
 \begin{equation}
 	\bar{\bar{\sigma \ }} = 
  -  P  \bar{\bar{I \ }} 
- + \mu \left( \nabla \vec{u} + (\nabla \vec{u})^{T} \right).
+ + \tilde{\mu} \left( \nabla \vec{u} + (\nabla \vec{u})^{T} \right).
 \end{equation}
 Thus, the full body force, $\vec{F}$, can be found in the following net force balance equation at equilibrium,
 \begin{equation}
 	\vec{F}_o (t)
-	  = {\color{red} - } \vec{F}(t)
-	  {\color{red} - }  \int_S \left( 
+	  = - \vec{F}(t)
+	  -  \int_S \left( 
 	   \int \rho_{bg}(z) g \ \textrm{d}z 
 	 \right) \bar{\bar{I \ }}  \cdot
 	\hat{n} \ \textrm{d}S (\vec{y}).
@@ -270,7 +250,20 @@ Since the perturbation $C(\vec{x}, t)$ is time dependent, we couple the Stokes e
 	 = D \nabla^2 \rho(\vec{y},t),
 \label{eq_AD_rho}
 \end{equation}
-where $D$ is diffusion coefficient. 
+where $D$ is diffusion coefficient.
+For salinity of seawater, we find the diffusion coefficient, $D_{salt} = 2 \times 10^{-9}  (\text{m}^2\text{/s})$ from \text{\it Wollast and Garrels (1971)} \cite{wollast_diffusion_1971}. In addition, we recall the aggregate's settling speed ($U_s$), its maximum radius ($R_a$),
+\begin{align}
+	\text{Pe} 
+	= \frac{U_s R_a }{D_{salt}} 
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{2 \times 10^{-9} (\text{m}^2\text{/s})} = 9.5
+\end{align}
+\par 
+For the thermal diffusivity, $D_{heat}$, we cosider the value referred by {\it Nayar et. al (2016)} \cite{nayar_thermophysical_2016} and {\it Sharqawy et. al (2010)} \cite{sharqawy_thermophysical_2010},
+\begin{align}
+	\text{Pe} 
+	= \frac{U_s R_a }{D_{heat}} 
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} \approx 10^{-2}.
+\end{align} 
 Since the fluid is density is evolving only in the gravitational direction, $z-$direction, we can simplify the re-write the equation (\ref{eq_AD_rho}) in terms of $C(z,t)$, 
 \begin{equation}
 	\frac{\partial C(z,t)}{\partial t}
@@ -282,29 +275,18 @@ Since the fluid is density is evolving only in the gravitational direction, $z-$
 We track the perturbation $C(z,t)$ for every time step by solving the equation (\ref{eq_AD_C}).
 %------------------------------------------------------------------
 \section{Non-dimensionalization}
-To facilitate further analysis, we non-dimensionalize our governing equations. We use the following dimensionless parameters:
+To facilitate further analysis, we non-dimensionalize our new equations. We mainly use the same parameters we introduced in section \ref{section3}, equations (\ref{eq_nonD}), in addition to the following dimensionless parameters:
+\begin{equation}
+	C= C_{max} C'
+\hspace{7mm}
+\rho = \frac{\tilde{\mu}  }{{U_s} R_a}  \rho', 
+\end{equation}
+In this chapter, the Stokes settling speed $U_s$, defined in equation (\ref{eq_U_s}), becomes
 \[
-\vec{x} = L \vec{x}',
-\hspace{7mm}
-\vec{u} =  U_s \vec{u}',
-\hspace{7mm}
-\vec{F} = \mu U_s L  \vec{F}',
-\hspace{7mm}
-\vec{\psi} = U_s \vec{\psi}'
-\hspace{7mm}
-C= C_{max} C'
-,
-\]
- where $L$ is the reference length scale, 500 $\mu$m or $5 \times 10^{-4}$m.
- % that is the maximum aggregate radius we consider.
- We also use the Stokes settling speed, $U_s = \frac{g (\rho_a - \rho_0) L^2}{\mu}$, where $g \approx 9.8$m$/$s$^2$ is the gravitational acceleration and $\mu = 1.2 \times 10^{-3}$ kg/ms.
-For $\rho_0$, that is the minimum fluid density at rest, we use typical seawater density, $\rho_0 \approx 1020$kg$/$m$^3$.
-In the Stokes settling speed $U_s$, the liquid portion of the aggregate density is used as the same one as $\rho_0$, i.e., $\rho_a = \phi \rho_0 + (1-\phi) \rho_s $. Then the reference settling speed becomes 
-\[
-U_s = \frac{g  L^2}{\mu}(\rho_s - \rho_0)(1-\phi),
+U_s = \frac{g  L^2}{\tilde{\mu}}(\rho_s - \rho_0)(1-\phi),
 \] 
-where $\rho_s$ is the density of an aggregate's solid part. 
-Note that the Reynolds number is approximately 0.03.
+since we consider the porosity of an aggregate as (\ref{eq_rho_a}).
+% Note that the Reynolds number is approximately 0.03.
  % Here $\rho_a$ is the density of aggregate.
 For the scale of the perturbation, $C$, we introduce the maximum density difference of the background density profile in the fluid domain at initial time, i.e., 
 \[
@@ -315,72 +297,39 @@ C_{max} =
  % \left| \tilde{S}(z_\text{top}, \ 0 )
  % - \tilde{S} \left( z_\text{bottom}, \ 0 \right) \right|. 
 \] 
-Note that the density and time values can be non-dimensionalized by
-% \[
-% [\rho] = \frac{M}{V} =  \frac{[F]}{a L^3}=\frac{\mu U_s L^2}{{U_s}^2 L^3}
-% =\frac{\mu  }{{U_s} L} = gL(\rho_s - \rho_0)(1-\phi) = \frac{L^2 U^2}{L^2}(\rho_s - \rho_0)(1-\phi)
-% \]
-\[
-\rho = \frac{\mu  }{{U_s} L}  \rho', 
-\ \ \ \ \ 
-t = \frac{L}{U_s}t'.
-\]
-With above parameters, we find the dimensionless density as
+As we want to see the settling of an aggregate throughout the fluid having density gradient, we decided to have 1\% density difference between top and bottom layers of fluid domain.
+%  {\color{red}NEED NUMBER WITH UNIT AND A REFERENCE!}
+\par
+We first derived the dimensionless modified Stokes momentum equation,
 \begin{equation}
-	\rho' = \frac{U_s L }{\mu}\rho_0 \left( 1 + \gamma z  + \alpha C_{max} C'(\vec{x},t) \right).
-\end{equation}
-We next non-dimensionalize the Stokes equations,
-%  we first non-dinmensionalize fluid density $\rho$,
-% \begin{equation}
-% 	 \rho' (\vec{x})= \rho_0 \left( 1 + \gamma z  + \alpha  C(\vec{x},t) \right).
-% 	 \label{eq_rho_nonD}
-% \end{equation}
-% We then have
-\begin{equation}
-	\nabla' \cdot \vec{u}'(\vec{x}) =0
-	\label{eq_continuity_nonD}
-\end{equation}
-\begin{equation}
-	{\nabla'}^2  \vec{u}'(\vec{x})
-	= \nabla {P_d}' (\vec{x}) \ - \  
-	\frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} \alpha C_{max} C'(\vec{x},t)  \hat{k}.
+	{\nabla'}^2  \vec{u}'(\vec{y})
+	= \nabla {P_d}'(\vec{y}) \ - \  
+	\frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} \alpha C_{max} C'\left(\vec{y},t \right)   \hat{k},
 \label{eq_extra_C_nonD}
 \end{equation}
-We thus find dimensionless velocity field at any point, $\vec{y}$,
+along with the velocity field
 %  on the aggregate boundary surface $\vec{y}' = \vec{x}'_s$, using 
  \begin{align}
-		\vec{u'}\left(\vec{y} \right) 
-			  =- \frac{1}{8 \pi} \int_{S'}  
+		\vec{u}'(\vec{y})
+			  & =- \frac{1}{8 \pi} \int_{S'}  
 			 \vec{f'}(\vec{x}) 
 			 \cdot \bar{\bar{G' \ }} (\vec{x},\vec{y}) 
 			 \ \textrm{d}S'(\vec{x})
--\frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} 
+			 \nonumber \\
+& -\frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} 
 \int_{V'} C' \left(\vec{x},  t \right) \hat{k} \cdot 
 \bar{\bar{G'  }}(\vec{x}, \vec{y} ) 
 \ \text{d}V'(\vec{x})
   \label{eq_vel_all_onS_nonD}
  \end{align}
 where $S$ is the aggregate surface. 
-In addition, the non-dimensional forms for the drag force and total torque are 
-\begin{equation}
- \vec{F'}_o
-  = \int_{S'} \vec{f}'(\vec{x}) \  \text{d}S'(\vec{x})
- % = \frac{\mu}{L} \int_S  \vec{\psi}( \vec{x}) \ \text{d}S(\vec{x}),
- \label{eq_total_Force_dlp_nonD}
- \end{equation} 
- and
- \begin{equation}
- \vec{Q'}_o 
- = \int_{S'} \vec{f}'(\vec{x}) \times  (\vec{x'} - \vec{x}_{cm})  \ \text{d}S'(\vec{x}).
- \label{eq_total_Torque_dlp_nonD}
- \end{equation}
- We also can write the force balance equation in dimensionless form as 
+Moreoever, the force balance equation (\ref{eq_Full_Force}) becomes
 \begin{align*}
 	 \vec{F'}_o(t)
 	 & =
 	   %\text{[Body force] + [Buoyancy force]}
 	  %= 
-	  \frac{1}{\mu U_s L} 
+	  \frac{1}{\tilde{\mu} U_s L} 
 	  \left(
 	-   \rho_a V_a g \hat{k}
 	  +
@@ -390,7 +339,7 @@ In addition, the non-dimensional forms for the drag force and total torque are
 	  \hat{n} \ \textrm{d}S (\vec{x})
 	\right).
 	% \\
-	% &=  \frac{g}{\mu U_s L}\frac{\mu  L^3 }{U_s L}
+	% &=  \frac{g}{\tilde{\mu} U_s L}\frac{\tilde{\mu}  L^3 }{U_s L}
 	% \left( 
 	% - \rho_a' V_a' \hat{k}
 	% + \int_{S'} \left( 
@@ -409,7 +358,6 @@ In addition, the non-dimensional forms for the drag force and total torque are
 	% \right).
 \label{eq_Full_Force_nonD}
 \end{align*}
-
 % Note that the volume of aggregate $V_a$ is $8$NC  in our numerics, where NC is the number of cubes to form an aggregate. The factor 8 comes from the side length of each cube that is 2. By letting the characteristic length scale that is the maximum radius, in numerics denoted by $R_m$, we find dimensionless tull body force $\vec{F}'$ as
 % \begin{equation}
 % 	\vec{F'}
@@ -424,12 +372,12 @@ Lastly, the advection-diffusion equation becomes,
 	\frac{\partial C'(\vec{x},t)}{\partial t'}
 	+ \vec{u}'(\vec{x}) \cdot \nabla' C'(\vec{x},t)
 	 = \frac{1}{\textrm{Pe}} {\nabla'}^2 C'(\vec{x},t)
-	 -\frac{\gamma L}{ \alpha C_{max}} \vec{u}' \cdot \hat{k},
+	 -\frac{\gamma R_a}{ \alpha C_{max}} \vec{u}' \cdot \hat{k},
 	\label{eq_AD_nonD}
 	\end{equation}
 using the velocity field, equation (\ref{eq_vel_all_onS_nonD}), for the advection term.
-	Note that the constant $\gamma L$ needs to be decided, by considering $L$ is the characteristic length that represents size of aggregate (radius). The Peclet number describes the ratio between advection velocity and diffusion effect, defined as Pe $= L U_s/D$. For the rest of this paper, we drop the prime for simplicity and use only dimensionless forms. 
-	\par
+For the rest of this chapter, we drop the prime for simplicity and use only dimensionless forms. 
+\begin{comment}
 For more efficient numerical simulation, we use moving frame of reference to solve the advection-diffusion equation, by letting the velocity in the moving frame, $\vec{u}_m $, as
 \[
 \vec{u}_m = \vec{u} - \vec{U}_a,
@@ -460,26 +408,22 @@ Since $\partial x_m / \partial t_m = -\vec{U}_a$, we can simplify few terms. Aft
 		\label{eq_AD_nonD_moving}
 	\end{equation}
 %
+\end{comment}
 %Rotation==============================================
 \section{Rotation}
-In this section, we explain the rotation of the aggregate. 
-We first suppose that we already know the rotation matrix to conver the coordinates. In the following subsection, we explain the mechanism to obtain the velocity field in one time step.
-\\
-% \subsection{Big picture}
-We obtain the velocity using the single-layer potential, at (fixed) time $t$,
-\begin{equation}
-	\vec{u} \left(\vec{y},t\right) 
-		  =- \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\vec{x}_s) 
-		 \cdot \bar{\bar{G \ }} (\vec{x}_s,\vec{y}) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \vec{y} )
-		 \ \text{d}V(\vec{x}).
-	\label{eq_slp_nonD}
-\end{equation}
-There are three different types of points in equation (\ref{eq_slp_nonD}): $\vec{x}, \vec{y}, $ and $\vec{x}_s$. 
+{\color{blue}QUESTION: MAYBE I SHOULD MOVE THIS SECTION TO NUMERICAL METHODS?}
+\begin{comment}
+The big picture of applying rotation to our simulation is the following:
+\begin{itemize}
+	\item With the obtained angular velocity, $\Omega$, from the previous time step
+	\item Compute the rotation matrix, $\mathcal{R}$ 
+	\item Rotate the aggregate position using updated $\mathcal{Q}$
+	\item Solve for stress, $\vec{f}$
+	\item Evalutate the velocity field 
+	\item Update the perturbation
+\end{itemize}
+
+To explain this mechanism, we need to be careful about the three different types of points in the entire system: $\vec{x}, \vec{y}, $ and $\vec{x}_s$. 
 First, $\vec{x}$ is the points of the entire fluid domain  $V$, i.e., $\vec{x} \in V$. This may different from the points that we want to obtain the velocity, in which we denote as $\vec{y}$. For our full simulation, we most likely have $\vec{x} = \vec{y}$.
 % although this does not have to be necessary.
 In addition, $\vec{x}_s$ is the point on the surface of the aggregate, i.e., $S$ is the aggregate boundary. 
@@ -487,7 +431,7 @@ In addition, $\vec{x}_s$ is the point on the surface of the aggregate, i.e., $S$
 In this rotation section, we assume $\vec{x}=\vec{y}$ since we would like to obtain the velocity field everywhere in the fluid domain. We need to distinguish $\vec{x}$ and $\vec{x}_s$ carefully. 
 Note that for both grid systems, the center of the domain is fixed as the center of mass of the aggregates, $\vec{x}_{cm}.$
 See Figure \ref{fig_schematics} to understand the notations. For simplicity, we draw the schematics in two-dimensional space.
-    \begin{figure}[h]
+    \begin{figure}[ht]
     	\begin{center}
     		\vspace{0.5cm}
     		\includegraphics[scale=0.25]{./figures/fig_schematics}
@@ -498,14 +442,29 @@ See Figure \ref{fig_schematics} to understand the notations. For simplicity, we 
     \end{figure}
 The points $\vec{y}$ are the blue grid in Figure \ref{fig_schematics} and the discretized version of $\vec{x}_s \in S$ are, in particular, the center of each square face. These are shown with red stars. We let the left-side plot in Figure \ref{fig_schematics} is the grid at time $t_n$ and the one after arrow shows the grid at time $t_n + \Delta t$.
 \par
-(Within a time step) When we solve for stress, $\vec{f}(\vec{x}_s)$, we also find aggregate's translational and angular velocities. For rotation, we focus on the angular velocity, $\vec{\Omega} \ \left(= \frac{\Delta \theta}{\Delta t}\right)$, which tells us how much the aggregate rotates. This information lives in $\mathcal{Q}(t)$, that is the orientation matrix, 
+(Within a time step) When we solve for stress, $\vec{f}(\vec{x}_s)$, we also find aggregate's translational and angular velocities. 
+\end{comment}
+\\
+In order to have more realistic simulations, we allow our aggregate model to rotate while they settle.
+We here focus on the angular velocity, $\vec{\Omega} = \Delta \theta / \Delta t$, which tells us how much the aggregate rotates ($\theta)$ in one time step, $\Delta t$. 
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.25]{./figures/fig_rotation_schematics.pdf}
+	\caption{Schematics of the rotation of an aggregatem. Blue grid is the fluid domain and green rectangle represents an aggregate. Red stars show points on the aggregate.}
+	\label{fig_rotation_schematics}
+\end{center}
+\end{figure}
+This information lives in the orientation matrix, $\mathcal{Q}(t)$. We can update our aggregate position from $\vec{x}$ to $\vec{x}_{\mathcal{R}}$ using
 \[
-{\color{blue}
-\vec{x}_s(t) = \mathcal{Q}(t) \vec{x}.
-}
+\vec{x}_{\mathcal{R}}(t) = \mathcal{Q}(t) \vec{x}.
 \]
-\subsection{Rotation matrix}
-To move on to the next time step ($+ \Delta t$), we update the grid points with the velocity of the aggregate. Note that $\vec{U}_a$ and $\vec{\Omega}$ are translational and angular velocity. We focus on the rotation in this section. With the angular velocity and the time step, we find $\Delta t \vec{\Omega} = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$, that is a three-dimensional change of angular position vector. 
+Note that $\mathcal{Q}(0) = \bar{\bar{I}}$ (identity matrix) at initial time. After we move forward one time step, we may update this orientation matrix as 
+\begin{equation}
+	\mathcal{Q}(t + \Delta t) = \mathcal{R} \mathcal{Q}(t),
+\end{equation} 
+where $\mathcal{R}$ is the rotation matrix. 
+\par
+Assume that we obtain the angular velocity, $\vec{\Omega}$ from a time step. (Initially, it is zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
 The matrix $\mathcal{A}$ is then defined as 
 \begin{equation}
 	\mathcal{A}
@@ -531,165 +490,77 @@ With this $\mathcal{R}$ and orientation matrix $\mathcal{Q}$, we are ready to up
 
 
 	
-\subsection{Solve for stress}
-We first solve for the stress on each square face of an aggregate, $\vec{y} = \vec{x}^*_s$, 
-using the same formula as equation (\ref{eq_slp_nonD}),
+\subsection{Linear system in a rotated coordinate}
+We first solve for the stress at the center of each square face of an aggregate, $\vec{y} = \vec{x}_i$, 
+using the same formula as equation (\ref{eq_vel_all_onS_nonD}),
 \begin{equation}
-	\vec{u} \left(\vec{x}^*_s ,t\right) 
+	\vec{u} \left(\vec{x}_i \right) 
 		  = -\int_{S}  
-		 \vec{f}(\vec{x}^*_s) 
-		 \cdot \bar{\bar{G \ }} (\vec{x}_s,\vec{x}^*_s) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 + \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
+		 \vec{f}(\vec{x}) 
+		 \cdot \bar{\bar{G \ }} (\vec{x}, \vec{x}_i) 
+		 \ \textrm{d}S 
+		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
 		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \vec{x}^*_s)
-		 \ \text{d}V(\vec{x}),
-	\label{eq_slp_On}
+		 \bar{\bar{G \ }}(\vec{x}, \vec{x}_i)
+		 \ \text{d}V,
+		 \nonumber
 \end{equation}
-where the {\it Stokeslet} $\bar{\bar{G \ }}$ is defined as
-\begin{equation}
-	\bar{\bar{G}}( \vec{x}_s, \vec{x}^*_s) = 
-	\frac{\bar{\bar{I \ }}}{||\vec{x}_s-\vec{x}^*_s ||} + \frac{(\vec{x}_s-\vec{x}^*_s)(\vec{x}_s-\vec{x}^*_s)^T}{||\vec{x}_s-\vec{x}^*_s ||^3}
-	.
-	\label{eq_stokeslet_star}
-\end{equation} 
-Note that $\vec{x}^*$ represents the center of a square face. 
-\par
-Equivalently, we can write equation (\ref{eq_slp_On}) as
-\begin{equation}
-	\vec{u} \left(\mathcal{Q} \vec{x}^* ,t\right) 
-		  =- \frac{1}{8 \pi} \int_{S}  
+As we allow rotation, we can express the above equation as
+\begin{align}
+	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
+		  = & - \frac{1}{8 \pi} \int_{S}  
 		 \vec{f}(\mathcal{Q} \vec{x}) 
-		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}^*) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
+		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+		 \ \textrm{d}S
+		 \nonumber \\
+		 & - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
 		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}^*)
-		 \ \text{d}V(\vec{x}).
+		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
+		 \ \text{d}V.
 	\label{eq_slp_On_rotate}
-\end{equation}
-One can see that it is valid to say
+\end{align}
+Since the rotation matrix $Q$ is constant and it is normalized, it is valid to say that
 \[
-	\bar{\bar{G}}( \vec{x}_s, \vec{x}_s^*)
-	= \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}^*) 
-	 = \bar{\bar{G}}( \vec{x}, \vec{x}^*)
+ \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+	 = \bar{\bar{G}}( \vec{x}, \vec{x}_i).
 \]
-since the rotation matrix $Q$ is constant and it is normalized. 
-Precisely, we use the following form in Matlab program:
-\begin{equation}
-	\vec{u} \left(\mathcal{Q} \vec{x}^*\right) 
-		  + \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\mathcal{Q} \vec{x}^*) 
-		 \cdot \bar{\bar{G \ }} (\vec{x},\vec{x}^*) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 =
-		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}^*)
-		 \ \text{d}V(\vec{x}).
-	\label{eq_slp_stress_aggR}
-\end{equation}
-
-We see that LHS has unknowns including the translational and angular velocities
-in $\vec{u}\left(\mathcal{Q} \vec{x}^* ,t\right)$.
+% Precisely, we use the following form in Matlab program:
+% \begin{equation}
+% 	\vec{u} \left(\mathcal{Q} \vec{x}_i\right) 
+% 		  + \frac{1}{8 \pi} \int_{S}  
+% 		 \vec{f}(\mathcal{Q} \vec{x}_i) 
+% 		 \cdot \bar{\bar{G \ }} (\vec{x},\vec{x}_i) 
+% 		 \ \textrm{d}S(\vec{x}_s) 
+% 		 =
+% 		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
+% 		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
+% 		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
+% 		 \ \text{d}V(\vec{x}).
+% 	\label{eq_slp_stress_aggR}
+% \end{equation}
+We now solve for has unknowns, including the translational and angular velocities,
+in a rotated coordinate system $\mathcal{Q} \vec{x}_i $.
 Note that the stress values we obtain here 
 are located in the same one as the rotated positions.  
-We also want to point out that the target points in the volume integral
-are the center of square faces after rotation, $\mathcal{Q}\vec{x}^*$.
-\par
-In order to build the linear system with the boundary integral computed in the
- fixed grid, we should map the value of the volume integral and drag $\vec{F}_o$ into 
- the same coordinate system, temporarily. 
-We simply can muptipliy by $\mathcal{Q}^{-1} = \mathcal{Q}^{T}$ to do this job.
-\begin{equation}
-	\mathcal{Q} 
-	\left[\vec{u} \left( \vec{x}^* \right) 
-		  + \frac{1}{8 \pi}   \int_{S}  
-		 \vec{f}( \vec{x}^*) 
-		 \cdot \bar{\bar{G \ }} (\vec{x},\vec{x}^*) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 \right]
-		 =
-		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}^*)
-		 \ \text{d}V(\vec{x}).
-	% \label{eq_slp_stress_aggR}
-\end{equation}
-The following equivalent euation is implemented in Matlab code:
-\begin{equation}
-	 \vec{u} \left( \vec{x}^* \right) 
-		  + \frac{1}{8 \pi}   \int_{S}  
-		 \vec{f}( \vec{x}^*) 
-		 \cdot \bar{\bar{G \ }} (\vec{x},\vec{x}^*) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 =
+To complete the linear system to solve for stress, translational, and angular velocities, we temporarily map fluid domain grid into the same coordinate system as the boundary inegral term.
+We can simply muptipliy by $\mathcal{Q}^{-1} = \mathcal{Q}^{T}$ as 
+\begin{align}
+	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
+		  & + \frac{1}{8 \pi} \int_{S}  
+		 \vec{f}(\mathcal{Q} \vec{x}) 
+		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+		 \ \textrm{d}S
+		 \nonumber \\ & =
 		 \mathcal{Q}^{-1}
 		 \left[
 		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
 		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}^*)
-		 \ \text{d}V(\vec{x})
-		 \right]
-		 .
-	% \label{eq_slp_stress_aggR}
-\end{equation}
-Note that 
-\[
-\vec{u}(\vec{x}^*)
- = \vec{U}_a + \vec{\Omega} (\vec{x}^* - \vec{x}_{cm}).	
-\]
-%
-% I understand that the notations are confusing; The simplest way to read them is 
-% that no subscription of $s$ means that the point is staying in Cartesian grid as fluid coordinates. 
-%
-\par
-The main part to compute the drag $\vec{F}_o$ is in the density of the fluid
- \begin{equation}
-	 \rho (\vec{x}, t_n + \Delta t) = 
-	 \rho_{bg} + \rho_C =
-	 \rho_0 \biggl( 1 + \gamma z \biggr)   + \rho_0 \biggl( \alpha C_{max} C(\vec{x}, t_n + \Delta t) \biggr),
-\end{equation}
-when $\vec{x} = (x, y, z)$. 
-\\
-After we get the new density, we prepare to build the linear system to obtain next time-step stress with the following two more equations of the drag and torque,
-\begin{equation}
-\int_{S} \vec{f}(\vec{x}_s) \  \text{d}S(\vec{x}_s)
-= \vec{F}_o
- \label{eq_drag}
- \end{equation} 
- \begin{equation}
- 	\int_S \vec{f} (\vec{x}_s)  \times (\vec{x}_s - \vec{x}_{cm}) \ \textrm{d}S(\vec{x}_s) = \vec{Q}_o.
- \label{eq_torque}
- \end{equation}
- where 
-  \begin{equation}
-	  \vec{F}_o = 
- \frac{g}{\mu U_s L}
-	\left( 
-	- \rho_a V_a \hat{k}
-	+ \int_{S} \left( 
-	   \int  {\rho}_{bg}(z) \ \textrm{d}z
-	 \right) 
-	\hat{n} \ \textrm{d}S (\vec{x})
-	\right),
-	 \label{eq_Fo_2}
-\end{equation}
-where 
-\[
-\rho_a = \frac{\phi}{V_a}\int_{V_a} \rho(\vec{x}) \ \text{d}V
-+ (1-\phi)\rho_s.
-\]
-Note that $\phi$ and $\rho_s$ represents constant porosity and 
-solid portion of the aggregate.
-We see that the LHS of both equations (\ref{eq_drag}) 
-and (\ref{eq_torque}) are solved in the aggregate grid. 
-The RHS of equation (\ref{eq_drag}) is a combination of body force and buoyancy.
-To calculate the aggregate density, $\rho_a$, numerically, 
-we sum up all the background density where the cubes are located. 
-For the buoyancy force as well, the center of each cube is required information.
-We thus need to use the rotated aggregate position, $\vec{x}_s$.  
-For this reason, what we implement in Matlab code is the following:
+		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
+		 \ \text{d}V
+		 \right].
+	\label{eq_slp_vol_R}
+\end{align}
+For the other force equations as well, we implement the following
 \begin{equation}
 	\int_{S} \vec{f}(\vec{x}) \  \text{d}S(\vec{x})
 	= \mathcal{Q}^{-1} \vec{F}_o
@@ -698,175 +569,56 @@ For this reason, what we implement in Matlab code is the following:
 	 \begin{equation}
 		 \int_S \vec{f} (\vec{x})  \times (\vec{x} - \vec{x}_{cm}) 
 		 \ \textrm{d}S(\vec{x}) 
-		 = (0,\ 0, \ 0).
+		 = \vec{0}.
 	 \label{eq_torque_code}
 	 \end{equation}
-\par
 Once we solve the linear system ,
- we may put the unknow values into the correct location.
-We need to rotate them using
-\[
-\vec{f}(\vec{x}_s) = \mathcal{Q} \vec{f}(\vec{x}).	
-\]
-\[
-\vec{U}_a (\vec{x}_s) = \mathcal{Q} \vec{U}_a (\vec{x}).	
-\]
-\[
-\vec{\Omega}(\vec{x}_s) = \mathcal{Q} \vec{\Omega}(\vec{x}).	
-\]
-The validation of stress is in section (\ref{validation_rot}).
-
-
-\subsection{Velocity field}
-Once we solve for the stress, we use the same 
-equation (\ref{eq_slp_nonD}) 
-to solve for velocity on the fluid grid which stays in the Cartesian coordinates, 
-$\vec{y}$,
-\begin{equation}
-	\vec{u} \left(\vec{y},t\right) 
-		  =- \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\vec{x}_s) 
-		 \cdot \bar{\bar{G \ }} (\vec{x}_s,\vec{y}) 
-		 \ \textrm{d}S(\vec{x}_s) 
-		 + \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \vec{y} )
-		 \ \text{d}V(\vec{x}).
-\end{equation}
-The volume integral term does not need any special treatment. 
-However, the boundary integral needs some work
-since we have two different coordinates systems are mixed.
-Assume that $\vec{f}(\vec{x}_s)$ is constant for each square face. 
-We here investigate more integral of the kernel,
-\[
-	\bar{\bar{G \ }} (\vec{x}_s,\vec{y}) 
-		 \ \textrm{d}S(\vec{x}_s)
-	= 
-	\frac{\bar{\bar{I \ }}}{||\vec{x}_s-\vec{y} ||} 
-	+ \frac{(\vec{x}_s-\vec{y})(\vec{x}_s-\vec{y})^T}{||\vec{x}_s-\vec{y} ||^3}, 	 
-\]
-where $\vec{y}$ is in Cartesian coordinate 
-and $\vec{x}_s$ is in aggregate grid which is (possibly) rotated. 
-The challenge part here is that 
-our Matlab program to compute this boundary integral of $\bar{\bar{G}}$
-is set in the Cartesian coordintes. 
-We thus would like to express the $\vec{v} = \vec{x}_s - \vec{y}$ 
-in the Cartesian grid, i.e., we find the same vector $\vec{v}$ in fluid coordintate.
-{\color{blue} Need to type below figure.}
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[scale=0.45]{./figures/fig_vel_y_map}		
-		\caption{Mapping for $\vec{y}$ grid.}
-		\label{fig_vel_y_map}
-\end{center}
-\end{figure}
-
-After we solve for the velocity field of the fluid domain at time $t = t_n$ and translational $\&$ angular velocities, we first obtain new perturbation at time $t = t_n + \Delta t$, in the moving frame of reference. This involves only the translational velocity,     $\vec{U}_a$, with the velocity field (Not the grid points). 
-Once we obtain the $C(\vec{x}, t+\Delta t) $, we use this value to update the density of the fluid.
-%
-\subsection{Update perturbation}
-Since we calculate the perturbacion, $C(\vec{x},t)$ in the moving fram of reference, 
-we use the translational velocity, $\vec{U}_a$, to move aggregate back to the center of 
-fluid domain.
-In the same manner, we may need to rotate the velocity field back to the moving frame 
-by multiplying by inverse of $\mathcal{Q}$ temporarily. 
-\clearpage
-\subsection{Validations}\label{validation_rot}
-We first test the implementation of rotation with zero perturbation, i.e.,  $C(\vec{x}) = 0$ for all $\vec{x}$. 
-We still have a light density gradient in the background ($\gamma = - 0.001$). Suppose that we have an aggregate with three cubes 1) vertically and 2) horizontally stacked. See Figure \ref{fig_NC3_hor_vert}. We found these two models by setting the random seed numbers (left) 6 and (right) 99, in \verb+DLA_3D+ function. 
-    \begin{figure}[h]
-    	\begin{center}
-    		\vspace{0.5cm}
-			\includegraphics[scale=0.25]{./figures/fig_NC3_ver}		
-			\hspace{20mm}
-			\includegraphics[scale=0.35]{./figures/fig_NC3_hor}		
-    	\caption{Aggregate made with three cubes; (Left) vertically and (Right) horizontally stacked.}
-    	\label{fig_NC3_hor_vert}
-    \end{center}
-\end{figure}
-\\
-Both aggregates are centered at origin, $\vec{x}_{cm} = (0,0,0)$.
-We see that the horizontal aggregate (right) can be obtained by rotating the vertical one (left) 90-degrees around the $y$ axis. This implies that when we compute the forces, such as drag and stress, of the vertical aggregate after the 90-degrees rotation, the values should match with the horizontal aggregate case. Note that we only rotate the vertical aggregate to compare force values. 
-\\
-We set \verb+Omega = [0; pi/2; 0]+ as the aggregate's angular velocity. We then apply this to find the rotation matrix $\mathcal{R}$ using equation (\ref{eq_R_eA}). In Matlab program, we actually rotate the fluid domain, not the aggregate directly. This can be simply done by applying transpose of $\mathcal{R}$ to the fluid grid. 
-\begin{framed}
-	\verb+xyz_R = Qtp1' * (xyz - cm_0)+
-\end{framed}
-\noindent
-Here, \verb+Qtp1+ represents $R Q(t)$, where $Q(t)$ is initially identity matrix as we begin with Cartesian coordinate. Also, \verb+cm_0+ is the center of mass, $\vec{x}_{cm}.$
-\par
-We first compute the drag, $\vec{F}_o$, using equation (\ref{eq_Fo}). In Matlab, we do not need the rotated grid for buoyancy force, the integral tern in equation (\ref{eq_Fo}). However, we need fluid density for the body force. In particular, the aggregate density, $\rho_a$, requires fluid density inside of the aggregate. 
-    \begin{figure}
-    	\begin{center}
-			\includegraphics[scale=0.3]{./figures/fig_stress_hor_NoR}
-    	\caption{Stress on horizontal aggregate without rotation.}
-    	\label{fig_stress_hor_NoR}
-    \end{center}
-    \end{figure}
-	% After rotation
-    \begin{figure}
-    	\begin{center}
-			\includegraphics[scale=0.3]{./figures/fig_stress_vert_R}
-    	\caption{Stress on vertical aggregate after 90-degreses rotation around $y-$ axis.}
-    	\label{fig_stress_vert_R}
-    \end{center}
-    \end{figure}
-% \subsection{Validation: Rotation around the vertical axis}
-\par
-Next, we test the implementation of rotation with zero perturbation, 
-i.e.,  $C(\vec{x}) = 0$ for all $\vec{x}$. 
-We still have a light density gradient in the background ($\gamma = - 0.001$). 
-Suppose that we have two aggregates with three cubes stacked horizontally.
-The only difference between them is that one is rotated around $z-$axis. 
-See Figure \ref{fig_NC3_hor_92}. 
-We found these two models by setting the random seed numbers (left) 99 
-and (right) 92, in \verb+DLA_3D+ function. 
-    \begin{figure}[h]
-    	\begin{center}
-    		\vspace{0.5cm}
-			\includegraphics[scale=0.35]{./figures/fig_NC3_hor}		
-			\hspace{20mm}
-			\includegraphics[scale=0.38]{./figures/fig_NC3_hor92}		
-    	\caption{Aggregate made with three cubes horizontally stacked.}
-    	\label{fig_NC3_hor_92}
-    \end{center}
-\end{figure}
-We compare the stress on each face in the same manner we showed in the precious section.
-For this validation, we add initial pertubation $C(\vec{x})$ with a Gaussian function;
-\[
-C(x,y,z) =  10^{-3} e^{-(1/3)\left(x^2 + y^2 + z^2\right)}.
-\]
-%before rotation
-    \begin{figure}
-    	\begin{center}
-			\includegraphics[scale=0.35]{./figures/fig_stress_NoR_99}
-    	\caption{Stress on horizontal aggregate without rotation.}
-    	\label{fig_stress_NoR_99}
-    \end{center}
-    \end{figure}
-	% After rotation
-    \begin{figure}
-    	\begin{center}
-			\includegraphics[scale=0.35]{./figures/fig_stress_R_92}
-    	\caption{Stress on horizontal aggregate after 90-degreses rotation around $z-$ axis.}
-    	\label{fig_stress_R_92}
-    \end{center}
-    \end{figure}
-
-% For furture validation of implementation, 
-% we use non-symmetric Gaussian function as an initial perturbation,
+ we may put the values on the fluid grid back into the Cartesian coordinate system.
+% We need to rotate them using
 % \[
-% C(\vec{x}) = 
-% \exp{(-(1/3)((x-1.3)^2 + (y-0.5)^2 + z^2))} \times 10^{-3}.	
+% \vec{f}(\vec{x}_s) = \mathcal{Q} \vec{f}(\vec{x}).	
 % \]
+% \[
+% \vec{U}_a (\vec{x}_s) = \mathcal{Q} \vec{U}_a (\vec{x}).	
+% \]
+% \[
+% \vec{\Omega}(\vec{x}_s) = \mathcal{Q} \vec{\Omega}(\vec{x}).	
+% \]
+% The validation of stress is in section (\ref{validation_rot}).
+\subsection{Velocity compuation}
+Once we solve for the stress, we are supposed to use the same 
+equation (\ref{eq_vel_all_onS_nonD}) 
+to solve for velocity in the fluid grid which stays in the Cartesian coordinates.
+Although the volume integral term can stay as it is,  
+the boundary integral needs some special treatment
+since it has two mixed coordinates systems.
+We particularly pay more attention to the Stokeslet,
+\[
+	\bar{\bar{G \ }} (\mathcal{Q}\vec{x},\vec{y}) 
+	= 
+	\frac{\bar{\bar{I \ }}}{||\mathcal{Q}\vec{x}-\vec{y} ||} 
+	+ \frac{(\mathcal{Q}\vec{x}-\vec{y})(\mathcal{Q}\vec{x}-\vec{y})^T}{||\mathcal{Q}\vec{x}-\vec{y} ||^3}, 	 
+\]
+where $\mathcal{Q}\vec{x}$ is in the aggregate rotated grid. Since we cannot compute the boundary integral of the Stokeslet when $\mathcal{Q}\vec{x}$ and $\vec{y}$ are not in the same coordinate system, we need to express $\vec{y}$ using another vector $\vec{v}$ that is in the rotated grid such that 
+\[
+	\mathcal{Q}\vec{x} - \vec{y} = \vec{x} - \vec{v},
+	% \mathcal{Q}\vec{x}-\vec{v} = \vec{x} - \vec{y},
+\]
+or equivalently,
+\[
+	\vec{v} = \left(   \bar{\bar{I}} - \mathcal{Q} \right) \vec{x}  + \vec{y}.
+\]
+% {\color{blue} Need to type below figure.}
 % \begin{figure}[h]
 % 	\begin{center}
-% 		\includegraphics[scale=0.35]{./figures/fig_velZ_99_92R_xp06}
-% 	\caption{veloity in $z$ direction at $x = 0.06$.}
-% 	\label{fig_velZ_99_92R_xp06}
+% 		\includegraphics[scale=0.45]{./figures/fig_vel_y_map}		
+% 		\caption{Mapping for $\vec{y}$ grid.}
+% 		\label{fig_vel_y_map}
 % \end{center}
 % \end{figure}
-% %------------------------------Numerics--------------------------------------
+
+After we solve for the velocity field of the fluid domain, we rotate the velocity field back to the original coordinate by multiplying by inverse of $\mathcal{Q}$ for the concentration update. 
+%---------------Numerics--------------------------------------
 \section{Numerical methods}
 %------------------------------------------------------------------
 *We drop the prime for all dimensionless equations. 
@@ -969,7 +721,7 @@ where $z_B$ is the constant $z-$ value of the surface $S^4$ (bottom face). By su
 \label{eq_buoyancy_z_eval2}
 \end{equation}
 where we define the $z-$component of the center of $n-$th cube forming an aggregate, $z_{c_n}$ ($ n = 1, 2, \cdots, $NC).
- This implies that the only information we need to keep tracking is the $z-$components of the center of each cube. For the non-dimensionalization, we simply need to use the dimensionless force parameter, $\mu U_s L$.
+ This implies that the only information we need to keep tracking is the $z-$components of the center of each cube. For the non-dimensionalization, we simply need to use the dimensionless force parameter, $\tilde{\mu} U_s L$.
 
 % If we set the center of a cube for any aggregate that is composed of NC cubes, denoted as $\vec{x}_{c_n}$ ($ n = 1, 2, \cdots, $NC), we can say ${z_T}_n = z_{c_n} + 1/2 h$ and $z_{B_n} = z_{c_n} - 1/2 h$, where $z_{c_n}$ represents the $z-$ component of the center of $n-$th cube and $h = z_t - z_b$. Although we still need to keep tracking the center of mass, $\vec{x}_{cm}$, in time, the expression for the
 % We went back to the integral of background density function form since we now need to know the exact bounds for this integral in the vertical direction.
@@ -1451,7 +1203,7 @@ Today is 09/06/2022. We ran 10 time-steps for each case. The following is the se
 	\begin{itemize}
 		\item Reference length scale: $L = 5 \times 10^{-4}$(m).
 		\item Gravitational acceleration $g = 9.8$ (m$/$s$^2$).
-		\item $\mu = 1.2 \times 10^{-3}$ (kg$/$ ms) .
+		\item $\tilde{\mu} = 1.2 \times 10^{-3}$ (kg$/$ ms) .
 		\item $\rho_s = 1.4 \times 10^{3}$ (kg$/$ m$^3$) .
 		\item $\rho_0 = 1.025 \times 10^{3}$ (kg$/$ m$^3$) .
 		\item $\phi = 0.9999$
@@ -1777,4 +1529,16 @@ Error plots - compare the $U_a = -0.3470$ values.
 
 
 \section{Numerical simulation results}
+To somewhat justify our tiny stability issue, we compare the results between two different time step sizes: $\Delta t = 0.25 , \ 0.5$.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_compare_dt_cm3_all}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_compare_dt_Ua3_all}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_compare_dt_Fo3_all}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_compare_dt_UaFo3_ratio}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_compare_dt_C_all}
+	\caption{Compare two cases: }
+	\label{fig_NC50_compare}
+\end{center}
+\end{figure}
 \section{Discussions}
