@@ -166,7 +166,6 @@ The entire velocity solution, thus, becomes
 \label{eq_vel_HP}
 \end{equation}
 As we see, the velocity at a point $\vec{u}$ is now depending on space and time. By coupling the solution (\ref{eq_vel_HP}) with the advection-diffusion equation, we can update the velocity field in time. 
-
 %------------------------------------------------------------------
 \subsection{Force balance}
 \label{sec:force_balance}
@@ -323,13 +322,13 @@ along with the velocity field
   \label{eq_vel_all_onS_nonD}
  \end{align}
 where $S$ is the aggregate surface. 
-Moreoever, the force balance equation (\ref{eq_Full_Force}) becomes
-\begin{align*}
+Moreover, the force balance equation (\ref{eq_Full_Force}) becomes
+\begin{align}
 	 \vec{F'}_o(t)
 	 & =
 	   %\text{[Body force] + [Buoyancy force]}
 	  %= 
-	  \frac{1}{\tilde{\mu} U_s L} 
+	  \frac{1}{\tilde{\mu} U_s R_a} 
 	  \left(
 	-   \rho_a V_a g \hat{k}
 	  +
@@ -338,26 +337,8 @@ Moreoever, the force balance equation (\ref{eq_Full_Force}) becomes
 	   \right) \bar{\bar{I \ }}  \cdot
 	  \hat{n} \ \textrm{d}S (\vec{x})
 	\right).
-	% \\
-	% &=  \frac{g}{\tilde{\mu} U_s L}\frac{\tilde{\mu}  L^3 }{U_s L}
-	% \left( 
-	% - \rho_a' V_a' \hat{k}
-	% + \int_{S'} \left( 
-	%    \int  {\rho}_{bg}'(z) \ \textrm{d}z' 
-	%  \right) \bar{\bar{I \ }}  \cdot
-	% \hat{n} \ \textrm{d}S' (\vec{x})
-	% \right)
-	% \\
-	% &=  \frac{gL}{U_s^2 }
-	% \left( 
-	% - \rho_a' V_a' \hat{k}
-	% + \int_{S'} \left( 
-	%    \int  {\rho}_{bg}'(z) \ \textrm{d}z' 
-	%  \right) \bar{\bar{I \ }}  \cdot
-	% \hat{n} \ \textrm{d}S' (\vec{x})
-	% \right).
 \label{eq_Full_Force_nonD}
-\end{align*}
+\end{align}
 % Note that the volume of aggregate $V_a$ is $8$NC  in our numerics, where NC is the number of cubes to form an aggregate. The factor 8 comes from the side length of each cube that is 2. By letting the characteristic length scale that is the maximum radius, in numerics denoted by $R_m$, we find dimensionless tull body force $\vec{F}'$ as
 % \begin{equation}
 % 	\vec{F'}
@@ -620,134 +601,159 @@ or equivalently,
 After we solve for the velocity field of the fluid domain, we rotate the velocity field back to the original coordinate by multiplying by inverse of $\mathcal{Q}$ for the concentration update. 
 %---------------Numerics--------------------------------------
 \section{Numerical methods}
-%------------------------------------------------------------------
-*We drop the prime for all dimensionless equations. 
-\\
-In this section, we explain the details of numerical methods. We first consider the background fluid density that is a part of the drag computation. We derive the simplest form to implement in codes. We then discuss the homogeneous velocity field. We compare two boundary integral equations since it was not straightforward to choose one. Lastly, we present the method to compute the non-homogeneous solution which is a volume integral of the perturbation $C(\vec{x},t)$. Due to the high computational cost, we use the fast multipole method (FMM). We give a brief introduction of the FMM and framework for Stokes kernel.
- \subsection{Background fluid density}
-In this section, we explain how to compute the (dimensional) buoyancy term in equation, that is
+%---------------------------------------------------------
+{\color{blue} NEED TO EDIT MORE OF THE BEGINNING OF THIS SECTION $\downarrow$}\\
+As we have stratified density in the surrounding fluid, 
+numerical methods for the homogeneous solution, that is, the BIE computation, was explained in section \ref{sec:numerical}. For the advection-diffusion equation, it is described in section \ref{sec:concentration}.
+
+We first consider the background fluid density that is a part of the drag computation. We derive the simplest form to implement in codes. We then discuss the homogeneous velocity field. We briefly introduce the linear system to solve for the aggregate's stress and velocity. Lastly, we present the method to compute the non-homogeneous solution which is a volume integral of the perturbation $C(\vec{x},t)$. Due to the high computational cost, we use the fast multipole method (FMM). We give a brief introduction of the FMM and framework for Stokes kernel.
+ \subsection{Aggregate force balance}
+Since the surrounding fluid density is not constant while an aggregate settle, we need to track the buoyancy depending on the aggregate's vertical position,
+\begin{align}
+	\vec{F}_{b}
+	 = \frac{1}{\tilde{\mu} U_s R_a} 
+	 \left(
+	  \int_{S} \left( 
+	  \int \rho_{bg}(z) g \ \textrm{d}z 
+	  \right) \bar{\bar{I \ }}  \cdot
+	 \hat{n} \ \textrm{d}S (\vec{x})
+   \right).
+   \label{eq_buoyancy_nonD}
+\end{align}
+Furthermore, the fluid density portion of the aggregate changes over time, that also affects its gravitational (body) force,
 \begin{equation}
-	\rho_{by} =
-	 \int_{S} \left( 
-	   \int  {\rho_{bg}} (z) g \ \textrm{d}z
-	 \right) \bar{\bar{I \ }}  \cdot
-	\hat{n} \ \textrm{d}S (\vec{x}).
-\label{eq_buoyancy2}
+	\vec{F}_g = 
+	- \frac{1}{\tilde{\mu} U_s R_a} 
+	\left( \rho_a V_a g \hat{k}	 \right).
+	\label{eq_agg_force_G}
 \end{equation}
-We consider a single cube case for simplicity, i.e., $Nf = 6$. We can simply extend it to multiple cubes in the same manner. The discretized version of integral (\ref{eq_buoyancy2}) is 
+In practice, the evaluation of the gravitational force (\ref{eq_agg_force_G}) is relatively easy. While settling, we compute the fluid density where the aggregate is located. Once we know the fluid grid point that is inside of the aggregate, simple addition of the densities at those points gives us the fluid density portion of the aggregate, which eventually plays a role to update the $\rho_a$. 
+% Note that the combined force balance between $\vec{F}_b$ and $\vec{F}_{g}$ has shown in equation (\ref{eq_Full_Force_nonD}). 
+\par
+Next, we investigate the buoyancy force (\ref{eq_buoyancy_nonD}) with a single cube case for simplicity. 
+% , i.e., the number of square face is $Nf = 6$. 
+We can extend this case to multiple cubes in the same manner by addition. We consider the discretized version of integral (\ref{eq_buoyancy_nonD}), 
 \begin{equation}
+	\vec{F}_b \approx
+	\frac{1}{\tilde{\mu} U_s R_a} 
 	\sum_{i=1}^{Nf}
-	 L^3 \int_{S^i} \left( 
+	 R_a^3 \int_{S^i} \left( 
 	   \int  {\rho_{bg}} (z) g  \ \textrm{d}z 
 	 \right) \bar{\bar{I \ }}  \cdot
 	\hat{n}_i \ \textrm{d}S^i (\vec{x}),
 \label{eq_buoyancy_discrete2}
 \end{equation}
-where $i$ represents the index of square faces (not a power). Note that we muptiply by $L^3$ to keep the dimensionality. Depending on the orientation of each square face, the integral domain or axis of $S^n$ is different. For example, let $S^1$ be the first square with the normal $\hat{n}_1 = (1,0,0)$. Then 
+where $i$ represents the index of square faces (not a power) and $Nf$ is the number of square faces: $Nf = 6$ for one cube case. Depending on the orientation of each square face, or the axis of $S^n$, is different. For example, let $S^1$ be the first square with the normal $\hat{n}_1 = (1,0,0)$, i.e., 
 \begin{equation}
-	L^3 
+	R_a^3 
 	 \int_{S^1}
 	 \left( 
 	   \int  {\rho_{bg}} (z) g \ \textrm{d}z 
 	 \right) \bar{\bar{I \ }}  \cdot
 	\hat{n}_1 \ \textrm{d}S^1 (\vec{x})
-	= L^3  \int_{-1}^{1} \int_{-1}^{1}
+	= R_a^3  \int_{-1}^{1} \int_{-1}^{1}
 	\left( 
   	 \int  {\rho_{bg}} (z) g \ \textrm{d}z 
  	\right) \bar{\bar{I \ }}  \cdot
  	\hat{n}_1 \ 
-	\textrm{d}y  \textrm{d}z 
+	\textrm{d}y  \textrm{d}z.
 \label{eq_buoyancy_S1_2}
 \end{equation}
-Since the background function $\rho_{bg}$ is a function of $z$ only,intuitively, we see that the value (\ref{eq_buoyancy_S1_2}) and the one with the normal $\hat{n}_6 = -\hat{n}_1 = (-1,0,0)$ has the same magnitude but in the opposite direction. This means that when we add the integrals on $S^1$ and $S^6$, we get zero. We can also prove this with simple arithmetics. 
-\par
-We first write the inner integral explicitly using
+See figure \ref{fig_rho_bg_on_S1} for notations.
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=0.3]{./figures/fig_rho_bg_on_S1.pdf}
+	\caption{Example cube to describe the buoyancy force computation. The pink area is $S^1$ integral domain.}
+	\label{fig_rho_bg_on_S1}
+\end{center}
+\end{figure}
+Since the background density $\rho_{bg}$ is a function of $z$-axis only, we can intuitively see that the value (\ref{eq_buoyancy_S1_2}) and the one with the normal $\hat{n}_6 = -\hat{n}_1 = (-1,0,0)$ has the same magnitude but in the opposite direction. It means the sum of integrals on the planes $S^1$ and $S^6$ is zero. We can also prove this with simple arithmetics. 
+We first write the inner integral explicitly using equation (\ref{eq_rho_bg}),
 \[
-L^3 \int  {\rho_{bg}} (z)g  \ \textrm{d}z 
- =  L^3 \left( \rho_0 \int  1+\gamma  z \right) g \ \textrm{d}z 
-=L^3 \rho_0 \left(  z + \frac{\gamma}{2}z^2 + c \right) g,
+R_a^3 \int  {\rho_{bg}} (z)g  \ \textrm{d}z 
+ =  R_a^3 \left( \rho_0 \int  1+\gamma  z \right) g \ \textrm{d}z 
+=R_a^3 \rho_0 \left(  z + \frac{\gamma}{2}z^2 + c \right) g,
 \]
-where $c$ is an integral constant. This form is valid for any $z$. The surface integral on $S^1$ then becomes 
-\[
-	L^3\rho_0  \int_{-1}^{1} \int_{-1}^{1}
-  	\left( 
-  	 z + \frac{\gamma}{2}z^2 + c 
- 	\right) g \bar{\bar{I \ }}  \cdot
- 	\hat{n}_1 \ 
-	\textrm{d}y  \textrm{d}z 
-	=
-2L^3 \rho_0\hat{n}_1 
-\int_{-1}^{1} 
-  	\left( 
-  	z + \frac{\gamma}{2}z^2 + c  
- 	\right) g \ 
-  \textrm{d}z 
-  =4 L^3 \rho_0 \left( c + \frac{\gamma}{6} \right) g \hat{n}_1 .
-\]
-We see that the only difference we would get from the surface integrals for $S^1$ and $S^6$ is the direction of the normals. We can apply the same concept to the other two square faces, $S^2$ and $S^5$, in which their normals are $\hat{n}_2 = -\hat{n}_5 = (0,1,0)$. This implies that the only squares we need to pay attention are the rest of two faces that have normals parallel to $z-$axis. We denote these squares as $S^3$ and $S^4$ and their normals are $\hat{n}_3 = (0,0,1)$ and $\hat{n}_4 = -\hat{n}_{3}$, respectively. 
+where $c$ is an integral constant. 
+% This form is valid for any $z$. 
+The surface integral on $S^1$ then becomes 
+\begin{equation}
+	R_a^3\rho_0  \int_{-1}^{1} \int_{-1}^{1}
+	\left( 
+	 z + \frac{\gamma}{2}z^2 + c 
+   \right) g \bar{\bar{I \ }}  \cdot
+   \hat{n}_1 \ 
+  \textrm{d}y  \textrm{d}z 
+=4 R_a^3 \rho_0 \left( c + \frac{\gamma}{6} \right) g \hat{n}_1 .
+\label{eq_F_by_S1}
+\end{equation}
+We notice that we can obtain the same integral value as equation (\ref{eq_F_by_S1}) on $S^6$, as well as  $S^2$ and $S^5$, in which their normals are $\hat{n}_2 = -\hat{n}_5 = (0,1,0)$. It implies that we have 
+\begin{equation}
+	\sum_{i=1,2,5,6}
+	 R_a^3 \int_{S^i} \left( 
+	   \int  {\rho_{bg}} (z) g  \ \textrm{d}z 
+	 \right) \bar{\bar{I \ }}  \cdot
+	\hat{n}_i \ \textrm{d}S^i (\vec{x})
+	 = 0
+\label{eq_buoyancy_zero_oneCube}
+\end{equation}
+for the one cube case of discretized buoyancy equation (\ref{eq_buoyancy_discrete2}).
 \par
-The surface integral on $S^3$ is 
-\[ L^3
+Now, the integrals on $S^3$ and $S^4$ are slightly different since the square faces are perpendicular to $z-$axis. On the face $S^3$, which has normal $\hat{n}_3 = (0,0,1)$, we get
+\begin{equation}
+	R_a^3
 \rho_0\int_{-1}^{1} \int_{-1}^{1}
   	\left( 
   	 z + \frac{\gamma}{2}{z}^2 + c 
  	\right)g  \bar{\bar{I \ }}  \cdot
  	\hat{n}_3 \ 
 	\textrm{d}x  \textrm{d}y 
-	% = 4\left(
-%   	\int \rho_{bg}(z) \ \textrm{d}z
-%  	\right)
-%  	\hat{n}_3
-	= 4 L^3 \rho_0 \left( z_T + \frac{\gamma}{2} {z_T}^{2} +c \right) g \hat{n}_3,
-\]
-where $z_T$ is the constant $z-$ value of the surface $S^3$ face (top face).
-We can compute the surface integral on $S^4$ in the same manner. Then, the buoyancy equation (\ref{eq_buoyancy_discrete2}) becomes
-\begin{equation}
-	\sum_{i=1}^{6} L^3
+	= 4 R_a^3 \rho_0 \left( z_T + \frac{\gamma}{2} {z_T}^{2} +c \right) g \hat{n}_3,
+	\label{eq_F_by_S3}
+\end{equation} 
+where $z_T$ is the constant $z-$level value on the face $S^3$. The integral value on the face $S^4$ would be the same as \ref{eq_F_by_S3}, having $\hat{n}_4 = (0,0,-1)$ instead of $\hat{n}_3$. We then can have a more explicit expression for the discretized buoyancy equation (\ref{eq_buoyancy_discrete2}),
+\begin{align}
+	\sum_{i=1}^{6} R_a^3
 	 \int_{S^i} \left( 
 	   \int  {\rho_{bg}} (z)  \ \textrm{d}z 
 	 \right) g \bar{\bar{I \ }}  \cdot
 	\hat{n}_i \ \textrm{d}S^i (\vec{x})
-	= 4 L^3 \rho_0 \left( z_T + \frac{\gamma}{2} {z_T}^{2} +c \right) g \hat{n}_3
-	+ 4L^3 \rho_0 \left( z_B + \frac{\gamma}{2} {z_B}^{2} + c \right) g \hat{n}_4,
+	\nonumber 
+	\\
+	= 4 R_a^3 \rho_0 \left( z_T + \frac{\gamma}{2} {z_T}^{2} +c \right) g \hat{n}_3
+	+ 4R_a^3 \rho_0 \left( z_B + \frac{\gamma}{2} {z_B}^{2} + c \right) g \hat{n}_4,
 \label{eq_buoyancy_discrete_eval2}
-\end{equation}
-where $z_B$ is the constant $z-$ value of the surface $S^4$ (bottom face). By substituting the normals $\hat{n}_3$ and $\hat{n}_4$, we can simplify the right-hand side of equation (\ref{eq_buoyancy_discrete_eval2}), knowing that $z_T - z_B = 2$;
+\end{align}
+where $z_B$ is the constant $z-$ value of the surface $S^4$ (bottom face). By substituting the normals $\hat{n}_3$ and $\hat{n}_4$, we can simplify the right-hand side of equation (\ref{eq_buoyancy_discrete_eval2}), knowing that $z_T - z_B = 2$, the equation (\ref{eq_buoyancy_discrete_eval2}) becomes 
 \begin{equation}
-4 L^3 \rho_0 \left( z_T + \frac{\gamma}{2} {z_T}^{2} + c \right) g 
-	- 4 L^3 \rho_0 \left( z_B + \frac{\gamma}{2} {z_B}^{2} + c \right) g
-= 8 L^3 \rho_0 \left( 1+ \gamma (1+z_B) \right)g
-= 8 L^3 \rho_0 \left( 1+ \gamma z_{c_n} \right) g , 
+	\sum_{i=1}^{6} R_a^3
+	\int_{S^i} \left( 
+	  \int  {\rho_{bg}} (z)  \ \textrm{d}z 
+	\right) g \bar{\bar{I \ }}  \cdot
+   \hat{n}_i \ \textrm{d}S^i (\vec{x})
+= 8 R_a^3 \rho_0 \left( 1+ \gamma z_{c_n} \right) g, 
 \label{eq_buoyancy_z_eval2}
 \end{equation}
 where we define the $z-$component of the center of $n-$th cube forming an aggregate, $z_{c_n}$ ($ n = 1, 2, \cdots, $NC).
- This implies that the only information we need to keep tracking is the $z-$components of the center of each cube. For the non-dimensionalization, we simply need to use the dimensionless force parameter, $\tilde{\mu} U_s L$.
-
-% If we set the center of a cube for any aggregate that is composed of NC cubes, denoted as $\vec{x}_{c_n}$ ($ n = 1, 2, \cdots, $NC), we can say ${z_T}_n = z_{c_n} + 1/2 h$ and $z_{B_n} = z_{c_n} - 1/2 h$, where $z_{c_n}$ represents the $z-$ component of the center of $n-$th cube and $h = z_t - z_b$. Although we still need to keep tracking the center of mass, $\vec{x}_{cm}$, in time, the expression for the
-% We went back to the integral of background density function form since we now need to know the exact bounds for this integral in the vertical direction.
-
- \subsection{Velocity computation}
- Consider the integral equation for the velocity field in a stratification fluid,
- \begin{equation}
-	\vec{U}_a + \vec{\Omega} \times (\vec{x}_s - \vec{x}_{cm})
- 		  + \frac{1}{8 \pi} \int_{S}
- 		 \vec{f}(\vec{x})
- 		 \cdot \bar{\bar{G \ }} (\vec{x},\vec{y})
- 		 \ \textrm{d}S(\vec{x})
- 		=
-		  \frac{ \alpha  C_{max}}{8\pi } \int_{V}
- 		C(\vec{x}, t ) \hat{k} \cdot
- 		\bar{\bar{G \ }} (\vec{x}, \vec{y})
- 		\  \textrm{d}V(\vec{x}).
+We thus have shown that the only information we need to keep track of is the location of the center of each cube that forms an aggregate.
+%
+ \subsection{Linear system for velocity and stress on aggregates}
+ As we mentioned in section XX(force balance, we now need to solve for three unknowns: translation ($\vec{U}_a$), rotational velocities ($\vec{\Omega}$), and stress vector ($\vec{f}$).
+To do so, we first combine equations (\ref{eq_vel_all_onS_nonD}) and (\ref{eq_solidbody}), that is,
+ \begin{align}
+	\vec{U}_a + \vec{\Omega} \times (\vec{x} - \vec{x}_{cm})
++ \frac{1}{8 \pi} \int_{S'}  
+		  \vec{f}(\vec{x}) 
+		  \cdot \bar{\bar{G  }} (\vec{x},\vec{y}) 
+		  \ \textrm{d}S(\vec{x})
+		  \nonumber \\
+=  -\frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} 
+\int_{V} C\left(\vec{x},  t \right) \hat{k} \cdot 
+\bar{\bar{G}}(\vec{x}, \vec{y} ) 
+\ \text{d}V(\vec{x})
  \label{eq_slp_lin_eq}
- \end{equation}
- The integral kernel $\bar{\bar{G }} $ is called \textit{Stokeslet}, that is 
- \begin{equation}
- 	\bar{\bar{G}}( \vec{x}, \vec{y}) = 
- 	\frac{\bar{\bar{I \ }}}{||\vec{x}-\vec{y}||} + \frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y})^T}{||\vec{x}-\vec{y}||^3}
- 	% \label{eq_stokeslet_}
- \end{equation}
-As we mentioned, we form and an aggregate with cubes. It is natural to discretize the surface of an aggregate into squares. 
+ \end{align}
+ {\color{red} bring the notations and equations from chapter 2.}
 To compute the velocity at a point $\vec{x}^n$, we find the stress on each square face of an aggregate, denoted as $\vec{f}^m = \vec{f}(\vec{x}^m)$. Note that $\vec{x}^m$ is the center of $m^{\text{th}}$ square face, where $m = 1, \ 2, \cdots, \ Nf$ and $Nf$ is total number of square faces.
 To solve for the boundary integral densities, we use the velocity on the aggregate surface. This implies that we consider $Nf$ number of $n$ points, i.e., $n = 1,2, \cdots, Nf$. To be more specific, for each $\vec{x}^n$, the discretized form of the left-hand side of equation (\ref{eq_slp_lin_eq}) becomes
 \begin{equation}
