@@ -738,11 +738,13 @@ where we define the $z-$component of the center of $n-$th cube forming an aggreg
 We thus have shown that the only information we need to keep track of is the location of the center of each cube that forms an aggregate.
 %
  \subsection{Linear system for velocity and stress on aggregates}
- As we mentioned in section XX(force balance, we now need to solve for three unknowns: translation ($\vec{U}_a$), rotational velocities ($\vec{\Omega}$), and stress vector ($\vec{f}$).
-To do so, we first combine equations (\ref{eq_vel_all_onS_nonD}) and (\ref{eq_solidbody}), that is,
+ As mentioned above, we do not prescribe the settling velocity of an aggregate, and it becomes unknown.
+We thus need to solve for 1) translational velocity ($\vec{U}_a$), 2) rotational velocity ($\vec{\Omega}$), and 3) stress vector ($\vec{f}$).
+To do so, 
+we build the system using equations (\ref{eq_Fo}), (\ref{eq_Qo}), and the velocity combine with equations (\ref{eq_vel_all_onS_nonD}) and (\ref{eq_solidbody}), that is,
  \begin{align}
 	\vec{U}_a + \vec{\Omega} \times (\vec{x} - \vec{x}_{cm})
-+ \frac{1}{8 \pi} \int_{S'}  
++ \frac{1}{8 \pi} \int_{S}  
 		  \vec{f}(\vec{x}) 
 		  \cdot \bar{\bar{G  }} (\vec{x},\vec{y}) 
 		  \ \textrm{d}S(\vec{x})
@@ -750,12 +752,11 @@ To do so, we first combine equations (\ref{eq_vel_all_onS_nonD}) and (\ref{eq_so
 =  -\frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} 
 \int_{V} C\left(\vec{x},  t \right) \hat{k} \cdot 
 \bar{\bar{G}}(\vec{x}, \vec{y} ) 
-\ \text{d}V(\vec{x})
+\ \text{d}V(\vec{x}),
  \label{eq_slp_lin_eq}
  \end{align}
- {\color{red} bring the notations and equations from chapter 2.}
-To compute the velocity at a point $\vec{x}^n$, we find the stress on each square face of an aggregate, denoted as $\vec{f}^m = \vec{f}(\vec{x}^m)$. Note that $\vec{x}^m$ is the center of $m^{\text{th}}$ square face, where $m = 1, \ 2, \cdots, \ Nf$ and $Nf$ is total number of square faces.
-To solve for the boundary integral densities, we use the velocity on the aggregate surface. This implies that we consider $Nf$ number of $n$ points, i.e., $n = 1,2, \cdots, Nf$. To be more specific, for each $\vec{x}^n$, the discretized form of the left-hand side of equation (\ref{eq_slp_lin_eq}) becomes
+where the volume integral value on the right-hand side is known. 
+To set up the linear system accordingly, We discretize the boundary integral as described in the equation (\ref{eq_discretized}, choosing $\vec{f}_k$ for $\vec{q}_k$, and $ \bar{\bar{G}}$ for $\bar{\bar{J}}$. 
 \begin{equation}
 \sum_{j = 1}^{Nf}
 	 \bar{\bar{G}}(\vec{x}^n,  \vec{x}^m)  \vec{f}(\vec{x}^m)
@@ -769,7 +770,7 @@ Note that the boundary integral density on each square face, $\vec{f}(\vec{x}^m)
  	\left[
  	    \begin{array}{c;{2pt/2pt}c; {2pt/2pt}c}
  			\phantom{,} & \phantom{,}& \phantom{,}
- 			\\
+ 			\\z
 		   \begin{bmatrix}
  				\bar{\bar{G}}^{1,1} & 
  				\bar{\bar{G}}^{1,2} &
