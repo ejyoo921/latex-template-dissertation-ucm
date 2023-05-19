@@ -1,18 +1,18 @@
 In this chapter, we compute	the flow around randomly-formed aggregates and 
-characterize the resulting  hydrodynamic forces in a constant density fluid.
+characterize the resulting hydrodynamic forces in a constant-density fluid.
 Since the 1980s, there have been numerous models of aggregation, including marine aggregation, based on the random motion of small particulates 
 \cite{rosenstock_cluster_1980, witten_diffusion-limited_1981,witten_tenuous_1986,kolb_anisotropic_1987}. To form aggregates, we use two established models: individually-added aggregation and cluster-cluster aggregation, which we describe in detail in \cite{yoo_hydrodynamic_2020}. 
-We  study the hydrodynamics of flow around a broad sample of the resulting aggregates.
-In situ measurements of oceanic aggregates have shown an approximately linear relationship between the drag and the aggregate diameter \cite{alldredge_situ_1988}. Experimental studies of settling aggregates first focused on inorganic clusters \cite{wiltzius_hydrodynamic_1987} and later considered precisely constructed aggregates \cite{takayasu_determination_1998} and statistical descriptions of broader ensembles \cite{johnson_settling_1996}. 
-It was generally found that a linear relation exists  between the drag and the square root of the projected area, which allows for the identification of a corresponding settling hydrodynamic radius \cite{johnson_settling_1996, tang_model_2002}.
-However, these experimental studies did not allow for a systematic variation of certain parameters and  found a range of results, depending on the measure used and the exact composition of the aggregates.  Computational studies, in theory, do not have this limitation. Early numerical results were based on rather coarse approximations of aggregates, using point particle approximations \cite{chen_translational_1984}. The accelerated Stokesian dynamics (ASD) approach, which model aggregates as a collection of spheres and accounts for lubrication forces between them, was later developed \cite{brady_stokesian_1988} and used to estimate a hydrodynamic radius for progressively larger aggregates \cite{rogak_stokes_1990,bossis_hydrodynamic_1991}.
+We study the hydrodynamics of flow around a broad sample of the resulting aggregates.
+In situ, measurements of oceanic aggregates have shown an approximately linear relationship between the drag and the aggregate diameter \cite{alldredge_situ_1988}. Experimental studies of settling aggregates first focused on inorganic clusters \cite{wiltzius_hydrodynamic_1987} and later considered precisely constructed aggregates \cite{takayasu_determination_1998} and statistical descriptions of broader ensembles \cite{johnson_settling_1996}. 
+It was generally found that a linear relation exists between the drag and the square root of the projected area, which allows for the identification of a corresponding settling hydrodynamic radius \cite{johnson_settling_1996, tang_model_2002}.
+However, these experimental studies did not allow for a systematic variation of certain parameters and found a range of results depending on the measure used and the exact composition of the aggregates.  Computational studies, in theory, do not have this limitation. Early numerical results were based on rather coarse approximations of aggregates, using point particle approximations \cite{chen_translational_1984}. The accelerated Stokesian dynamics (ASD) approach, which model aggregates as a collection of spheres and accounts for lubrication forces between them, was later developed \cite{brady_stokesian_1988} and used to estimate a hydrodynamic radius for progressively larger aggregates \cite{rogak_stokes_1990,bossis_hydrodynamic_1991}.
 In addition to the drag on settling aggregates, the torque on rotating aggregates 
-was computed using ASD \cite{binder_structural_2009}. More recently, results were obtained using Lattice-Boltzmann simulations that also considered inertial effects \cite{zhang_direct_2015}. The distribution of internal stresses in rigid aggregates moving in a constant flow, which may result in aggregate break-up, was also recently studied using the method of reflections  \cite{gastaldi_distribution_2011} and again using ASD  \cite{vanni_accurate_2015}. We develop here 
+was computed using ASD \cite{binder_structural_2009}. More recently, results were obtained using Lattice-Boltzmann simulations that also considered inertial effects \cite{zhang_direct_2015}. The distribution of internal stresses in rigid aggregates moving in a constant flow, which may result in an aggregate break-up, was also recently studied using the method of reflections  \cite{gastaldi_distribution_2011} and again using ASD  \cite{vanni_accurate_2015}. We develop here 
 computational simulations that, in the regime considered, are more flexible and efficient, allowing us to study a greater number of aggregates, resulting in more statistically reliable results. 
 
 
 \par
-While the ocean water is density stratified due to temperature or salinity, we begin with simplifying assumptions to understand settling aggregate's dynamics. As marine aggregates have fractal structures, it is important to find an appropriate length scale to see a better agreement with their settling speed. We thus consider a homogeneous fluid in this chapter to choose an effective hydrodynamic radius. 
+While ocean water is density stratified due to temperature or salinity, we begin with simplifying assumptions to understand settling aggregate dynamics. As marine aggregates have fractal structures, it is important to find an appropriate length scale to see a better agreement with their settling speed. We thus consider a homogeneous fluid in this chapter to choose an effective hydrodynamic radius. 
 
 
 
@@ -30,22 +30,17 @@ While the ocean water is density stratified due to temperature or salinity, we b
 To model marine aggregates, we make use of existing models of aggregation where the constituting particles undergo a random walk
 \cite{rosenstock_cluster_1980, witten_diffusion-limited_1981,witten_tenuous_1986,kolb_anisotropic_1987}. 
 In these models, particles are typically subject to uniform Brownian motion and attach to one another when 
-sufficiently close. The resulting aggregates often have a fractal structure, characterized by a fractal dimension, $d$. The fractal dimension describes the nature of these complicated objects and may be defined from the relation $N\sim(R_s/l)^d$, where $N$ is the number of particles of length scale $l$ that are part of the aggregate within a sphere of radius $R_s$ \cite{witten_tenuous_1986}. In general, fractal dimensions of aggregate models have been found to range from 1.3 to 3 depending on the exact formation 
+sufficiently close. The resulting aggregates often have a fractal structure characterized by a fractal dimension, $d$. The fractal dimension describes the nature of these complicated objects and may be defined from the relation $N\sim(R_s/l)^d$, where $N$ is the number of particles of length scale $l$ that are part of the aggregate within a sphere of radius $R_s$ \cite{witten_tenuous_1986}. In general, fractal dimensions of aggregate models have been found to range from 1.3 to 3 depending on the exact formation 
 mechanism \cite{witten_diffusion-limited_1981, kolb_anisotropic_1987,gmachowski_calculation_2002}. 
-Direct observations of  marine aggregates have found fractal dimensions ranging approximately from 1.3 to 2.5 \cite{alldredge_situ_1988,jackson_aggregation_1998}.
+Direct observations of marine aggregates have found fractal dimensions ranging approximately from 1.3 to 2.5 \cite{alldredge_situ_1988,jackson_aggregation_1998}.
    
 We consider aggregates made of collated cubic particles, as shown in Fig. \ref{fig_rad_mass}. Once formed, we assume that aggregates do not deform, sinter, or break apart \cite{eggersdorfer_multiparticle_2011}.
 This is a flexible model that has the advantage of having a
 simple external boundary, which will be exploited when we solve for the flow around the aggregate. We generate diffusion-limited aggregates using two different techniques: (1)
-individually-added aggregation (IAA) and (2) cluster-to-cluster aggregation (CCA) \cite{witten_tenuous_1986,kolb_anisotropic_1987}. In both methods, each cube has non-dimensional length, $2$, is aligned with the Cartesian axes, and  is centered at a point on a three-dimensional Cartesian lattice restricted to a triply periodic box of period $2P$. The cube centers thus only take values of the form $\{ (2m,2n,2p) \  | m,n,p \in \mathbb{Z}, -P<m,n,p\leq P \}$. 
+individually-added aggregation (IAA) and (2) cluster-to-cluster aggregation (CCA) \cite{witten_tenuous_1986,kolb_anisotropic_1987}. In both methods, each cube has a non-dimensional length, $2$, is aligned with the Cartesian axes, and is centered at a point on a three-dimensional Cartesian lattice restricted to a triply periodic box of period $2P$. The cube centers thus only take values of the form $\{ (2m,2n,2p) \  | m,n,p \in \mathbb{Z}, -P<m,n,p\leq P \}$. 
 
-\begin{comment}
-We model randomly shaped aggregates with two different methods that are well established: 1) individually-added-aggregates (IAA) and 2) cluster-to-cluster aggregates (CCA). 
-For IAA method, we introduce a single cube in the periodic box domainand  repeatedly add another cube, one at a time. For CCA method, on the other hand, we initially position all $NC$ cubes, non-adjacent, within the periodic domain and let all cubes undergo an unbiased random walk. If any two cubes become close enough, then they form a cluster. The cluster also can also form a larger cluster by attaching another one. 
-This process constantly occurs until we get one aggregate. 
-\end{comment}
 
-Typically, the IAA method gives a more compact form of aggregates, with dimension $\sim 2.56$, than the CCA case which has dimension $\sim 1.79$ \cite{witten_diffusion-limited_1981, kaye_random_2008}. More details regarding the analysis of aggregation formations can be found \cite{yoo_hydrodynamic_2020}.
+Typically, the IAA method gives a more compact form of aggregates, with dimension $\sim 2.56$, than the CCA case, which has dimension $\sim 1.79$ \cite{witten_diffusion-limited_1981, kaye_random_2008}. More details regarding the analysis of aggregation formations can be found \cite{yoo_hydrodynamic_2020}.
 
 
 \par 
@@ -55,7 +50,7 @@ To characterize the size of each aggregate, we define the dimensionless gyration
 \label{eq_Rg}
 \end{equation}
 and the maximum radius of the aggregate, $R'_m$, is defined as the
-maximum of the distances between the center of each of its constituting cubes, $\vec{x}_i$ , and the center of
+maximum of the distances between the center of each of its constituting cubes, $\vec{x}_i$, and the center of
 mass, $\vec{x}_{cm}$, to which we add one to account for the size of an individual cube,
 \begin{equation}
 {R'}_m = 1+ \max_{i = 1, \cdots, NC} \| \vec{x}_i - \vec{x}_{cm} \|,
@@ -63,16 +58,16 @@ mass, $\vec{x}_{cm}$, to which we add one to account for the size of an individu
 \end{equation}
 where $NC$ is the number of cubes in the aggregate.
 We obtain the center of mass of the aggregate, $\vec{x}_{cm}$, by taking mean values of each element of $\vec{x}_i$ for $i = 1, \cdots, NC$.
-Note that most of experimental studies use the projected area method to describe the size of an aggregate. However, since this project is done computationally, which has more freedom than physical experiments, we choose to use those formulations, (\ref{eq_Rg}) and (\ref{eq_Rm}) without reduction of dimension.
+Note that most experimental studies use the projected area method to describe the size of an aggregate. However, since this project is done computationally, which has more freedom than physical experiments, we choose to use those formulations (\ref{eq_Rg}) and (\ref{eq_Rm}) without reduction of dimension.
 We will later show the results of different forces acting on the aggregates and examine which measurement captures better characteristics.
 
 %
 %--------------------------------------------------------
 \section{Derivation of single- and double-layer potentials}
-We introduced the equation, (\ref{eq_BIE_onS}), as a solution form to the Stokes equations in chapter \ref{ch:intro}. As we have a solid boundary surface of a marine aggregate model, we are able to use a simplifed version of the fundamental solution. We are interested in solving for the flow at points $\vec{x}_0$ in the fluid domain extending to infinity and external to the surface, $S$, of an aggregate, as shown in Figure \ref{fig_cube10}.
-We  take advantage of the linearity of the Stokes equations and  express the velocity as a boundary integral  over the surface of the aggregate \cite{pozrikidis_boundary_1992, stakgold_boundary_2000}. 
+We introduced the equation, (\ref{eq_BIE_onS}), as a solution form to the Stokes equations in chapter \ref{ch:intro}. As we have a solid boundary surface of a marine aggregate model, we are able to use a simplified version of the fundamental solution. We are interested in solving for the flow at points $\vec{x}_0$ in the fluid domain extending to infinity and external to the surface, $S$, of an aggregate, as shown in Figure \ref{fig_cube10}.
+We take advantage of the linearity of the Stokes equations and express the velocity as a boundary integral over the surface of the aggregate \cite{pozrikidis_boundary_1992, stakgold_boundary_2000}. 
 The resulting Fredholm integral formulae have the advantage of involving computations in two dimensions only, despite the three-dimensionality of the system.
-For solid objects, one may obtain two different  Fredholm integral formulae. We introduce both formulations in the remainder of this section, and compare them in the following section. 
+For solid objects, one may obtain two different  Fredholm integral formulae. We introduce both formulations in the remainder of this section and compare them in the following section. 
 \subsection{Single-layer potential (SLP)}
 We first derive the velocity with the single-layer potential alone.
 The solid boundary condition allows us to express its velocity as 
@@ -105,7 +100,7 @@ Substituting the solid object velocity, equation (\ref{eq_solidbody}), into the 
 	\label{eq_solid_motion_dlp}
 \end{align}
 % We consider two flows, $\vec{U}_a$ and $\vec{\Omega}$, separately. 
-The first integral of the right-hand side of equation (\ref{eq_solid_motion_dlp}) can be re-written as 
+The first integral of the right-hand side of the equation (\ref{eq_solid_motion_dlp}) can be re-written as 
 \begin{equation}
 	\vec{U}_a \cdot
 	\int_S
@@ -115,7 +110,7 @@ The first integral of the right-hand side of equation (\ref{eq_solid_motion_dlp}
 	\label{eq_solid_motion_dlp_Ua}
 \end{equation}
 since the translational velocity, $\vec{U}_a$, is constant. 
-For the flow around (outside) and on the solid object, Pozrikidis provides an useful identity \cite{pozrikidis_boundary_1992} (page 21, equation (2.1.12))
+For the flow around (outside) and on the solid object, Pozrikidis provides a useful identity \cite{pozrikidis_boundary_1992} (page 21, equation (2.1.12))
 \begin{align}
 	\int_S  \bar{\bar{K}}(\vec{x},\vec{y}) \cdot \hat{n} ( \vec{x})
 	\ \text{d}S(\vec{x})
@@ -228,7 +223,7 @@ To analyze the force and torque, we use the stress $\vec{f}$ in equation (\ref{e
 % Although our aggregate model is not smooth overall with edges and corners, the idea of theorem (\ref{eq_thm1}) is valid for our approximation since we only use the boundary integral equations on the center of each discretized square face. We discuss details in the next chapter.
 
 \subsection{Double-layer potential (DLP)}
-The second approace we can take is removing the single-layer potential. 
+The second approach we can take is removing the single-layer potential. 
 To derive the double-layer potential formulation, we consider a complimentary flow $\vec{u}_c$ 
 % (not to be confused with the derivative prime notation) 
 for the points \textit{inside} of the aggregate surface boundary $S$, having the same force on the boundary as $\vec{u}$. More specifically, the velocity $\vec{u}$  has the representation form, equation (\ref{eq_BIE}) and the complimentary flow $\vec{u}_c$ has the same stress, $\vec{f}$, on the boundary as $\vec{u}$. Before we proceed, we shall justify the existence of the complimentary flow.
@@ -238,7 +233,7 @@ The new flow $\vec{u}_c$ can be found when the velocity $\vec{u}$ on the boundar
 	\label{eq_dlp_constraint}
 \end{equation}
 This condition is taken from \cite{pozrikidis_boundary_1992}.
-This can be fulfilled with our problem due to the continuity equation, $\nabla \cdot \vec{u}= 0$ and divergence theorem.
+This can be fulfilled with our problem due to the continuity equation, $\nabla \cdot \vec{u}= 0$, and the divergence theorem.
 By the conservation of mass, we can say
 \begin{equation}
  	\int_V  \nabla \cdot \vec{u}(\vec{x}) \ \text{d}V (\vec{x}) 
@@ -262,7 +257,7 @@ Note that the fluid volume $V$ is strictly outside of the aggregate boundary $S$
 	\label{fig_dlp_volume}
 \end{center}
 \end{figure}
-The control volume could be a large sphere with its radius $r_f$. Then the velocity $\vec{u}$ on $S_f$ approaches to zero with the order of $\mathcal{O}(1/r_f)$ and its associated stress tensor decays with the rate $\mathcal{O} (1/r_f^2)$. Once the surface integral on $S_f$ in equation (\ref{eq_div}) becomes zero, it implies that
+The control volume could be a large sphere with its radius $r_f$. Then the velocity $\vec{u}$ on $S_f$ approaches zero with the order of $\mathcal{O}(1/r_f)$ and its associated stress tensor decays with the rate $\mathcal{O} (1/r_f^2)$. Once the surface integral on $S_f$ in equation (\ref{eq_div}) becomes zero, it implies that
 \[
 \int_{S} \vec{u}(\vec{x}) \cdot \hat{n} \ \text{d}S(\vec{x}) = 0.
 \]
@@ -294,10 +289,9 @@ where $
 When $\bar{\bar{T }}$ is a Green's function for an infinite flow, the velocity (\ref{eq_BIE_for_dlp}) satisfies the Stokes equation with any choice of $\vec{\psi}(\vec{x}) $.
 \par
  % Thus, the velocity formula with only the double-layer potential would be valid for the zero net force model.
-%
-% Note that we use notation $\vec{u}_{dl}$, instead of $\vec{u}$, since the formulation \ref{eq_BIE_for_dlp} is unable to represent an arbitrary external flow of a solid boundary particle. equation (\ref{eq_BIE_for_dlp}) assumes the total force, $\vec{F}_o$, and torque, $\vec{Q}_o$, are zero on the surface.
+
 Due to our constraint to derive the equation (\ref{eq_BIE_for_dlp}), the double-layer potential formula, $\vec{u}_{dl}$ is only valid for a particle that has a force- and torque-free body, such as a swimming microorganism.
-For other solid body models, finite non-zero net force and torque models, the velocity we would like to find, $\vec{u}$, does not capture the force and torque on the surface $S$ accurately, i.e., 
+For other solid-body models, finite non-zero net force and torque models, the velocity we would like to find, $\vec{u}$, does not capture the force and torque on the surface $S$ accurately, i.e., 
 \begin{equation}
 \vec{u}_{dl}(\vec{y}) = \vec{u}(\vec{y}) 
 - \frac{1}{8 \pi \tilde{\mu} }\vec{F}_o \cdot \bar{\bar{G}}(\vec{x}_{0}, \ \vec{x}_{cm})
@@ -318,7 +312,7 @@ For the double-layer potential formula, we define the total force and torque as
  \label{omega_dl}
  \end{equation}
 %
-We multiply by $\tilde{\mu} / L$ to consider the same physical meaing as the stress vector, $\vec{f}$, as we found the forces using the single-layer potential case, equations (\ref{eq_forcebal}) and (\ref{eq_total_Torque_slp}).
+We multiply by $\tilde{\mu} / L$ to consider the same physical meaning as the stress vector, $\vec{f}$, as we found the forces using the single-layer potential case, equations (\ref{eq_forcebal}) and (\ref{eq_total_Torque_slp}).
 Note that equation (\ref{eq_v_dlp}) implies that the net force and torque associated to the velocity $\vec{u}_{dl}$ are zero.
 The second and third terms in equation (\ref{eq_v_dlp}), denoted by $\vec{u}_F$ and $\vec{u}_Q$, respectively, are a solution to the Stokes equations, except at the center of mass of the solid particle, $\vec{x}_{cm}$.
 The flow $\vec{u}_F$ is the velocity at a point $\vec{y}$ generated by the point force with strength $\vec{F}_0$ at $\vec{x}_{cm}$. 
@@ -341,7 +335,7 @@ for any points outside of the solid particle surface, $S$.
 
 \par
 Unlike the single-layer potential, the double-layer potential formula is not continuous across the surface, $S$.
-We thus consider another velocity expression on the aggregate boundary surface with a jump-condition,
+We thus consider another velocity expression on the aggregate boundary surface with a jump condition,
 \begin{equation}
 \vec{u}(\vec{x}_s) = -\frac{1}{2} \vec{\psi}(\vec{x}_s) 
 +\int_S  \vec{\psi}(\vec{x})  \cdot \bar{\bar{K}} (\vec{x},\vec{x}_s) \ \text{d}S(\vec{x}) 
@@ -353,7 +347,7 @@ for the points on the surface, $\vec{x}_s \in S$.
 %-----------DIMENSIONAL ANALYSIS---------------------------------------------------------------
 \section{Non-dimensionalization}
 \label{section3}
-For convenience of further study, we write all equations in non-dimensional form using following parameters:
+For the convenience of further study, we write all equations in non-dimensional form using the following parameters:
 \begin{equation}
 \vec{x} = R_a\vec{x}', 
 \ \
@@ -368,7 +362,7 @@ For convenience of further study, we write all equations in non-dimensional form
   \vec{Q_o} = \tilde{\mu} U_s R_a^2 \vec{Q_o}'.
 \label{eq_nonD}
 \end{equation}
-We use the values presented in chapter 1, as we derived the Reynolds number, (\ref{eq_Re}). 
+We use the values presented in Chapter 1, as we derived the Reynolds number (\ref{eq_Re}). 
 Then the system of equations becomes
 \begin{align}
     -\nabla' P_d' +  \nabla'^2 \vec{u}'  = \vec{0}
@@ -384,7 +378,7 @@ Equation (\ref{eq_solidbody}), used in both the single-layer and double-layer fo
   \vec{u}'(\vec{x}'_s) = \frac{\vec{U}_a}{U_s} +  \frac{\vec{\Omega}R_a}{U_s} \times (\vec{x}'_s - \vec{x}'_{cm}) = \vec{U}'_a +  \vec{\Omega}' \times (\vec{x}'_s - \vec{x}'_{cm})
   \label{eq_solidbody_nonD}
 \end{equation}
-Furthermore, dimensionless forms of single-layer potential formula for the velocity at a point outside of the surface $S$, is 
+Furthermore, dimensionless forms of the single-layer potential formula for the velocity at a point outside of the surface $S$ is 
 \begin{equation}
     \vec{u'}(\vec{y}') =
 	- \frac{1}{8 \pi}
@@ -439,12 +433,12 @@ We found the analysis easier to perform when setting $\vec{U}'_a$ and $\vec{\Ome
 
  \par
  Because we consider aggregates that are composed of cubic particles, their surface is simply a collection of squares.
- In both the single and double-layer potential approach we impose a velocity at the center of each square on the surface, $\vec{x}_{sq,i}$, where $i = 1,2, \cdots, N_f$, with $N_f$ denoting the total number of square faces of an aggregate. We thus need to compute integrals of the form
+ In both the single and double-layer potential approach, we impose a velocity at the center of each square on the surface, $\vec{x}_{sq,i}$, where $i = 1,2, \cdots, N_f$, with $N_f$ denoting the total number of square faces of an aggregate. We thus need to compute integrals of the form
  \begin{equation}
  \vec{I}(\vec{x}'_{sq,i}) = \int_{S'} \vec{q}'(\vec{x}') \cdot {\bar{\bar{J}}} (\vec{x}', \vec{x}'_{sq,i}) \ \text{d} S'(\vec{x}').
  \label{eq_pre_discretize}
  \end{equation}
- Here, $\vec{q}$ represents either $\vec{f}$ or $\vec{\psi}$, and $\bar{\bar{J}}$ stands for  either $\bar{\bar{G}}$ or $\bar{\bar{\bar{K}}}\cdot\hat{n}$, depending on if the single or double-layer method is used, respectively.  To allow an exact analytic computation of the integrals, we assume that on the $k$th square face the vector $\vec{q}'(\vec{x}') = \vec{q}'_k$ is constant, for $k = 1, 2, \dots, N_f$.
+ Here, $\vec{q}$ represents either $\vec{f}$ or $\vec{\psi}$, and $\bar{\bar{J}}$ stands for either $\bar{\bar{G}}$ or $\bar{\bar{\bar{K}}}\cdot\hat{n}$, depending on if the single or double-layer method is used, respectively.  To allow an exact analytic computation of the integrals, we assume that on the $k$th square face, the vector $\vec{q}'(\vec{x}') = \vec{q}'_k$ is constant, for $k = 1, 2, \dots, N_f$.
  The surface integrals over the entire aggregate may then be discretized as
  \begin{equation}
  \vec{I}(\vec{x}'_{sq,i})  =   \sum_{k=1}^{N_f}  \vec{q}'_k   \int_{S'_{k}} \bar{\bar{J}}(\vec{x}',\vec{x}'_{sq,i}) \ \text{d}S'(\vec{x}') = \sum_{k=1}^{N_f} \vec{q}'_k   \ \bar{\bar{\Pi}}'_{i,k}.
@@ -455,7 +449,7 @@ We found the analysis easier to perform when setting $\vec{U}'_a$ and $\vec{\Ome
  \par
  We note that the numerical method presented here describes the fluid flow around a single aggregate but a similar procedure can be employed to determine the flow exterior to several aggregates. Each aggregate then has its own translation and angular velocity vectors, as well as its own force and torque. In that case, it is more natural to set the force and torque on each particle, using equations (\ref{eq_forcebal}) and (\ref{eq_torquebal}) or equations  (\ref{alpha_dl_nonD}) and (\ref{omega_dl_nonD}), and then solve for the translation and angular velocities, adding two vector equations per aggregate to the linear system.
  \par
- We now discuss specific features of the single- and  double-layer potential methods. For the single-layer potential, we have $\bar{\bar{J}}(\vec{x}',\vec{x}'_k) = \bar{\bar{G}}(\vec{x}',\vec{x}'_k)$, and $\vec{q}'_k = \vec{f}'_k$. 
+ We now discuss specific features of the single- and double-layer potential methods. For the single-layer potential, we have $\bar{\bar{J}}(\vec{x}',\vec{x}'_k) = \bar{\bar{G}}(\vec{x}',\vec{x}'_k)$, and $\vec{q}'_k = \vec{f}'_k$. 
  In that case, the $3N_f \times 3N_f$ linear system obtained is not full rank. Stress vectors are only found up to a constant multiple of the local normal vectors since a stress vector given by a constant multiple of the local normals results in a zero velocity at the interface and a zero net force and torque. To obtain a unique solution, we add an equation enforcing that
  \begin{equation}
  \sum_{k=1}^{N_f} \vec{f}'_k \cdot \hat{n}_k = 0,
@@ -463,7 +457,7 @@ We found the analysis easier to perform when setting $\vec{U}'_a$ and $\vec{\Ome
  \end{equation}
  where $\hat{n}_k$ is the outer normal on each face. The resulting $(3N_f +1)\times 3N_f$ system has a unique solution vector $\vec{f}'_k$. 
  \par
- For the double-layer potential, the unknown density, $\vec{\psi}'_k$, is found using the same discretization (\ref{eq_discretized}) applied to equation (\ref{eq_BI_DL_jump_noD}), resulting in a system with no rank deficiency. However, the values of the total force and torque terms must be solved for simultaneously with the unknown density, resulting in a slightly larger system of size $3(N_f+2)\times 3(N_f+2)$. These additional  equations, (\ref{alpha_dl_nonD}) and (\ref{omega_dl_nonD}), are discretized as,
+ For the double-layer potential, the unknown density, $\vec{\psi}'_k$, is found using the same discretization (\ref{eq_discretized}) applied to equation (\ref{eq_BI_DL_jump_noD}), resulting in a system with no rank deficiency. However, the values of the total force and torque terms must be solved simultaneously with the unknown density, resulting in a slightly larger system of size $3(N_f+2)\times 3(N_f+2)$. These additional  equations, (\ref{alpha_dl_nonD}) and (\ref{omega_dl_nonD}), are discretized as,
  \begin{eqnarray}
  0 \ &=& \
  \int_{S'}  \vec{\psi}'( \vec{x}')  \ \text{d}S'(\vec{x}') -  \vec{F}' \ = \
@@ -484,7 +478,7 @@ where $A' = 4$ is the non-dimensional area of each square.
 	\label{fig_stream}
 	\end{figure}
 	
-	In Fig. \ref{fig_stream}, we present sample streamlines computed with this numerical method. Here, we show results obtained with the single-layer potential method where the aggregate is assumed to move horizontally with $\vec{U}'_a = (1,0,0)$ and $\vec{\Omega}' = (0,0,0)$. The double-layer potential would give results that are visually identical. The streamlines were obtained by performing a second order Runge-Kutta time integration once the velocity was computed.  The streamlines, computed in the frame of reference of the aggregate, can be seen to be deflected by the object, with weaker deflections further away from the aggregate.
+	In Fig. \ref{fig_stream}, we present sample streamlines computed with this numerical method. Here, we show results obtained with the single-layer potential method where the aggregate is assumed to move horizontally with $\vec{U}'_a = (1,0,0)$ and $\vec{\Omega}' = (0,0,0)$. The double-layer potential would give results that are visually identical. Once the velocity was computed, the streamlines were obtained by performing a second-order Runge-Kutta time integration.  The streamlines, computed in the frame of reference of the aggregate, can be seen to be deflected by the object, with weaker deflections further away from the aggregate.
 
 	\subsection{Validation and Comparison}
 
@@ -745,7 +739,7 @@ We therefore present the data as a function of the maximum radius rather than th
 In Fig. \ref{fig_strain_maxR}, we present $S_f'$ for aggregates 
 of different sizes as a function of the maximum 
 radius, $R'_m$. 
-The dashed lines in  Fig. \ref{fig_strain_maxR}  are quadratic fits to the data as a function of maximum radius and we find best fits of $S_f' = 7.48 (R'_m)^2$ for IAA with coefficient of determination of $\mathbf{R}^2=0.74$, and $S_f' = 6.64 (R'_m)^2$ with coefficient of determination of $\mathbf{R}^2=0.56$ for CCA. For both IAA and CCA, we observe that if $N$ is held constant and the maximum radius varied, the growth of the straining force seems to be significantly slower than quadratic. This once again suggests a rescaling as in Section \ref{sec:results_translationflow}. 
+The dashed lines in  Fig. \ref{fig_strain_maxR}  are quadratic fits to the data as a function of maximum radius and we find best fits of $S_f' = 7.48 (R'_m)^2$ for IAA with the coefficient of determination of $\mathbf{R}^2=0.74$, and $S_f' = 6.64 (R'_m)^2$ with the coefficient of determination of $\mathbf{R}^2=0.56$ for CCA. For both IAA and CCA, we observe that if $N$ is held constant and the maximum radius is varied, the growth of the straining force seems to be significantly slower than quadratic. This once again suggests a rescaling as in Section \ref{sec:results_translationflow}. 
 
 \begin{figure}[ht]
 	\begin{center}
@@ -762,7 +756,7 @@ S'_r = \frac{S'_f}{1 + \gamma \sigma_m},
 \label{eq_strain_rescaled}
 \]
 with $\sigma_m$ defined above as the non-dimensional deviation from the average maximum radius for aggregates of the same size.
-This rescaled force yields a better collapse of the data, as can be seen in Fig. \ref{fig_strain_maxR_rescaled}, particularly for IAA. We found that the best rescaling value was $\gamma = -1.32$ for  IAA and $\gamma= -0.92$ for  CCA.  In the CCA case the resulting data appears to grow slightly faster than quadratic. Nonetheless, it is possible to fit a quadratic to the rescaled drag, and doing so yields $S'_r = 8.24 R_m^2 $ with coefficient of determination $\mathbf{R}^2=0.89$ for IAA and $S'_r = 7.47 R_m^2 $ with coefficient of determination $\mathbf{R}^2=0.63$ for CCA. 
+This rescaled force yields a better collapse of the data, as can be seen in Fig. \ref{fig_strain_maxR_rescaled}, particularly for IAA. We found that the best rescaling value was $\gamma = -1.32$ for  IAA and $\gamma= -0.92$ for  CCA.  In the CCA case, the resulting data appears to grow slightly faster than quadratic. Nonetheless, it is possible to fit a quadratic to the rescaled drag, and doing so yields $S'_r = 8.24 R_m^2 $ with coefficient of determination $\mathbf{R}^2=0.89$ for IAA and $S'_r = 7.47 R_m^2 $ with coefficient of determination $\mathbf{R}^2=0.63$ for CCA. 
 
 
 We note that the straining force, even when rescaled, exhibits a large amount of scatter compared to the torque and drag, particularly for CCA, which tend to have more elongated aggregates. Observing individual aggregates of similar size but different straining forces reveals that the straining force is particularly sensitive to the orientation of an aggregate. The scatter is thus largely due to this sensitivity, as the same aggregate oriented differently can experience a significantly different straining force.
@@ -771,23 +765,22 @@ We note that the straining force, even when rescaled, exhibits a large amount of
 \section{Discussion}
 \label{sec:discussion} 
 
-The results presented above all use a resolution of $\Delta x=2$, which corresponds to using aggregates made of cubes of non-dimensional side length 2, not further refined. To assess the accuracy of results with this resolution, we considered 16 different aggregates made of 100 cubes of side length 2 and refined the resolution to use $\Delta x = 2, 1$, and $2/3$, thus increasing the number of cubes from 100 to 800 and 2700 while maintaining the aggregate shape.  
-Both the drag and torque were seen to converge as resolution was increased. The coarsest resolution, used in the section above, yielded results that were less than 2\% away from the more highly resolved results for the drag, and less than 5\% away for the torque (we found for similar sampling that the extensional force behaved in a manner between that of the drag and torque).  For comparison, the standard deviation of the drag and torque of the samples considered was approximately three times as large for all resolution studied. The variability between aggregates of a given size thus far exceeds the error due to a coarse resolution. Further, we performed a similar study on aggregates of various sizes and found that effects of a coarse resolution decreased as the size of the aggregate increased. 
-The data we present is for aggregates of size ranging from 25 to 200 cubes with $\Delta x=2$, and is therefore sufficiently accurate to allow a meaningful quantification of the drag, extensional force, and torque. 
+The results presented above all use a resolution of $\Delta x=2$, which corresponds to using aggregates made of cubes of non-dimensional side length 2, not further refined. To assess the accuracy of results with this resolution, we considered 16 different aggregates made of 100 cubes of side length two and refined the resolution to use $\Delta x = 2, 1$, and $2/3$, thus increasing the number of cubes from 100 to 800 and 2700 while maintaining the aggregate shape.  
+Both the drag and torque were seen to converge as the resolution was increased. The coarsest resolution, used in the section above, yielded results that were less than 2\% away from the more highly resolved results for the drag and less than 5\% away for the torque (we found for similar sampling that the extensional force behaved in a manner between that of the drag and torque).  For comparison, the standard deviation of the drag and torque of the samples considered was approximately three times as large for all resolutions studied. The variability between aggregates of a given size thus far exceeds the error due to a coarse resolution. Further, we performed a similar study on aggregates of various sizes and found that the effects of a coarse resolution decreased as the size of the aggregate increased. 
+The data we present is for aggregates of size ranging from 25 to 200 cubes with $\Delta x=2$ and is, therefore, sufficiently accurate to allow a meaningful quantification of the drag, extensional force, and torque. 
 
 To put the results for aggregates obtained in section \ref{sec:results} into context, we compare them to the well-known corresponding results for a sphere \cite{guazzelli_physical_2011}. 
-The gyration radius of a sphere of radius $R_s$ is $R_g = \sqrt{2/5} R_s$ and thus the Stokes hydrodynamic force acting on a sphere is $\vec{F} = 6 \pi \tilde{\mu} \vec{U}_a R_s \approx 29.8 \tilde{\mu} \vec{U}_a  R_g$.  Also, the torque on a rotating sphere is $\vec{Q} = 8 \pi \tilde{\mu} \vec{\Omega} R_s^3 \approx 99.35 \tilde{\mu} \vec{\Omega} R_g^3$. For a sphere in an extensional flow, the exact solution of the straining force for the flow satisfying $\vec{U}_{bg} = \bar{\bar{M}}\cdot \vec{x}$ at infinity and $\vec{U}_{bg} = 0$ on the surface of the sphere is known \cite{guazzelli_physical_2011}. The details of the computation of the corresponding straining force are given in the appendix. We find that for a matrix $\bar{\bar{M}}$ with unit eigenvector $\hat{v}_i$ and corresponding eigenvalue $\lambda_i$, the straining force is
+The gyration radius of a sphere of radius $R_s$ is $R_g = \sqrt{2/5} R_s$, and thus the Stokes hydrodynamic force acting on a sphere is $\vec{F} = 6 \pi \tilde{\mu} \vec{U}_a R_s \approx 29.8 \tilde{\mu} \vec{U}_a  R_g$.  Also, the torque on a rotating sphere is $\vec{Q} = 8 \pi \tilde{\mu} \vec{\Omega} R_s^3 \approx 99.35 \tilde{\mu} \vec{\Omega} R_g^3$. For a sphere in an extensional flow, the exact solution of the straining force for the flow satisfying $\vec{U}_{bg} = \bar{\bar{M}}\cdot \vec{x}$ at infinity and $\vec{U}_{bg} = 0$ on the surface of the sphere is known \cite{guazzelli_physical_2011}. The details of the computation of the corresponding straining force are given in the appendix. We find that for a matrix $\bar{\bar{M}}$ with unit eigenvector $\hat{v}_i$ and corresponding eigenvalue $\lambda_i$, the straining force is
 \[
 E_{i}  = \frac{1}{2} \int_S | \vec{f} \cdot \hat{v}_i | \ dS = 5  \pi \tilde{\mu} R_s^2 \lambda_i \approx 15.7  \tilde{\mu} R_m^2  \lambda_i,
 \] 
 where we used that the maximum radius $R_m$ of a sphere is simply its usual radius $R_s$ and that a sphere in an extensional flow experiences no net force. 
 
 
-Our results from Section \ref{sec:results}, and the corresponding results for a sphere, are summarized in Table  \ref{table_sum}. We first note that the hydrodynamic force acting on translating aggregates is significantly less than that acting on a translating sphere of the same gyration radius. This is presumably because the aggregates are not densely filled, and thus allow some flow to effectively go through them. For the same reason, the force on the more compact IAA is also greater than that on the less compact CCA.
+Our results from Section \ref{sec:results}, and the corresponding results for a sphere, are summarized in Table  \ref{table_sum}. We first note that the hydrodynamic force acting on translating aggregates is significantly less than that acting on a translating sphere of the same gyration radius. This is presumably because the aggregates are not densely filled and thus allow some flow to effectively go through them. For the same reason, the force on the more compact IAA is also greater than that on the less compact CCA.
 Similarly, the coefficients of the torque for both types of rotating aggregates are less than those of the corresponding rotating sphere. This is, once again, because less compact structures encounter less torque from the fluid when rotating. Further, a similar observation also holds for the straining force when in an extensional flow, where denser structures are subject to a larger straining force for an equivalent radius. 
 
 \begin{table}[ht]
-% the next line makes the table fontsize to an optimal one based on the page margins
 \resizebox{\textwidth}{!}{%
  \begin{tabular}[ht]{|l|c|c|c|}
  \hline
@@ -808,7 +801,7 @@ Rescaled Strain. For. ($S_r$) & N/A & $8.24 (1 - 1.32  \sigma_m )\tilde{\mu} |\l
 We may use our results to define a hydrodynamic radius, $R_h$, as the radius of a sphere subject to similar forces or torque as a given aggregate. The exact hydrodynamic radius varies if we consider the force, torque, or straining force in their corresponding flows. On average, we find that the hydrodynamic radius obtained considering forces and torques was approximately $R_h \approx 1.15 R_g$ for individually-added aggregates, and $R_h \approx 1.01 R_g$ for cluster-cluster aggregates. These results are consistent, though with a smaller coefficient, with results found in terms of the maximum radius and based on the drag alone by Zhang and Zhang \cite{zhang_direct_2015}.
 It should be noted that corresponding spheres would also have a far larger volume, as volume scales like $V \sim R_g^3$ for spheres, while the volume of individually formed aggregates scales as $V \sim R_g^{2.57}$ and that formed by cluster aggregation scales as $V \sim R_g^{1.79}$. 
 
-As stated in the introduction, many models make use of the settling speeds of aggregates. We can use our computed force to obtain a settling speed for an aggregate with given departure from the mean radius of aggregates of similar size, $\sigma_g$, and gyration radius $R_g$. To do so, we match the hydrodynamic force with the buoyancy force, $\vec{F}_b = \vec{g} V \Delta \rho$. Here $\Delta \rho$ is the density difference between the aggregate and the external fluid and $V=8L^3N$ is the aggregate volume, with $L$ the half-width of the cubes forming the aggregates and $N$ the number of cubes within an aggregate. Depending on the aggregate formation mechanism, the number of cubes will scale differently with the gyration radius. For IAA, we found that $N=0.24(R_g')^{2.56}$ and for CCA, we found that $N=1.34 (R_g')^{1.79}$. Using equation (\ref{eq_drag_rescaledIAA}) for IAA, and equation (\ref{eq_drag_rescaledCCA}) for CCA, we may solve for the Stokes settling speed of aggregates. We thus find, for IAA
+As stated in the introduction, many models make use of the settling speeds of aggregates. We can use our computed force to obtain a settling speed for an aggregate with a given departure from the mean radius of aggregates of similar size, $\sigma_g$, and gyration radius $R_g$. To do so, we match the hydrodynamic force with the buoyancy force, $\vec{F}_b = \vec{g} V \Delta \rho$. Here $\Delta \rho$ is the density difference between the aggregate and the external fluid, and $V=8L^3N$ is the aggregate volume, with $L$ the half-width of the cubes forming the aggregates and $N$ the number of cubes within an aggregate. Depending on the aggregate formation mechanism, the number of cubes will scale differently with the gyration radius. For IAA, we found that $N=0.24(R_g')^{2.56}$ and for CCA, we found that $N=1.34 (R_g')^{1.79}$. Using equation (\ref{eq_drag_rescaledIAA}) for IAA, and equation (\ref{eq_drag_rescaledCCA}) for CCA, we may solve for the Stokes settling speed of aggregates. We thus find, for IAA
 \begin{equation}
 \vec{U}_a = 0.19  \left( \frac{\vec{g} \Delta \rho L^{0.44} R_g^{1.56}}{\tilde{\mu}} \right)  \left( \frac{1}{1-0.43\sigma_g}  \right)\,,
 \end{equation}
@@ -822,7 +815,7 @@ For comparison, the settling speed of a sphere in terms of its gyration radius i
 \end{equation}
 These results are consistent with measurements that found that aggregates of fractal dimension close to three, more similar to IAA, had a settling speed of aggregates slower than predictions based on the settling speed of a corresponding sphere \cite{alldredge_situ_1988}.
 
-We note that the increase of the settling speed as a function of aggregate size is slower than for solid objects, particularly for CCA, where the growth only scales as $R_g^{0.79}$. Moreover, we remark that our initial estimate of the Reynolds number of an aggregate was based on the Stokes settling speed of a sphere, which overestimates the settling speed of an aggregate. The use of the Stokes equations is therefore appropriate for aggregates with diameter even larger than 1mm as initially argued.
+We note that the increase of the settling speed as a function of aggregate size is slower than for solid objects, particularly for CCA, where the growth only scales as $R_g^{0.79}$. Moreover, we remark that our initial estimate of the Reynolds number of an aggregate was based on the Stokes settling speed of a sphere, which overestimates the settling speed of an aggregate. The use of the Stokes equations is therefore appropriate for aggregates with diameters even larger than 1mm, as initially argued.
  
 Finally, we note that settling aggregates are generally subject to a non-zero torque and, 
 equivalently, rotating aggregates are subject to a non-zero force. 
@@ -834,7 +827,7 @@ This is a result of the asymmetrical shape of any particular aggregate, which ca
 %=============concentration simulations================
 \section{Concentration dynamics simulations}
 \label{sec:concentration}
-To quantify the efficiency of transferring organic carbon via settling aggregates, the depth of the fluid or shape of aggregates are typically considered.
+To quantify the efficiency of transferring organic carbon via settling aggregates, the depth of the fluid or shape of aggregates is typically considered.
 In the euphotic zone, which is the uppermost layer of the oceans, the majority of marine aggregates are remineralized by metabolic processes \cite{henson_global_2012}. Omand {\it{et al.}} presented a model to study the sensitivity of the shape of the aggregates with its remineralization rate and density \cite{omand_sinking_2020}. 
 Our model of the gravitational sinking aggregates can contribute to understanding the oceanic carbon cycle. 
 To understand this application and track marine aggregate's concentration dynamics, we may couple the three-dimensional advection-diffusion equation, that is 
@@ -850,9 +843,9 @@ We may non-dimensionalize the equation (\ref{eq_ad_diff_3D}) using the same para
 As non-dimensionalize equation (\ref{eq_ad_diff_3D}), 
  we find a dimensionless quantity, the Peclet number (Pe), 
  \[
-\text{Pe} = \frac{U_s R_a}{D_C},	
+\text{Pe} = \frac{U_s R_a}{D_C}.	
  \]
- that describes the ratio between advection and diffusion of the aggregate.  
+ It describes the ratio between advection and diffusion of the aggregate.  
  The resulting equation is
 \begin{equation}
 	\frac{\partial C' }{\partial t'} 
@@ -871,11 +864,11 @@ Note that this could differ by the size of an aggregate and we will explore vari
 In the following subsection, we explain the numerical methods to solve and couple the boundary integral equation with the advection-diffusion equation in time and space. We close this chapter by presenting preliminary results of the concentration dynamics in a homogeneous fluid. 
 \subsection{Numerical methods for the advection-diffusion equation}
 % Since we apply the moving frame of reference, the fluid velocity, $\vec{u}$, is the sum of the velocity we obtain from the boundary integral method and the settling velocity we prescribed on the aggregate, $\vec{U}_a = (0, \ 0, \ -1)$. 
-The main role of coupling the advection-diffusion equation is to update the concentration $C$ in time. The velocity field of the advetion term in equation (\ref{eq_ad_diff_nonD}) is obtained using the boundary integral equations. Note that the velocity does not depend on time. 
+The main role of coupling the advection-diffusion equation is to update the concentration $C$ in time. The velocity field of the advection term in equation (\ref{eq_ad_diff_nonD}) is obtained using the boundary integral equations. Note that the velocity does not depend on time. 
 We only update $C$ in time. Since our entire fluid velocity computation is already large and slow, we try to focus on efficiency for the concentration evaluation.
 \par
 For the time integration, 
-we initially selected the trapezodial rule as the implicit method,
+we initially selected the trapezoidal rule as the implicit method,
 \begin{equation}
 	C_{j}^{n+1}
 	 = C_{j}^{n}+ \frac{\Delta t}{2 } \left[  {\bm F} \left(C_j^{n+1} \right)+ {\bm F}\left(C_j^{n} \right) \right],
@@ -890,7 +883,7 @@ and the two-stages Runge-Kutta as the explicit scheme,
 where where $C_j^n$  represents the discrete concentration value $C'$ at a numerical grid $x_j$ and $n-$th time step.
 Here, the function, $\bm{F}$, represents any choice of spatial discretization method. 
 
-{\color{blue}WE CAN ADD THE COMPARISON OF CONVERGENCE AND SAY WE DECIDED TO USE RK2 FOR efficiency. ->could not find the right plot for both time methods - but I might want to add the plots later.}
+{\color{blue}WE CAN ADD THE COMPARISON OF CONVERGENCE AND SAY WE DECIDED TO USE RK2 FOR efficiency. -> I could not find the right plot for both time methods - but I might want to add the plots later.}
 \subsection{Spatial discretization}
 There are two spatial discretizations we considered: 1) finite differences (central differences) and 2) discrete Fourier transform (DFT). 
 For this comparison, we consider the one-dimensional (1D) version of the advection-diffusion equation,
@@ -902,26 +895,26 @@ For this comparison, we consider the one-dimensional (1D) version of the advecti
 \end{align}
 
 The finite differences method is common and not difficult to implement. 
-It would also allow us to set various boundary conditions. To obtain second order convergence in space with finite differences, we apply  central differences for both the advection and diffusion terms. 
-One may concern about the stability of an explicit time intetration. We therefore want to be careful about and keep track of the Courant-Friedrichs-Levy (CFL) condition for each advection and diffusion term,
+It would also allow us to set various boundary conditions. To obtain second-order convergence in space with finite differences, we apply the central differences for both the advection and diffusion terms. 
+One may concern about the stability of an explicit time integration. We, therefore, want to be careful about and keep track of the Courant-Friedrichs-Levy (CFL) condition for each advection and diffusion term,
 \begin{equation}
 	\max(|u|) \frac{\Delta t}{\Delta x}  \leq 1 \ \ \ \text{for advection, and,}
 	\ \  \frac{1}{\text{Pe}}\frac{\Delta t}{\Delta x^2}  \leq 1 \ \ \ \text{for diffusion}.
 	\end{equation}
 
-DFT, on the other hand, is well-known method to obtain spectral accuracy on a simple periodic domain with smooth data. It is a discretized version of the Fourier transform using the concept of Riemann sums in a bounded domain, instead of infinite space. 
-When we use a product of a small prime factor as a number of discretization nodes, typically DFT is more efficient than the finite differences. Thus, it is worthwhile to compare both methods before we choose one. 
-To measure the strength of DFT method, we assume to have a periodic boundary condition. In the one-dimensional domain $x \in (-L_x/2, L_x/2]$, with period $L$, we discretize the domain with $N$ points. The step-size, then, $\Delta x$ is$ \Delta x = L_x/N$.
+DFT, on the other hand, is a well-known method to obtain spectral accuracy on a simple periodic domain with smooth data. It is a discretized version of the Fourier transform using the concept of Riemann sums in a bounded domain instead of infinite space. 
+When we use a product of a small prime factor as a number of discretization nodes, typically, DFT is more efficient than finite differences. Thus, it is worthwhile to compare both methods before we choose one. 
+To measure the strength of the DFT method, we assume to have a periodic boundary condition. In the one-dimensional domain $x \in (-L_x/2, L_x/2]$, with period $L$, we discretize the domain with $N$ points. The stepsize, then, $\Delta x$ is$ \Delta x = L_x/N$.
 We use MATLAB built-in tools \verb+fft+ and \verb+ifft+ to compute the DFT and inverse DFT conveniently.
 The output of \verb+fft+ of $f(x_j)$ is $\hat{f}_k$. Once we have values in Fourier space, $\hat{f}_k$, we simply multiply by $ik$ or $-k^2$ to obtain $\hat{f}'_k$ or $\hat{f}''_k$, respectively. 
 \par
 One advantage of the DFT can be seen by letting $N$ with the power of a small prime number, typically 2. This allows the floating point operations to become $\mathcal{O}(N \log N)$ instead of $\mathcal{O}(N^2)$. Additionally, if the solution is $m$ times differentiable, the convergence rate for a spectral method is the rate $\mathcal{O}(N^{-m})$. 
 \subsubsection{Comparison between two spatial methods}
-Since our boundary integral method requires an infinite ambient, we approximate periodic boundary conditions by using a large domain size that does not affect the accuracy of the solutions near the aggregate. The velocity decreases toward zero on the edge of our domain
+Since our boundary integral method requires an infinite ambient, we approximate periodic boundary conditions by using a large domain size that does not affect the accuracy of the solutions near the aggregate. The velocity decreases toward zero on the edge of our domain,
 but it is not exactly zero, resulting in a jump at the boundary.
-We, therefore, compare the finite differences and the discrete Fourier transform methods to determine the one that best handles the jump at the boundaries. We investigate the error versus computing time by fixing a jump size with various resolutions. We ran the code for $t = 10 \pi$ in the 1D domain $[0, 2\pi].$ In Figure \ref{fig_precision}, each start point represents the error obtained with the largest $\Delta x \approx 0.1$. Note that the finest solution with $\Delta x \approx 0.003$ is used as the reference solution and we take differences between the finest one and other $\Delta x$ solutions.  
+We, therefore, compare the finite differences and the discrete Fourier transform methods to determine the one that best handles the jump at the boundaries. We investigate the error versus computing time by fixing a jump size with various resolutions. We ran the code for $t = 10 \pi$ in the 1D domain $[0, 2\pi].$ In Figure \ref{fig_precision}, each start point represents the error obtained with the largest $\Delta x \approx 0.1$. Note that the finest solution with $\Delta x \approx 0.003$ is used as the reference solution, and we take differences between the finest one and other $\Delta x$ solutions.  
 \par
-At a glance, the error decreases and computing time increases with higher resolutions, as we expected. In particular, the left panel of Figure \ref{fig_precision} shows a smaller error due to the jump size that is about $\mathcal{O}(10^{-4})$.
+At a glance, the error decreases, and computing time increases with higher resolutions, as we expected. In particular, the left panel of Figure \ref{fig_precision} shows a smaller error due to the jump size that is about $\mathcal{O}(10^{-4})$.
 We note the computing time differences between the two methods. We can see this clearly in the right panel of Figure \ref{fig_precision}. To get a certain error size, for instance, $\mathcal{O}(10^{-5})$, the finite differences scheme requires less time than the DFT method. The gap between the two methods becomes larger as we compute the solution with finer resolution.  
 The reason we got this result is that the MATLAB built-in functions, \verb+fft+, and \verb+ifft+, spend more time than building the sparse matrix for the finite differences to compute derivatives. It shows that the finite differences are more efficient for our situation. 
 Thus, we have decided to use the finite differences scheme for spatial discretization of the advection-diffusion equation.
@@ -932,10 +925,7 @@ Thus, we have decided to use the finite differences scheme for spatial discretiz
 	\caption{Error and computing time with jump size (left) $\mathcal{O}(10^{-4})$ and (right) $\mathcal{O}(10^{-3})$ with various resolutions ($\Delta x \approx [0.1, 0.05, 0.025, 0.01, 0.006])$}
 	\label{fig_precision}
 \end{figure}
-% Test problem description
-% We test the two methods with a Gaussian function as the initial concentration and an advection velocity. Details are given in the next two sections. 
 
-% This is close to the maximum Peclet number we may expect and may have large diffusion that is enough to use central difference scheme for advection term as well. 
 %===SECTION 1.2=========================================
 \subsection{Frames of reference}
 Throughout this work, we use two frames of reference: 1) lab and 2) moving frame of reference. First, for the fluid velocity computation, we use the lab frame of reference to take advantage of the zero velocity boundary condition at infinity, as shown in Figure \ref{fig_frame_ref} (left). 
@@ -946,8 +936,8 @@ Throughout this work, we use two frames of reference: 1) lab and 2) moving frame
 	\caption{Schematics of frames of reference. (Left) lab frame and (right) moving frame of reference }
 	\label{fig_frame_ref}
 \end{figure}
-This condition implies that the domain is large enough, compared to the aggregate.
-We solve for the stress on the aggregate boundary, by prescribing the constant velocity or the body force of the aggregate, in order to compute the fluid velocity field. 
+This condition implies that the domain is large enough compared to the aggregate.
+We solve for the stress on the aggregate boundary by prescribing the constant velocity or the body force of the aggregate in order to compute the fluid velocity field. 
 % We then solve for the fluid equations.
 % Note that the position of the aggregate at time $t$, $\vec{x}_L(t)$, can be expressed as
 % \begin{equation}
@@ -958,21 +948,20 @@ We solve for the stress on the aggregate boundary, by prescribing the constant v
 \par
 On the other hand, we use the moving frame to model the concentration dynamics.
 In this setting, we fix the aggregate in the middle of the fluid domain and move the fluid upward to describe the settling motion, as shown in Figure \ref{fig_frame_ref} (right).
-This can be done by change of variable from the velocities in the lab frame; we simply add $-\vec{u}_a$ to all velocities in the lab frame of reference,
+This can be done by changing of variable from the velocities in the lab frame; we simply add $-\vec{u}_a$ to all velocities in the lab frame of reference,
 \[
 \vec{u}_M = \vec{u}_L - \vec{u}_a.
 \]
  The velocity at the boundary of the fluid domain becomes the same speed as $\vec{u}_s$ but in the opposite direction, i.e., $-\vec{u}_a = (0, \ 0, \ 1)$. We also can see that now the aggregate has zero velocity in the moving frame of reference.
 
 \subsection{Simulations}
-As a sample simulations, we use 10 cubes to model an aggregate and have discontinuous initial concentration, setting zero throughout the fluid domain, outside of the aggregate, and higher concentration inside and on the aggregate. Specifically, we prescribe values of $1$ for the inside of each cube and $0.5$ for all square faces. We also place $0.25$ and $0.125$ for all edges and corners of cubes, respectively. 
-This intuitive concentration setup is to reduce the risk of any stability issue due to the dinscontinuity at the aggregate boundary. 
+As a sample simulation, we use ten cubes to model an aggregate and have discontinuous initial concentration, setting zero throughout the fluid domain, outside of the aggregate, and higher concentration inside and on the aggregate. Specifically, we prescribe values of $1$ for the inside of each cube and $0.5$ for all square faces. We also place $0.25$ and $0.125$ for all edges and corners of cubes, respectively. 
+This intuitive concentration setup is to reduce the risk of any stability issue due to the discontinuity at the aggregate boundary. 
 
 In addition to the initial concentration, the following conditions are set:
 \begin{framed}
 \begin{itemize}
 	\item Number of cubes ($NC$) = 10
-	%\item $s = 2$; (used to determine the size of domain)
 	\item Settling velocity ($\vec{U}_a$) = $(0,0,-1)$
 	\item Center of mass of the aggregate ($\vec{x}_{cm}$) = $(-0.8, \  0.4, \ 0)$
 	\item Maximum radius of the aggregate ($R_m$) $\approx 5.3472$
@@ -984,13 +973,13 @@ In addition to the initial concentration, the following conditions are set:
 \end{itemize}
 \end{framed}
 
-For the Peclet number we set for the sample simulation, in case it is necessary to observe a larger Peclet number which could have more numerical error, we set Pe $=100$.
+For the Peclet number we set for the sample simulation, in case it is necessary to observe a larger Peclet number that could have more numerical error, we set Pe $=100$.
 We compute the fluid velocity field once using the boundary integral method and keep it fixed while we update the concentration. 
 \par
-We simulated this problem using both the implicit (trapezoid), and the explicit (RK2) time integration. Under the conditions provided above, we get an advection CFL condition number of approximately 0.03 and a diffusion one as 0.08. Since the CFL numbers are less than 1, we can use the RK2 method with no stability issue. 
+We simulated this problem using both the implicit (trapezoid) and the explicit (RK2) time integration. Under the conditions provided above, we get an advection CFL condition number of approximately 0.03 and a diffusion one as 0.08. Since the CFL numbers are less than 1, we can use the RK2 method with no stability issue. 
 The main reason we wanted to try the explicit method is to reduce computing time if possible. However, we found that both time integration methods gave us similar results in terms of computing time. Before we officially decide which method we are going to use for further research, we will check the order convergence.
 \par
-We present the snapshots of simulations using the discontinuous initial concentration in Figure \ref{fig_ic4_RK2_snap135}. It is a three-dimensional simulation, however, for clear visualization, we slice the domain at $x= -0.8$ which is the middle of $x-$axis.
+We present the snapshots of simulations using the discontinuous initial concentration in Figure \ref{fig_ic4_RK2_snap135}. It is a three-dimensional simulation; however, for clear visualization, we slice the domain at $x= -0.8$, which is the middle of $x-$axis.
  Note that we are using a moving frame of reference such that the surrounding fluid is flowing upward to represent the settling aggregate motion.
 After time $t \approx 30$ in Figure \ref{fig_ic4_RK2_snap135}, we can see lower concentration is going outside of our numerical domain.  
  \begin{figure}[h]
@@ -1001,15 +990,15 @@ After time $t \approx 30$ in Figure \ref{fig_ic4_RK2_snap135}, we can see lower 
  \label{fig_ic4_RK2_snap135}
  \end{figure}
  
-Figure \ref{fig_sumC} shows that the sum of the concentration of the fluid over time.
-The results seems to be consistent with our expectation that the mass is conserved until the flow reaches the upper boundary of our domain. The right plot in Figure \ref{fig_sumC} shows the concentration difference between at each time and initial one up to time $t = 20$. This can be interpreted as a perturbation, which increases over time.  
+Figure \ref{fig_sumC} shows the sum of the concentration of the fluid over time.
+The results seem to be consistent with our expectation that the mass is conserved until the flow reaches the upper boundary of our domain. The right plot in Figure \ref{fig_sumC} shows the concentration difference between each time and the initial one up to time $t = 20$. This can be interpreted as a perturbation, which increases over time.  
  \begin{figure}[ht]
  \begin{center}
     \epsfig{figure=./figures/fig_sumC_ic4_only.eps, scale = 0.3}
 	%  \hspace{5mm}
 	\epsfig{figure=./figures/fig_sumC_error_ic4_only.eps, scale = 0.3}
  \end{center}
- \caption{(Left) Variation of total concentration in fluid domain in time. (Right) Error between the total concentration at each time and initial sum of concentration.}
+ \caption{(Left) Variation of total concentration in the fluid domain in time. (Right) The error between the total concentration at each time and the initial sum of concentration.}
  \label{fig_sumC}
  \end{figure}
  %% -------About the Concentration Dynamics here --------------------------------
@@ -1029,7 +1018,7 @@ The results seems to be consistent with our expectation that the mass is conserv
 \label{sec:conclusion}
 
 We have developed a novel implementation of boundary integral methods for flow around aggregates composed of cubes. In this case, we found that the single-layer approach was more accurate and therefore used it to study the flow around randomly formed aggregates.
-We have presented results of the flow around individually-added aggregates and cluster-to-cluster aggregates  and  characterized the resulting forces on the aggregates. We have identified a suitable length scale to characterize the behavior of fractal aggregates in various contexts. To describe the drag or force, and  torque, on an aggregate, the gyration radius, $R_g$, is the best choice, with respective scalings of $\vec{F} \sim \tilde{\mu} \vec{U}_a R_g$ and $\vec{Q} \sim \tilde{\mu} \vec{\Omega} R_g^3$, as should be expected in Stokes flow. 
+We have presented the results of the flow around individually-added aggregates and cluster-to-cluster aggregates and characterized the resulting forces on the aggregates. We have identified a suitable length scale to characterize the behavior of fractal aggregates in various contexts. To describe the drag or force, and torque, on an aggregate, the gyration radius, $R_g$, is the best choice, with respective scalings of $\vec{F} \sim \tilde{\mu} \vec{U}_a R_g$ and $\vec{Q} \sim \tilde{\mu} \vec{\Omega} R_g^3$, as should be expected in Stokes flow. 
 An improved collapse of the drag is possible if we account for an aggregate's departure from its typical size, $\bar{R}_g$, through the factor $\sigma_g = \frac{R_g - \bar{R}_g}{\bar{R}_g}$. 
 The nearly linear relationship between the drag and the gyration radius indicates that the choice of $R_g$ to describe the size of an aggregate is an appropriate one while, for example, the volume-based size $L=V^{1/3}$ would not yield a linear relationship with the drag.  
 
@@ -1040,9 +1029,9 @@ of straining force is
 possible using an aggregate's departure from its typical size, $\sigma_m = \frac{R_m - \bar{R}_m}{\bar{R}_m}$. 
 
 
-Our numerical approach can be directly applied to compute the flow around several particles. We thus plan to use it in future work to conduct a more accurate investigation of aggregate formation. In the present study, as is the case in the vast majority of diffusion-limited aggregation studies, aggregates were formed without factoring in flow dynamics. Our numerical approach allows us to determine dynamically the response of the system when subjected to stochastic forces. Rather than assuming a constant drag and no deformation, we may instead calculate the forces acting on every particle, determine the deformation or potential break-up of the particles by matching the viscous stress with the particle's elastic stress, and determine the aggregates settling velocity as it deforms. Such an approach should provide the most accurate aggregate formation model yet, which in turn will allow for a more accurate characterization of their properties.
+Our numerical approach can be directly applied to compute the flow around several particles. We thus plan to use it in future work to conduct a more accurate investigation of aggregate formation. In the present study, as is the case in the vast majority of diffusion-limited aggregation studies, aggregates were formed without factoring in flow dynamics. Our numerical approach allows us to determine the response of the system dynamically when subjected to stochastic forces. Rather than assuming a constant drag and no deformation, we may instead calculate the forces acting on every particle, determine the deformation or potential break-up of the particles by matching the viscous stress with the particle's elastic stress, and determine the aggregates settling velocity as it deforms. Such an approach should provide the most accurate aggregate formation model yet, which in turn will allow for a more accurate characterization of their properties.
 
 Another promising avenue for future work is the incorporation of stratification effects. Marine aggregates typically settle in a water column where the density increases with depth, owing to salinity and temperature variations. Since aggregates are very porous, they are sensitive to stratification \cite{prairie_delayed_2013}. 
-Fluid entrainment and diffusive effects play a role to first stop, and then restart the settling of the porous aggregate
-\cite{panah_simulations_2017}. This process has already been modeled using spherical particles, but how diffusion affects fractal-like aggregates remains unclear. By coupling the current simulations to a concentration field subject to advection-diffusion and tracking its effect on the particle density, one should be able to obtain a simple but improved approximation of the behavior of aggregates settling in a stratified ambient. Our approach may also be extended, though with a significant increase in computational effort, to account for the effects of stratification on the flow itself by adding a volume integral of the concentration to equation (\ref{eq_slp}), thus providing a complete picture of the effects of density stratification.
+Fluid entrainment and diffusive effects play a role to first stopping, and then restarting the settling of the porous aggregate
+\cite{panah_simulations_2017}. This process has already been modeled using spherical particles, but how diffusion affects fractal-like aggregates remains unclear. By coupling the current simulations to a concentration field subject to advection-diffusion and tracking its effect on the particle density, one should be able to obtain a simple but improved approximation of the behavior of aggregates settling in a stratified ambient. Our approach may also be extended, though with a significant increase in computational effort, to account for the effects of stratification on the flow itself by adding a volume integral of the concentration to the equation (\ref{eq_slp}), thus providing a complete picture of the effects of density stratification.
 
