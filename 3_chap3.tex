@@ -1170,12 +1170,17 @@ We examine the code by varying 1) time step size, 2) space step size, and 3) dom
 Due to the runtime of the entire simulation, we validate our code using an aggregate composed of ten cubes. 
 From the center of mass of the aggregate,  $\vec{x}_{cm}$, we define our fluid domain, $V$, using the maximum radius of the aggregate, $R_m$, as 
 \[
-	V = [\vec{x}_{cm,1} - s R_m , \ \vec{x}_{cm,1} + s R_m ] \times
-	[\vec{x}_{cm,2} - sR_m, \ \vec{x}_{cm,2} + s R_m]  \times 	
-	[\vec{x}_{cm,3} - 2sR_m, \ \vec{x}_{cm,3} + 2sR_m ],
+	V: \ \vec{x}_{cm} - \begin{pmatrix}
+		1 \\ 1 \\ 3
+		\end{pmatrix} s R_m , 
+		\ \vec{x}_{cm} + \begin{pmatrix}
+			1 \\ 1 \\ 3
+			\end{pmatrix} s R_m 
 \]
 where $s$ regulates the size of the fluid domain.
-
+\begin{itemize}
+	\item We see slight instabilities on the top of the fluid domain perturbation increases. 
+\end{itemize}
 
 \begin{figure}[ht]
 	\begin{center}
