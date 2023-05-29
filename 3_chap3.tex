@@ -1119,67 +1119,24 @@ After implementing the FMM3D library into our program, we timed one more time to
 \end{center}
 \end{figure}
 
-% \clearpage
-% On January 27, 2023, we decided to check in the timing and memory capacity to use the Pinnacles. I am going to test both SLP and FMM versions, separately, just to make sure if FMM is converging to the correct velocities. Here are the paratmesters we are going to use for this experiment:
-% \begin{framed}
-% 	\begin{itemize}
-% 	\item \verb+NC = [50, 100]+ (Random shape {\color{red}$\rightarrow$ check the Nf}) 
-% 	\item \verb+Nx = [60, 120]+
-% 	\item \verb+Ny = Nx, Nz = 2Nx+
-% 	\item Fluid domain size: Make $\Delta x =\Delta y = \Delta z = 1$.
-% 	\item $\Delta t = 0.5$
-% 	\item \verb+Nt = 100+ (Final time would be 50.)
-% 	\item Pe = 0.5 ( = $\Delta t$)
-% 	\item {\color{blue} Save at 1) the final time only AND 2) every time step: velocity, C, $U_a$ with location, $\Omega$, $\theta$ (rotaion angle)}
-% 	\end{itemize}
-% \end{framed}
 
-
-
-% \begin{figure}[h]
-% 	\begin{center}
-% 		\vspace{0.5cm}
-% 		\includegraphics[scale=0.5]{./figures/fig_time_varNx5}	
-% 	\caption{Number of cubes is 125.}
-% 	\label{fig_time_varNx5}
-% \end{center}
-% \end{figure}
-\begin{comment}
-\clearpage
-\begin{itemize}
-	\item How did you code up exactly to use FMM3D?
-	\item you may introduce index notations for this"  $i,j = 1,2,3$ works twice = 18 times  
-	\item What is the main difference between volume integral and this surface integral?
-	\item {\color{red} We expect to use total 18 times of FMM3D library to compute the entire velocity field.$\rightarrow$ why?}
-\end{itemize}
-In order to validate the code, measure the error size, and check the computation time, we consider a homogeneous case.
-Error plots - compare the $U_a = -0.3470$ values.
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[scale=0.4]{./figures/fig_cornerErr_L2}
-		\includegraphics[scale=0.4]{./figures/fig_cornerErr_iN_f}
-	\caption{(Left) Velocity plot of one face. 1 point is used to approximate the surface integral of $G$ kernel using FMM. (Right) $11^2$ point is used to approximate the surface integral of $G$ kernel using FMM. }
-	\label{fig_cornerErr}
-\end{center}
-\end{figure}
-\end{comment}
-%Rotation---------------------------------------------------
-\clearpage
+%validation---------------------------------------------------
 \section{Validation}
 We examine the code by varying 1) time step size, 2) space step size, and 3) domain size. 
 Due to the runtime of the entire simulation, we validate our code using an aggregate composed of ten cubes. 
 From the center of mass of the aggregate,  $\vec{x}_{cm}$, we define our fluid domain, $V$, using the maximum radius of the aggregate, $R_m$, as 
 \[
 	V: \ \vec{x}_{cm} - \begin{pmatrix}
-		1 \\ 1 \\ 3
+		1 \\ 1 \\ 2
 		\end{pmatrix} s R_m , 
 		\ \vec{x}_{cm} + \begin{pmatrix}
-			1 \\ 1 \\ 3
+			1 \\ 1 \\ 2
 			\end{pmatrix} s R_m 
 \]
 where $s$ regulates the size of the fluid domain.
 \begin{itemize}
-	\item We see slight instabilities on the top of the fluid domain perturbation increases. 
+	\item We see slight instabilities on the top of the fluid domain perturbation increases. Considering a large enough fluid domain compared to the aggregate size, we hope to have the convergence of the quantities of interest near the aggregate. 
+	\item To convince readers, we hereby show an aggregate's settling speed, location, and drag over time. We form an aggregate using ten cubes for the validations. 
 \end{itemize}
 
 \begin{figure}[ht]
@@ -1192,26 +1149,15 @@ where $s$ regulates the size of the fluid domain.
 \end{figure}
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_Ua3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_C_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_cm3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_Fo3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_UaFo3_ratio}
+		\includegraphics[scale=0.33]{./figures/fig_NC10_dt_Ua3_all}
+		\includegraphics[scale=0.33]{./figures/fig_NC10_dt_C_all}
+		\includegraphics[scale=0.33]{./figures/fig_NC10_dt_cm3_all}
+		\includegraphics[scale=0.33]{./figures/fig_NC10_dt_Fo3_all}
 	\caption{Compare various $\Delta t = 0.75, \ 0.5, \ 0.25$ in the domain size factor $s = 5$ with $\Delta x = 1$.}
 	\label{fig_NC10_compare_dt}
 \end{center}
 \end{figure}
-\begin{figure}
-	\begin{center}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_diff_Ua3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_diff_C_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_diff_cm3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_diff_Fo3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dt_diff_UaFo3_ratio}
-	\caption{Absolute difference between two consecutive $\Delta t$ case. The orange line is obtained with $\Delta = 0.75$ and $\Delta = 0.5$, and we got the blue one with $\Delta = 0.75$ and $\Delta = 0.25$.}
-	\label{fig_NC10_consec_diff}
-\end{center}
-\end{figure}
+
 Domain size variation
 \begin{figure}[h]
 	\begin{center}
@@ -1219,7 +1165,6 @@ Domain size variation
 		\includegraphics[scale=0.25]{./figures/fig_NC10_s_C_all}
 		\includegraphics[scale=0.25]{./figures/fig_NC10_s_cm3_all}
 		\includegraphics[scale=0.25]{./figures/fig_NC10_s_Fo3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_s_UaFo3_ratio}
 	\caption{Compare various domain sizes $\Delta s = 3, \ 4, \ 5$ in the step sizes $\Delta t = 0.5$ with $\Delta x = 1$.}
 	\label{fig_NC10_compare_s}
 \end{center}
@@ -1231,7 +1176,6 @@ Space step variation.
 		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_C_all}
 		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_cm3_all}
 		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_Fo3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_UaFo3_ratio}
 	\caption{Compare various $\Delta x = 1, \ 2, \ 4$ in the domain size factor $s = 5$ with $\Delta t = 0.75$.}
 	\label{fig_NC10_compare_dx}
 \end{center}
@@ -1261,7 +1205,6 @@ Domain size variation with fifty cubes.
 		\includegraphics[scale=0.25]{./figures/fig_NC50_s_C_all}
 		\includegraphics[scale=0.25]{./figures/fig_NC50_s_cm3_all}
 		\includegraphics[scale=0.25]{./figures/fig_NC50_s_Fo3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC50_s_UaFo3_ratio}
 	\caption{Considering an aggregate with fifty cubes, compare various domain sizes $\Delta s = 3, \ 4, \ 5$ in the step sizes $\Delta t = 0.5$ with $\Delta x = 1$.}
 	\label{fig_NC50_compare_s}
 \end{center}
@@ -1271,4 +1214,4 @@ Domain size variation with fifty cubes.
 \clearpage
 \section{Simultation results}
 \section{Discussions}
-about the finite differences 
+About the finite differences 
