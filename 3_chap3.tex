@@ -1122,7 +1122,7 @@ After implementing the FMM3D library into our program, we timed one more time to
 
 %validation---------------------------------------------------
 \section{Validation}
-In order to determine our simulation settings, we examine the simplified results by varying 1) time step $\Delta t$, 2) space step $\Delta x$, and 3) domain sizes. Note that we use an uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To differ the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and the maximum radius of the aggregate, $R_m$.
+In order to determine our simulation settings, we examine the simplified results by varying 1) time step $\Delta t$, 2) space step $\Delta x$, and 3) domain sizes. Note that we use uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To differ the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and the maximum radius of the aggregate, $R_m$.
 From $\vec{x}_{cm}$, we scale the domain $V$ with a constant $s$,
 \[
 	V = 
@@ -1138,16 +1138,17 @@ From $\vec{x}_{cm}$, we scale the domain $V$ with a constant $s$,
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.235]{./figures/fig_NC10_snaps_all.pdf}
-	\caption{Snapshots at time $t = 24$ and $t = 48$. We look at $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. }
-	\label{fig_NC10_snaps_all}
-\end{center}
+		\caption{Snapshots of the perturbation obtained with $\Delta t = 0.75, \ \Delta x = 1,$ and $s = 5$. We look at $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. The small white dot is located outside of, but very close to, the aggregate.}
+		\label{fig_NC10_snaps_all}
+	\end{center}
 \end{figure}
-\begin{itemize}
-	\item We see slight instabilities on the top of the fluid domain perturbation increases. Considering a large enough fluid domain compared to the aggregate size, we hope to have the convergence of the quantities of interest near the aggregate. 
-	\item To convince readers, we hereby show an aggregate's settling speed, location, and drag over time. We form an aggregate using ten cubes for the validations. 
-\end{itemize}
-
-
+We use ten cubes to form an aggregate model for the validation, as shown in Figure {\color{blue}ADD FIGURE}.
+Since we are interested in the aggregate's behavior, we measure its translational velocity $\vec{U}_a$, location of $\vec{x}_{cm}$, and drag. The sole fluid quantity we want to observe is the perturbation $C(\vec{x},t)$. At a location that is far away from the aggregate, we expect to see very small, almost zero, perturbation.
+We thus focus on the perturbation value near the aggregate.
+\par
+As a sample result, Figure \ref{fig_NC10_snaps_all} shows three snapshots of the perturbation $C$, obtained with $\Delta t = 0.75, \ \Delta x = 1$, and $s = 5$, at $x = -0.3$. Note that the initial center of mass was $(-0.8, \    0.4, \      0)$. Since we use the moving frame of reference to compute the perturbation, the aggregate stays in the middle of the fluid domain in Figure \ref{fig_NC10_snaps_all}.
+At a later time, we notice slight instabilities on the top of the fluid domain as the perturbation increases. Considering a large enough fluid domain compared to the aggregate size, we would like to observe the convergence of the quantities of interest near the aggregate. 
+\subsection{Various time steps}
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.33]{./figures/fig_NC10_dt_Ua3_all}
@@ -1181,7 +1182,7 @@ Space step variation.
 	\label{fig_NC10_compare_dx}
 \end{center}
 \end{figure}
-Fifty cube sample.
+Fifty cube samples.
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.4]{./figures/fig_NC50_sample_compare}
