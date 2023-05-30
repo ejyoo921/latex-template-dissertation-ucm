@@ -1122,31 +1122,32 @@ After implementing the FMM3D library into our program, we timed one more time to
 
 %validation---------------------------------------------------
 \section{Validation}
-We examine the code by varying 1) time step size, 2) space step size, and 3) domain size. 
-Due to the runtime of the entire simulation, we validate our code using an aggregate composed of ten cubes. 
-From the center of mass of the aggregate,  $\vec{x}_{cm}$, we define our fluid domain, $V$, using the maximum radius of the aggregate, $R_m$, as 
+In order to determine our simulation settings, we examine the simplified results by varying 1) time step $\Delta t$, 2) space step $\Delta x$, and 3) domain sizes. Note that we use an uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To differ the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and the maximum radius of the aggregate, $R_m$.
+From $\vec{x}_{cm}$, we scale the domain $V$ with a constant $s$,
 \[
-	V: \ \vec{x}_{cm} - \begin{pmatrix}
+	V = 
+	\begin{bmatrix}
+	 \ \vec{x}_{cm} - \begin{pmatrix}
 		1 \\ 1 \\ 2
 		\end{pmatrix} s R_m , 
 		\ \vec{x}_{cm} + \begin{pmatrix}
 			1 \\ 1 \\ 2
-			\end{pmatrix} s R_m 
+			\end{pmatrix} s R_m.
+	\end{bmatrix}
 \]
-where $s$ regulates the size of the fluid domain.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.235]{./figures/fig_NC10_snaps_all.pdf}
+	\caption{Snapshots at time $t = 24$ and $t = 48$. We look at $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. }
+	\label{fig_NC10_snaps_all}
+\end{center}
+\end{figure}
 \begin{itemize}
 	\item We see slight instabilities on the top of the fluid domain perturbation increases. Considering a large enough fluid domain compared to the aggregate size, we hope to have the convergence of the quantities of interest near the aggregate. 
 	\item To convince readers, we hereby show an aggregate's settling speed, location, and drag over time. We form an aggregate using ten cubes for the validations. 
 \end{itemize}
 
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[scale=0.3]{./figures/fig_NC10_snap_33}
-		\includegraphics[scale=0.3]{./figures/fig_NC10_snap_65}
-	\caption{Snapshots at time $t = 24$ and $t = 48$. We look at $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. }
-	\label{fig_NC10_snaps}
-\end{center}
-\end{figure}
+
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.33]{./figures/fig_NC10_dt_Ua3_all}
