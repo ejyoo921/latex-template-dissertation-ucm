@@ -885,6 +885,7 @@ Here, the function, $\bm{F}$, represents any choice of spatial discretization me
 % {\color{blue}WE CAN ADD THE COMPARISON OF CONVERGENCE AND SAY WE DECIDED TO USE RK2 FOR efficiency. -> I could not find the right plot for both time methods - but I might want to add the plots later.}
 
 \subsection{Spatial discretization}
+\label{subsec:AD_numerics_space}
 There are two spatial discretizations we considered: 1) finite differences (central differences) and 2) discrete Fourier transform (DFT). 
 For this comparison, we consider the one-dimensional (1D) version of the advection-diffusion equation,
 \begin{align}
@@ -900,7 +901,8 @@ One concern is the stability of an explicit time integration. We, therefore, wan
 \begin{equation}
 	\max(|u|) \frac{\Delta t}{\Delta x}  \leq 1 \ \ \ \text{for advection, and,}
 	\ \  \frac{1}{\text{Pe}}\frac{\Delta t}{\Delta x^2}  \leq 1 \ \ \ \text{for diffusion}.
-	\end{equation}
+\label{eq_CFL}	
+\end{equation}
 The DFT, on the other hand, is a well-known method to obtain spectral accuracy on a simple periodic domain with smooth data. It is a discretized version of the Fourier transform using the concept of Riemann sums in a bounded domain instead of infinite space. 
 When we use a product of a small prime factor as a number of discretization nodes, typically, DFT is more efficient than finite differences. Thus, it is worthwhile to compare both methods before we choose one. 
 In the one-dimensional domain $x \in (-L_x/2, L_x/2]$, with period $L$, we discretize the domain with $N$ points. The stepsize, then, $\Delta x$ is $ \Delta x = L_x/N$.

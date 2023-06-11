@@ -2,8 +2,8 @@
 
 
 In the last few decades, several scientists have modeled the dynamics and ecological impact of marine aggregates \cite{jackson_aggregation_1998, kiorboe_mechanisms_2002}. 
-Their effects on bacterial transport \cite{jackson_simulation_1989} and algal bloom \cite{jackson_model_1990} have been described in models that use simplified descriptions of the aggregates' settling speeds. Moreover, accumulation of aggregates in thin layers where the ambient fluid is stratified have been reported \cite{macintyre_accumulation_1995, alldredge_occurrence_2002} and more recently modeled experimentally \cite{prairie_delayed_2013}, analytically \cite{camassa_retention_2013}, and computationally \cite{panah_simulations_2017}. Understanding the formation and persistence of these thin layers is ecologically important. 
-Therefore, in this chapter, we discuss the dynamics of settling marine aggregates in a density stratified fluid. 
+Their effects on bacterial transport \cite{jackson_simulation_1989} and algal bloom \cite{jackson_model_1990} have been described in models that use simplified descriptions of the aggregates' settling speeds. Moreover, accumulation of aggregates in thin layers where the ambient fluid is stratified has been reported \cite{macintyre_accumulation_1995, alldredge_occurrence_2002} and more recently modeled experimentally \cite{prairie_delayed_2013}, analytically \cite{camassa_retention_2013}, and computationally \cite{panah_simulations_2017}. Understanding the formation and persistence of these thin layers is ecologically important. 
+Therefore, in this chapter, we discuss the dynamics of settling marine aggregates in a density-stratified fluid. 
 %---------------------------------------------------------
 \par
 Instead of constant density $\rho$, we suppose the background fluid density varies linearly in the vertical direction,
@@ -11,7 +11,7 @@ Instead of constant density $\rho$, we suppose the background fluid density vari
 \rho_{bg}(z) =  \rho_0 \left(1 - \gamma z \right),
 \label{eq_rho_bg}
 \end{equation}
-where $\rho_0$ is the fluid density where the aggregate's center of mass is located at rest, and $\gamma > 0$ is constant.
+where $\rho_0$ is the fluid density where the aggregate's center of mass is located at rest and $\gamma > 0$ is constant.
 Over the time $t$, some perturbations, $C(\vec{y},t)$, occur due to the concentration, $\tilde{S}(\vec{y},t)$, difference between the background fluid and settling aggregate,
 \begin{equation}
 C(\vec{y}, t) =  \tilde{S}(\vec{y},t) - \rho_{bg}(z).
@@ -90,7 +90,7 @@ This implies that the solutions (\ref{eq_fund_u}) and (\ref{eq_fund_p}) satisfy 
 	\frac{\vec{x} - \vec{y}}{\| \vec{x} - \vec{y}\|^3}
 	\cdot  \vec{q} \biggr)
 	+ \vec{q} \ \delta \left(\vec{x} - \vec{y} \right)
-	=0 .
+	=0.
 \label{eq_single_stokes_sub}
 \end{equation}
 As we multiply by $\left( C(\vec{x}, t) \right)$ on both sides and integrate the entire equation over the domain, $V(\vec{x})$, we get
@@ -269,7 +269,7 @@ Since the fluid density is evolving only in the gravitational direction, $z-$dir
 \end{equation}
 We track the perturbation $C(z,t)$ for every time step by solving the equation (\ref{eq_AD_C}).
 %------------------------------------------------------------------
-\section{Non-dimensionalization}
+\section{Dimensional analysis}
 To facilitate further analysis, we non-dimensionalize our new equations. We mainly use the same parameters we introduced in section \ref{section3}, equations (\ref{eq_nonD}), in addition to the following dimensionless parameters:
 \begin{equation}
 	C= C_{max} C'
@@ -292,7 +292,7 @@ C_{max} =
  % \left| \tilde{S}(z_\text{top}, \ 0 )
  % - \tilde{S} \left( z_\text{bottom}, \ 0 \right) \right|. 
 \] 
-As we want to see the settling of an aggregate throughout the fluid having a density gradient, we decided to have 1\% density difference between the top and bottom layers of the fluid domain.
+As we want to see the settling of an aggregate throughout the fluid having a density gradient, we decided to have a 1\% density difference between the top and bottom layers of the fluid domain.
 %  {\color{red}NEED NUMBER WITH UNIT AND A REFERENCE!}
 \par
 We first derived the dimensionless modified Stokes momentum equation,
@@ -370,7 +370,7 @@ Note that $\mathcal{Q}(0) = \bar{\bar{I}}$ (identity matrix) at initial time. Af
 \end{equation} 
 where $\mathcal{R}$ is the rotation matrix. 
 \par
-Assume we obtain the angular velocity, $\vec{\Omega}$ from a time step. (Initially, it is zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
+Assume we obtain the angular velocity, $\vec{\Omega}$ from a time step. (Initially, it is a zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
 The matrix $\mathcal{A}$ is then defined as 
 \begin{equation}
 	\mathcal{A}
@@ -477,7 +477,7 @@ Once we solve the linear system, we may return the values on the fluid grid to t
 % \]
 % The validation of stress is in section (\ref{validation_rot}).
 \subsection{Velocity compuation}
-Once we solve for the stress, we are supposed to use the same 
+Once we solve the stress, we are supposed to use the same 
 equation (\ref{eq_vel_all_onS_nonD}) 
 to solve for velocity in the fluid grid, which stays in the Cartesian coordinates.
 Although the volume integral term can stay as it is,  
@@ -579,7 +579,7 @@ See Figure \ref{fig_rho_bg_on_S1} for notations.
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.3]{./figures/fig_rho_bg_on_S1.pdf}
-	\caption{Example cube to describe the buoyancy force computation. The pink area is $S^1$ integral domain.}
+	\caption{Example cube to describe the buoyancy force computation. The pink area is the $S^1$ integral domain.}
 	\label{fig_rho_bg_on_S1}
 \end{center}
 \end{figure}
@@ -792,7 +792,7 @@ We use this operator for the rotation term,
   = - \vec{\Omega} \times  (\vec{x} - \vec{x}_{cm}),
   \]
 in the total torque equation.
-In addition, the top part of the right-hand side of equation (\ref{eq_slp_lin_eq}) is the discretization of the volume integral,
+In addition, the top part of the right-hand side of the equation (\ref{eq_slp_lin_eq}) is the discretization of the volume integral,
 \begin{equation}
 	{\vec{\mathcal{F}}} (\vec{x}_{sq,i}) = 
 	-\frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} 
@@ -810,6 +810,7 @@ In addition, the top part of the right-hand side of equation (\ref{eq_slp_lin_eq
  %
  %----FMM--------------------------------------------------------------------------
 \subsection{Fast Multipole Method (FMM)}
+\label{subsec:FMM}
 Knowing that we simulate our problem in a three-dimensional fluid domain, it is necessary to implement an efficient and fast method for each part of the codes while we keep the stability and desired accuracy. 
 The FMM is a numerical scheme for rapid computation of $N$-body problems governed by a Green's function using a multipole expansion. It was first introduced by Greengard and Rokhlin \cite{greengard_fast_1987}. Since then, the researchers at Flatiron Institute - Simons Foundation,  including the original authors of the FMM, have developed the methods and shared the source code. \cite{cheng_fast_1999,greengard_new_1997,greengard_new_2002} We choose to use their library, called \href{https://github.com/flatironinstitute/FMM3D}{{\color{blue}FMM3D}}. It provides the code of the $N-$body interactions governed by Laplace and Helmholtz equations in three-dimension.
 For our problem, we can modify the Laplace kernel, as shown in \cite{tornberg_fast_2008}, to compute the integrals of Stokeslet (\ref{eq_stokeslet}).
@@ -1040,7 +1041,7 @@ Next, we need to approximate the surface integral in equation (\ref{eq_surf_fmm_
  \label{eq_surf_fmm_N_f_n}
 \end{align}
 where $E_G$ is the error coming from the quadrature method. 
-We use $N_s^2$ sub-squares with sizes of $d = 2/N_s$, and take the center of each sub-squares as the integration point. 
+We use $N_s^2$ sub-squares with sizes of $d = 2/N_s$ and take the center of each sub-squares as the integration point. 
 We take the same number of points, $N_s$, evenly distributed in one direction. 
 In the following schematics, Figure \ref{fig_face_grid}, the red cross represents the center of the $n-$th square face, $(cx^n_1, cx^n_2)$.
 \begin{figure}[h]
@@ -1070,7 +1071,7 @@ In Figure \ref{fig_Ef_EG_compare}, we vary the number of integration points to c
 \begin{figure}[ht]
 	\begin{center}
 		% \includegraphics[scale=0.33]{./figures/fig_Ef_EG_compare}
-		\includegraphics[scale=0.45]{./figures/fig_Ef_Eg_ep-1}
+		\includegraphics[scale=0.4]{./figures/fig_Ef_Eg_ep-1}
 	\caption{Relative error between $U^*$ and $U^{*+}$, varying the number of integration points: $Ns = [3, 5, 7, 11, 17, 27,41]^2$ and $\varepsilon = 10^{-1}$.}
 	\label{fig_Ef_EG_compare}
 \end{center}
@@ -1081,7 +1082,7 @@ From this analysis, we are convinced that $Ns = 9^2$ quadrature points are enoug
 After implementing the FMM3D library into our program, we timed one more time to compare the fluid velocity computation shown as the green (or dashed line) in Figure \ref{fig_time_fmm_sum}. The efficiency of the computation increases about ten times when the number of fluid grid points is about 500,000, which is in the range of what we will use to compute the fully stratified simulations.
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.45]{./figures/fig_time_both_mm5_Nt10}
+		\includegraphics[scale=0.4]{./figures/fig_time_both_mm5_Nt10}
 	\caption{CPU time with an aggregate made with 125 cubes for ten time steps. The green line is the velocity computation with the original single-layer potential code, and the pink line represents the approximation using the FMM3D library.}
 	\label{fig_vel_mm5_t1}
 \end{center}
@@ -1090,8 +1091,8 @@ After implementing the FMM3D library into our program, we timed one more time to
 
 %validation---------------------------------------------------
 \section{Validation}
-In order to determine our simulation settings, we examine the simplified results by varying 1) time step $\Delta t$, 2) space step $\Delta x$, and 3) domain sizes. Note that we use uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To differ the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and the maximum radius of the aggregate, $R_m$.
-From $\vec{x}_{cm}$, we scale the domain $V$ with a constant $s$,
+As we explained in the previous section, the computation time in this entire simulation with an aggregate model using 100 cubes, which we desire to observe, may take up to a few weeks. We thus need to determine the parameters to optimize the computing time, while validating the code. We examine the simplified results, using an aggregate with 10 cubes shown in Figure \ref{fig_sample_agg10}, by varying 1) the $s$ factor for domain sizes, 2) space step $\Delta x$, and 3) time step  $\Delta t$. Note that we use uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To differ the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and the maximum radius of the aggregate, $R_m$.
+From $\vec{x}_{cm}$, we scale the domain s$V$ with a constant $s$,
 \[
 	V = 
 	\begin{bmatrix}
@@ -1100,122 +1101,151 @@ From $\vec{x}_{cm}$, we scale the domain $V$ with a constant $s$,
 		\end{pmatrix} s R_m , 
 		\ \vec{x}_{cm} + \begin{pmatrix}
 			1 \\ 1 \\ 2
-			\end{pmatrix} s R_m.
-	\end{bmatrix}
+			\end{pmatrix} s R_m
+	\end{bmatrix}.
 \]
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.45]{./figures/fig_sample_agg10.pdf}
+		\includegraphics[scale=0.5]{./figures/fig_sample_agg10.pdf}
 		\caption{Sample aggregate with ten cubes. This model is used to obtain simulations presented in Figure \ref{fig_NC10_snaps_all}.}
 		\label{fig_sample_agg10}
 	\end{center}
 \end{figure}
-We use ten cubes to form an aggregate model for the validation, as shown in Figure \ref{fig_sample_agg10}.
-Since we are interested in the aggregate's behavior, we measure its translational velocity $\vec{U}_a$, location of $\vec{x}_{cm}$, and drag. The sole fluid quantity we want to observe is the perturbation $C(\vec{x},t)$. At a location that is far away from the aggregate, we expect to see very small, almost zero, perturbation.
+\par
+Since we are interested in the aggregate's behavior, we measure its (a) translational velocity $\vec{U}_a$, (b) location of $\vec{x}_{cm}$, and (c) drag $\vec{F}_o$. In particular, we present the vertical component of these three values, focusing on the settling direction.
+In terms of fluid, the main quantity we want to observe is the (d) perturbation $C(\vec{x},t)$ close to the aggregate. At a location that is far away from the aggregate, we expect to see very small, almost zero, perturbation.
 We thus focus on the perturbation value near the aggregate.
 \par
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.235]{./figures/fig_NC10_snaps_all.pdf}
-		\caption{Snapshots of the perturbation obtained with $\Delta t = 0.75, \ \Delta x = 1,$ and $s = 5$. We look at $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. The small white dot is located outside of, but very close to, the aggregate.}
+		\caption{Snapshots of the perturbation obtained with $\Delta t = 0.75, \ \Delta x = 1,$ and $s = 5$. We look at the $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. The small white dot is located outside of, but very close to, the aggregate.}
 		\label{fig_NC10_snaps_all}
 	\end{center}
 \end{figure}
-As a sample result, Figure \ref{fig_NC10_snaps_all} shows three snapshots of the perturbation $C$, obtained with $\Delta t = 0.75, \ \Delta x = 1$, and $s = 5$, at $x = -0.3$. Note that the white star point is $(-0.3, \    6.9, \      0.4)$. Since we use the moving frame of reference to compute the perturbation, the aggregate stays in the middle of the fluid domain in Figure \ref{fig_NC10_snaps_all}.
+Before we proceed, we show three snapshots of the perturbation $C$, obtained with $\Delta t = 0.75, \ \Delta x = 1$, and $s = 5$, at $x = -0.3$ as a sample result in Figure \ref{fig_NC10_snaps_all}. Note that the white star point is at $(-0.3, \    6.9, \      0.4)$, which is the particular point we focus on for further analysis. Since we use the moving frame of reference to compute the perturbation, we see that the aggregate stays in the middle of the fluid domain in Figure \ref{fig_NC10_snaps_all}.
 We notice slight instabilities on the top of the fluid domain, where the zero-flux boundary condition is applied, as the perturbation increases. Considering a large enough fluid domain compared to the aggregate size, we would like to observe the convergence of the quantities of interest near the aggregate. 
-\subsection{Various time sizes}
-The main takeaway of these plots is that there are no significant differences in values we observe. Although we notice some variations of the perturbation at a later time, it essentially goes to zero as the aggregate and surrounding fluid densities become neutral. 
+\subsection{Various domain sizes}
+As we described in section \ref{subsec:AD_numerics_space}, we have periodic boundary conditions on the horizontal plane to resemble the infinite domain where the velocity vanishes to zero. 
+We assume that this is approximately possible by having the domain size with the factor $s = 5$. Nonetheless, it is worthwhile to confirm whether the aggregate dynamics change drastically when we put it in a smaller domain. If we can obtain good information on the aggregate in a smaller domain, we could use smaller $s$ in case we need more rapid computations or the memory capacity of our computer. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dt_Ua3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dt_cm3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dt_Fo3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dt_C_star}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_s_Ua3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_s_cm3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_s_Fo3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_s_C_star}
+	\caption{Compare various domain sizes with $ s = 3, \ 4, \ 5$ in the time step  $\Delta t = 0.5$ and space step $\Delta x = 1$.}
+	\label{fig_NC10_compare_s}
+\end{center}
+\end{figure}
+\par
+I Figure \ref{fig_NC10_compare_s}, we see three different domain sizes with the $s$ factor $s = 3, \ 4$, and $5$. At first glance, we can barely tell the differences between all three cases. In other words, there is no significant impact on aggregate behavior when reducing the domain size up to $s = 3$. Although we notice that the perturbations at the white star point are not aligned as much as other plots do, this is not considerable. 
+
+\subsection{Various time step sizes}
+We now differ the time step size, $\Delta t$. We consider three different cases, $\Delta t = 0.75, \ 0.5, $, and $0.25$. We are able to run simulations with somewhat large time steps since the aggregate size is small enough to have a large velocity. When the initial settling velocity is high, the CFL condition (\ref{eq_CFL}) can break and lead to instability. As the aggregate settle, the surrounding fluid becomes denser. It makes the velocity should decrease, and so does the CFL number. Thus, we care more about the velocities at the beginning of the simulation. 
+\par
+To compare different $\Delta t$, we set the domain size with $s = 5$ and the space step $\Delta x =1$.
+The main takeaway of Figure \ref{fig_NC10_compare_dt} is that there are no significant differences in the values we observe. Once again, we notice some variations of the perturbation at a later time. We yet do not concern much since it essentially goes to zero as the aggregate and surrounding fluid densities become neutral. 
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_Ua3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_cm3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_Fo3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_C_star}
 	\caption{Compare various $\Delta t = 0.75, \ 0.5, \ 0.25$ in the domain size factor $s = 5$ with $\Delta x = 1$.}
 	\label{fig_NC10_compare_dt}
 \end{center}
 \end{figure}
+\par
+To convince readers, we also obtained the absolute differences between consecutive two $\Delta t$ cases in Figure \ref{fig_NC10_dt_diff_all}.
+It is clear to see that the errors of all four cases are fairly small compared to the corner error we found in section \ref{subsec:FMM}. For the time integration scheme we use, which is the explicit RK2 method, we typically expect to have second-order convergence. These error plots support that our solutions already reached convergence.
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_Ua3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_cm3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_Fo3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_C_star}
+	\caption{Absolute differences between two lines from Figure \ref{fig_NC10_compare_dt}. }
+	\label{fig_NC10_dt_diff_all}
+\end{center}
+\end{figure}
 
-\subsection{Various space sizes}
-Once we are convinced that we can find useful information at locations with $\Delta x = 4$, it would accelerate our computation time. The fewer points we use, the more time we can save. We see the perturbation plots that are not convergent because we could not capture the perturbation at the same location. 
+\subsection{Various space step sizes}
+Lastly, we perform the simulations with several space step sizes, $\Delta x = 1, \ 2, $ and $4$. One may find our choice of space step sizes is large. However, as long as all three selections give us close results and have no stability issue, we prefer to use as large $\Delta x$ as possible. 
+The number of fluid grid points could be an obstacle in terms of memory. We could also get benefits in our computing time. 
+\par
+For this validation, we only investigate  (a), (b), and (c), which are the aggregate's responses, due to having difficulties capturing the perturbation at the same location. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_Ua3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_cm3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_Fo3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_C_star}
+		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_Ua3_all}
+		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_cm3_all}
+		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_Fo3_all}
 	\caption{Compare various $\Delta x = 1, \ 2, \ 4$ in the domain size factor $s = 5$ with $\Delta t = 0.75$.}
 	\label{fig_NC10_compare_dx}
 \end{center}
 \end{figure}
-\subsection{Various domain sizes}
-We want to see whether the dynamics change drastically when we put our aggregate in a smaller box. We assumed to have $s = 5$ for all simulations. It is worthwhile to examine different $s$ scales in case we need more rapid computations. 
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[scale=0.33]{./figures/fig_NC10_s_Ua3_all}
-		\includegraphics[scale=0.33]{./figures/fig_NC10_s_cm3_all}
-		\includegraphics[scale=0.33]{./figures/fig_NC10_s_Fo3_all}
-		\includegraphics[scale=0.33]{./figures/fig_NC10_s_C_star}
-	\caption{Compare various domain sizes $\Delta s = 3, \ 4, \ 5$ in the step sizes $\Delta t = 0.5$ with $\Delta x = 1$.}
-	\label{fig_NC10_compare_s}
-\end{center}
-\end{figure}
+As we saw in the first two validations, we observe quite a good agreement between all three cases in Figure \ref{fig_NC10_compare_dx}. As we plan to use approximately 10 times larger aggregate to show the results in section \ref{sec:stratified_results}, it is inevitable to adjust both space and time step sizes. 
+Before we close this section, we want to mention carefully that it is difficult to say we obtained the "correct" since we do not have any analytic solutions. The validations we provide here are to exhibit convergence and to explore our choices.  
 
-
+\clearpage
+\subsection{Extra}
+{\color{blue} Should I add NC = 50 cases? I only have the same validation with different domain sizes.} \\
 Fifty cube samples.
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.4]{./figures/fig_NC50_sample_compare}
+		\includegraphics[scale=0.4]{./figures/fig_NC50_sd2}
 	\caption{Sample aggregate model with 50 cubes for domain size comparison.}
-	\label{fig_NC50_sample_compare}
+	\label{fig_NC50_sd2}
 \end{center}
 \end{figure}
-
 
 Domain size variation with fifty cubes.
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.25]{./figures/fig_NC50_s_Ua3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC50_s_C_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC50_s_cm3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC50_s_Fo3_all}
-	\caption{Considering an aggregate with fifty cubes, compare various domain sizes $\Delta s = 3, \ 4, \ 5$ in the step sizes $\Delta t = 0.5$ with $\Delta x = 1$.}
+		\includegraphics[scale=0.2]{./figures/fig_NC50_s_Ua3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC50_s_cm3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC50_s_Fo3_all}
+		\includegraphics[scale=0.2]{./figures/fig_NC50_s_C_star}
+	\caption{Considering an aggregate with 50 cubes, compare various domain sizes $\Delta s = 3, \ 4, \ 5$ in the step sizes $\Delta t = 0.5$ with $\Delta x = 1$. The star point is (-0.74,  12.74,  0.24).}
 	\label{fig_NC50_compare_s}
 \end{center}
 \end{figure}
 
 
+
 \clearpage
 \section{Simultation results}
-Concerning the potential stability issue, we keep the $\Delta t = 0.5$ and $\Delta x =1$ for further simulations. We also choose to use the domain scaling factor as $s = 5$ to mimic an infinite fluid setting. For the background fluid stratification strength, $\gamma$, which was introduced in equation (\ref{eq_rho_bg}), we suppose the largest aggregate, which is made with a hundred cubes, travels about ten times longer than its radius. As we find the maximum radius of an aggregate composed of $100$ cubes is approximately $16$, we expect this aggregate to settle until the vertical level $z_B = -160$, assuming the initial vertical level of the aggregate is zero. At the location, equation (\ref{eq_rho_bg}) tells us to have background fluid density 
+\label{sec:stratified_results}
+Concerning the potential stability issue, we keep the $\Delta t = 0.25$ and $\Delta x =1$ for larger simulations, forming the aggregate using a maximum of 100 cubes. We choose to use the domain scaling factor as $s = 5$ to mimic an infinite fluid setting. For the background fluid stratification strength, $\gamma$, which was introduced in equation (\ref{eq_rho_bg}), we suppose the largest aggregate, which is made with a hundred cubes, travels about ten times longer than its radius. As we find the maximum radius of an aggregate composed of $100$ cubes is approximately $16$, we expect this aggregate to settle until the vertical level $z_B = -160$, assuming the initial vertical level of the aggregate is zero. At the location, equation (\ref{eq_rho_bg}) tells us to have background fluid density 
 \[
 \rho_{bg} = \rho_0 (1-\gamma z_B) =	\rho_0 (1+160\gamma).
 \]
 Meanwhile, we want the aggregate reaches a neutral buoyancy. To see this, we assume the initial aggregate density, when its fluid portion is $\rho_0$, is equal to the background fluid density after stop settling, i.e., $\rho_a = \rho_{bg}$. After calculation, we find the $\gamma \approx 10^{-4}$. We thus use this value for our simulations by default. We will observe different $\gamma$ values if our time allows. 
 
-
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.23]{./figures/fig_NC100_snaps_all.pdf}
+	\caption{Sample aggregate model with 100 cubes.}
+	\label{fig_NC100_snaps_all}
+\end{center}
+\end{figure}
 \begin{itemize}
 
 	\item We have two different aggregate simulations for $NC = 100$.
 	\item Last week, I submitted $NC = 50$ four more cases --> got kicked out because of memory issue. 
 	\item Timing results -> how long it takes? Get the Pinnacles information.
-	\item NC = 30 is running 
 	\item What kind of graph do we want to get? 
 	\item NC = 1, 10, 30, 50, 100? See the differences? 
 	\item Some snapshots? 
 	\item Aggregate models that are used to get the data? (different shapes)
 \end{itemize}
 \section{Discussions (Conclusion)}
-What did you do? 
-\\
-What did we learn?
-\\
-How can we contribute to aid research in the carbon cycle/marine aggregate? 
-\\
-What information we can give them?
-\\
-Any limitation?
-\\
-Future potential direction?
-\\
-Are you going to publish this? 
+I am going to fill this section with:
+\begin{itemize}
+	\item What did you do? (Summarize)
+	\item What did we learn?
+	\item How can we contribute to aid research in the carbon cycle/marine aggregate? What information we can give them?
+	\item Any limitation?
+	\item Future potential direction? Are you going to publish this? 
+\end{itemize}
+

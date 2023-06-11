@@ -4,7 +4,7 @@ We use the \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Co
 We implement the granular material viscosity computation in \verb+incflo+, which is the AMReX-based module for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
 \begin{itemize}
   \item In Summer 22, I implemented the granular rheology, the viscosity computation, in the  'incflo' module and connect this to solve an incompressible flow model. 
-  \item  However, due to the nonlinearity in velocity, we only could use the explicit method, which is explicit Euler method and was already available.
+  \item  However, due to the nonlinearity in velocity, we only could use the explicit method, which is the explicit Euler method and was already available.
   \item I implemented an explicit RK 2 method for a higher convergence, but we see some instabilities for certain cases.
   \item Implicit type may be coming. 
   \item For the granular material, the viscosity computation is pressure dependent. 
@@ -225,9 +225,9 @@ The main challenge we faced to implement the pressure-dependent viscosity was co
 {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
 
 \section{Suspensions rheology}
-In this section, we summarize the rheological model of suspensions in a Newtonian fluid. The behaviors of solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian. 
+In this section, we summarize the rheological model of suspensions in a Newtonian fluid. The behaviors of solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian.  
 \par
-We use the constitutive equation proposed by Reiner [reference] and Rivlin [reference], 
+We use the constitutive equation proposed by Reiner \cite{reiner_mathematical_1945} and Rivlin \cite{rivlin_stress-deformation_1955},  
 \begin{equation}
   \bar{\bar{\sigma}} = -P \bar{\bar{I}}
   + 2 \mu {\bm{D}} + 2 \nu_2 {\bm{D}}^2, 
