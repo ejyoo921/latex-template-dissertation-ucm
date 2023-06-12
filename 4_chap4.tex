@@ -17,7 +17,7 @@ We implement the granular material viscosity computation in \verb+incflo+, which
 
 
 %section2----------------------------------------------------------------------------------------------------
-{\color{blue}We introduced the incompressible flow in Chapter 1, so does the stress tensor form - general one for non-Newtonian fluid. Point the equation number here.}
+{\color{blue}We introduced the incompressible flow in Chapter 1, and the stress tensor form - a general one for non-Newtonian fluid. Point the equation number here.}
 % \par
 The incompressible flow motion is governed by the law of conservation of mass and momentum,
 \begin{equation}
@@ -36,8 +36,8 @@ The incompressible flow motion is governed by the law of conservation of mass an
   \item For the validation example, 
 \end{itemize}
 \section{Normal stress differences}
-There has been discoveries regarding impotance of normal stress difference effects in complex fluids. In particular, many works have shown that the second normal stress difference effects are substantial in certain cases. [{\color{blue} REFERNCES}]
-% We first introduce a Reiner and Rivlin's stress tensor.
+There have been discoveries regarding the importance of normal stress difference effects in complex fluids. In particular, many works have shown that the second normal stress difference effects are substantial in certain cases. [{\color{blue} REFERNCES}]
+% We first introduce Reiner and Rivlin's stress tensor.
 From the following Cauchy stress tensor, 
 \begin{equation}
   \bar{\bar{\sigma}} = 
@@ -59,13 +59,26 @@ and the second normal stress difference $N_2$,
   N_2 = \sigma_{yy} - \sigma_{zz}.
 \end{equation}
 Unlike a Newtonian fluid, we may observe $\sigma_{xx} \neq \sigma_{yy} \neq \sigma_{zz}$ in behaviors of a non-Newtonian type shear flow.
-
+\begin{itemize}
+  \item Examples of second normal stress difference
+  \item How can we define alphas here? 
+  \item Why are they important to understand? 
+\end{itemize}
 
 %subsection-------------------------------------------------------------------
 \section{Granular rheology}
+We recall the stress tensor for the fluid momentum equation, introduced in Chapter 1, for a non-Newtonian fluid:
+\begin{align}
+  \bar{\bar{\sigma}}
+    = -P \bar{\bar{I}}  + \mu_1 {\bm D} 
+    + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
+   + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
+    + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
+    - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
+  \end{align}
 {\color{red}WARNING: NOTATIONS}
 \\
-In this section, we explain the details of methodology to compute granular flow velocity when external pressure presents. We introduce a stress tensor with a higher-order strain rates that can describe non-isotropic flow effects. A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found [{\color{blue}REFERENCE}]. With the new deviatoric stress tensor, we solve for incompressible graular flow using incflo. 
+In this section, we explain the details of the methodology to compute granular flow velocity when external pressure is present. We introduce a stress tensor with a higher-order strain rate that can describe non-isotropic flow effects. A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found [{\color{blue}REFERENCE}]. With the new deviatoric stress tensor, we solve for incompressible granular flow using incflo. 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.4]{figures/fig_granular_ex.png}
@@ -75,23 +88,31 @@ In this section, we explain the details of methodology to compute granular flow 
 \end{figure}
 
 To describe a non-isotropic flow, we consider the Cauchy stress tensor, $\bar{\bar{\sigma}}$, up to the second order of strain rate \cite{srivastava_viscometric_2021}. In particular, we see the deviatoric tensor, $\bar{\bar{\sigma}} - P \bar{\bar{I}}$, as 
-\begin{align*}
-\bar{\bar{\sigma}} - P {\bm I} \equiv
-  {\bm {\bm \tau}}
-  =  \ \eta_1 {\bm D} 
-  + \eta_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
-  + \eta_3  \left[ {\bm D}{\bm W} - {\bm W}{\bm D} \right]
-  \nonumber \\
-  + \frac{\kappa_1}{\dot{\gamma }^2} \bm D 
-  + \frac{\kappa_2}{\dot{\gamma }^2}  \left[ {\bm D}^2  
-  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right],
-\end{align*}
+% \begin{align*}
+% \bar{\bar{\sigma}} - P {\bm I} \equiv
+%   {\bm {\bm \tau}}
+%   =  \ \mu_1 {\bm D} 
+%   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
+%   + \eta_3  \left[ {\bm D}{\bm W} - {\bm W}{\bm D} \right]
+%   \nonumber \\
+%   + \frac{\kappa_1}{\dot{\gamma }^2} \bm D 
+%   + \frac{\kappa_2}{\dot{\gamma }^2}  \left[ {\bm D}^2  
+%   - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right],
+% \end{align*}
+\begin{equation}
+  \bar{\bar{\sigma}}
+  = -P \bar{\bar{I}}  + \mu_1 {\bm D} 
+  + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
+ + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
+  + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
+  - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right]
+\end{equation}
 or equivalently, 
 \begin{equation}
   {\bm {\bm \tau}}
-  = \left( \eta_1 \dot{\gamma}+ \kappa_1 \right) \frac{1}{\dot{\gamma}} {\bm D}
+  = \left( \mu_1 \dot{\gamma}+ \kappa_1 \right) \frac{1}{\dot{\gamma}} {\bm D}
   \ +  \ 
-  \left( \eta_2  \dot{\gamma}^2
+  \left( \mu_2  \dot{\gamma}^2
   +  \kappa_2 
   \right) \frac{1}{\dot{\gamma}^2}
   \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
@@ -109,7 +130,7 @@ and ${\bm W}$ is a vorticity tensor, defined as
 \[
 	{\bm W} = \frac{1}{2}\left( \nabla {\bm u} - \nabla {\bm u}^{T}\right).
 \]
-We also let $\dot{\gamma} = \left| {\bm D} \right|$, applying the scaled Frobenius norm for a second-order tensor, 
+We also use a conventional notation $\dot{\gamma} = \left| {\bm D} \right|$, applying the scaled Frobenius norm for a second-order tensor, 
 \[
     |\bm{D}| = \sqrt{\frac{1}{2}
     \text{tr}\left(\bm{D} \bm{D}^{T} \right)}.
@@ -117,11 +138,11 @@ We also let $\dot{\gamma} = \left| {\bm D} \right|$, applying the scaled Frobeni
 In general, the Frobenius norm states $\bm{D}^H$ instead of $\bm{D}^T$. Since we consider real tensors, it is valid to have $\bm{D}^H = \bm{D}^T$.
 We note that the flow functions have the following dependency: $\eta_i(\dot{\gamma}, p)$ and $\kappa_j (p)$, where $i = 1,2,3$ and $j = 1,2$. 
 This implies that the terms with $\eta_i$ and $\kappa_j$ coefficients represent rate-dependent and rate-independent contributions, respectively, to the total stress.
-Along with the shear effect from $\eta_1$, we can observe the second and first normal-stress difference in shear flows from $\eta_2$ and $\eta_3$, respectively. The rate-independent terms, $\kappa_1$ and $\kappa_2$, allow us to find yield stress. 
+Along with the shear effect from $\mu_1$, we can observe the second and first normal-stress difference in shear flows from $\mu_2$ and $\eta_3$, respectively. The rate-independent terms, $\kappa_1$ and $\kappa_2$, allow us to find yield stress. 
 \par
-We can find $\eta_1$ and $\kappa_1$ terms in equation (\ref{eq_2ndOrder_tau}), using the well-known the stress ratio $\mu(I)$ relationship,
+We can find $\mu_1$ and $\kappa_1$ terms in equation (\ref{eq_2ndOrder_tau}), using the well-known the stress ratio $\mu(I)$ relationship,
 \begin{equation}
-    \mu_1(I) = \mu_1^0 + A_1{ I}^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{p},\
+    \mu_1(I) = \mu_1^0 + A_1{ I}^{ \alpha_1} =  \frac{(\mu_1 \dot{\gamma} + \kappa_1)}{p},\
 \label{eq_muI1}
 \end{equation}
 where $\mu_1^0, A_1,$ and $\alpha_1$ are fitting parameters. 
@@ -129,15 +150,15 @@ Here, $I$ is the inertial number defined as
 \[
   I =  \frac{\dot{\gamma} d }{\sqrt{p/\rho}}.
 \]
-The inertial number describes the average static force compared to to the inertial force between granular particles. {\color{blue} NEED MORE EXPLANATION REGARDING THE NUMBER I -> PHYSICAL MEANING WITH AN EXAMPLE MAY BE HELPFUL.}
+The inertial number describes the average static force compared to the inertial force between granular particles. {\color{blue} NEED MORE EXPLANATION REGARDING THE NUMBER I -> PHYSICAL MEANING WITH AN EXAMPLE MAY BE HELPFUL.}
 Note that $d$ and $\rho$ are the particle diameter and density, respectively.
 By substituting the inertial number $I$ into equation (\ref{eq_muI1}), we get
 \begin{equation}
-     \mu_1^0 + A_1 {\left(  \frac{\dot{\gamma} a }{\sqrt{p/\rho}}\right) }^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{p}.
+     \mu_1^0 + A_1 {\left(  \frac{\dot{\gamma} a }{\sqrt{p/\rho}}\right) }^{ \alpha_1} =  \frac{(\mu_1 \dot{\gamma} + \kappa_1)}{p}.
 \end{equation}
-We then find $\eta_1 (\dot{\gamma}, p)$ and $\kappa_1(p)$ as
+We then find $\mu_1 (\dot{\gamma}, p)$ and $\kappa_1(p)$ as
 \begin{equation}
-    \eta_1  (\dot{\gamma}, p)= 
+    \mu_1  (\dot{\gamma}, p)= 
     \biggl( A_1 {\left(   d  \sqrt{\rho} \right) }^{ \alpha_1}\biggr) 
      \dot{\gamma}^{\alpha-1} p^{1-\alpha/2}
 \label{eq_eta1}
@@ -149,12 +170,12 @@ We then find $\eta_1 (\dot{\gamma}, p)$ and $\kappa_1(p)$ as
 \par
 Similarly, we can find the coefficients for the quadratic in ${\bm D}$ terms, having the $\mu(I)$ relationship as follows:
 \begin{equation}
-    \mu_2(I) = \mu_2^0 + A_2{ I^2}^{ \alpha_1} =  \frac{(\eta_2 \dot{\gamma}^2 + \kappa_2)}{p},\
+    \mu_2(I) = \mu_2^0 + A_2{ I^2}^{ \alpha_1} =  \frac{(\mu_2 \dot{\gamma}^2 + \kappa_2)}{p},\
 \label{eq_muI2}
 \end{equation}
-Then, we obtain $\eta_2 (\dot{\gamma}, p)$ and $\kappa_2(p)$
+Then, we obtain $\mu_2 (\dot{\gamma}, p)$ and $\kappa_2(p)$
 \begin{equation}
-    \eta_2  (\dot{\gamma}, p)= 
+    \mu_2  (\dot{\gamma}, p)= 
     \biggl( A_2 {\left(   d  \sqrt{\rho} \right) }^{ 2\alpha_2}\biggr) 
      {\dot{\gamma}}^{2(\alpha_2-1)} p^{1-\alpha_2}
 \label{eq_eta2}
@@ -168,7 +189,7 @@ For the last coefficient in equation (\ref{eq_2ndOrder_tau}), we follow the powe
     \mu_3(I) = -A_3 \left( I^2 \right)^{\alpha_3} = \frac{\eta_3 \dot{\gamma}^2}{p}.
 \label{eq_muI3}
 \end{equation}
-Specifically, we can be find the coefficients of each shear rate term in Equation (\ref{eq_2ndOrder_tau}) as
+Specifically, we can find the coefficients of each shear rate term in Equation (\ref{eq_2ndOrder_tau}) as
 \begin{equation}
      \eta_3 (\dot{\gamma}, p) = 
     -p A_3 
@@ -194,11 +215,11 @@ We can obtain the flow coefficients from particle-based simulations, such as the
     \]
      One can find the corresponding $A_i$ values in Srivastava 2021 \cite{srivastava_viscometric_2021}.
 \subsection{Computation of pressure-dependent apparent viscosity}
-For a granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate viscosity.
+For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate viscosity.
 Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, and perturbation, $P'$ such that
 \[
 P = P_0(y) + P'(x,y,z).\]
-Note that we can have the purterbations under gravity. Without gravitational force, we may simply input the constant pressure, $P_0$, and keep it over the time.
+Note that we can have the perturbations under gravity. Without gravitational force, we may simply input the constant pressure, $P_0$, and keep it over time.
 \par
 In case gravity is involved, we consider the density term, in order to approximate the perturbation, as 
 \[
@@ -217,30 +238,29 @@ By taking integral both sides of Equation (\ref{eq_p0_rho0}), we obtain
     P_0 \approx p_{bg} + \nabla P_0 y.
 \end{equation}
 We would like to use this form since we already have the $p_{bg}$ term computed in the \verb+incflo+ code (This value is \verb+gp0+).
-% We can add $p_{bg}$ as a constant value and the pressure gradient can be found in \verb+incflo+. {\color{blue} what is this exactly? \verb+gp0+ ? \verb+gradp+? or an input? \verb+delp+.}
-% {\color{blue} when do we need to use delp?}
-When we have a periodic boundary in the gravity direction, we might need to prescribe pressure gradient to have additional pressure effect. 
+%
+When we have a periodic boundary in the gravity direction, we might need to prescribe a pressure gradient to have an additional pressure effect. 
 \par
 The main challenge we faced to implement the pressure-dependent viscosity was connecting the pressure in addition to the strain rate into the rheology code.
 {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
 
-\section{Suspensions rheology}
-In this section, we summarize the rheological model of suspensions in a Newtonian fluid. The behaviors of solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian.  
+\section{Suspension rheology}
+In this section, we summarize the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
 \par
 We use the constitutive equation proposed by Reiner \cite{reiner_mathematical_1945} and Rivlin \cite{rivlin_stress-deformation_1955},  
 \begin{equation}
   \bar{\bar{\sigma}} = -P \bar{\bar{I}}
-  + 2 \mu {\bm{D}} + 2 \nu_2 {\bm{D}}^2, 
+  + 2 \nu_1 {\bm{D}} + 2 \nu_2 {\bm{D}}^2.
 \end{equation}
-where $\nu_2$ is the second normal stress difference coefficient. In shear flow, Tanner found
-\begin{equation}
-  \mu = \mu_0 \ (\text{constant}), 
-  \ \ 
-  \nu_2 = \frac{\beta}{\sqrt{2 {\bm D} {\bm D}^T}}
-\end{equation}
+According to Tanner's review \cite{tanner_review_2018}, the coefficients $\nu_1$ can be constant since the rate of change with $\dot{\gamma}$ is negligible, and $\nu_2 = \beta / \dot{\gamma}$ for a suspension of solid particles in a Newtonian fluid, where a factor $\beta$ is related to the strain rate $\dot{\gamma}$. Dai et, al \cite{dai_viscometric_2013} shows the $\beta = -4.4 \phi^3 \nu_1$ in shear flows, where $\phi$ is a volume fraction. 
+\par
+For numerical validations, we follow the experiments presented in Couturier $\textit{et, al}$~\cite{couturier_suspensions_2011}.
+\begin{itemize}
+  \item We want to observe the relationship between $\alpha_i(\phi) = N_i / |\sigma_{xy}|$, where $i = 1,2$.
+\end{itemize}
 
 \section{Viscosity regularization}
-In the viscosity computations, we presented in sections XX and XX, we encounter a singularity as $\dot{\gamma}$ approaches to zero in viscosity evaluations. 
+In the viscosity computations, we presented in sections XX and XX, we encounter a singularity as $\dot{\gamma}$ approaches zero in viscosity evaluations. 
 As AMReX-\verb+incflo+ has the Papanastasiou regularization method implemented, we apply the same method for the new viscosity terms.
 \par
 By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
@@ -248,14 +268,15 @@ By introducing a small parameter, denoted as $\varepsilon$, we can regularize th
   \frac{1}{\dot{\gamma}} \rightarrow \frac{1-e^{-\dot{\gamma} / \varepsilon}}{\dot{\gamma}}  
 \]
 for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
-The detailed mathematics and analysis can be found in Sverdrup 2018 \cite{sverdrup_highly_2018}
+The detailed mathematics and analysis can be found in Sverdrup 2018~\cite{sverdrup_highly_2018}
 %section3----------------------------------------------------------------------------------------------------
 \section{Numerical methods}
-The main job for this summer project was the implementation of a new stress tensor with higher-order strain rates effect in AMReX-info. The followings are the parts modified in the incflo code: 
+% The main job for this summer project was the implementation of a new stress tensor with higher-order strain rates effect in incflo.
+ The followings are my main contribution to  Summer 2023 internship:
 \begin{itemize}
 	\item Add new rheology for granular flows: Compute a pressure-dependent apparent viscosity.
 	\item Compute the second-order strain tensor.
-	\item Solve for velocity: Implement an efficient method to handle the nonlinear divergence of a new stress tensor.
+	\item Solve for velocity using an explicit method for the diffusion portion: Implement an efficient method to handle the nonlinear divergence of a new stress tensor.
 \end{itemize}
 In this section, we briefly cover those three parts.
 
@@ -270,7 +291,7 @@ In the AMReX library, the linear shear stress tensor computation is already impl
 \]
 we needed to create a new operator to compute $ {\bm \tau}_{2}$. Moreover, the divergence of it, $\nabla \cdot {\bm \tau}_{2}$, is required to solve for velocity. Note that 
 \[
-\tilde{\eta_2} =  \eta_2  \dot{\gamma}^2
+\tilde{\mu_2} =  \mu_2  \dot{\gamma}^2
 +  \kappa_2 
 \ \ \ \ \ \text{and} \ \ \ \ \ \
 \tilde{\eta_3} =    \eta_3 \dot{\gamma}^2 .
@@ -351,7 +372,7 @@ DW_1 =
    2 \left(u_{z}^2+v_{z}^2-w_{y}^2-w_{x}^2\right)
 \end{bmatrix}
 \]
-For now, we compute each stress term separately and assemble when we need to use them. We might want to explore other ways to process these steps more efficiently. 
+For now, we compute each stress term separately and assemble them when we need to use them. We might want to explore other ways to process these steps more efficiently. 
 \subsection{Velocity computation}
 For updating velocity, we recall the incompressible Navier-Stokes equations. We re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
 \[
@@ -389,7 +410,7 @@ ${\bm \tau_2}$ so that we can use a partly implicit method, particularly backwar
 	\begin{center}
 	
 		\includegraphics[scale=0.5]{figures/fig_infError_vel.eps}
-		\caption{Order convergence plot of the splitting method. We obtain $\infty$-error using to the finest time step solution ($\Delta t = 10^{-4}$).}
+		\caption{Order convergence plot of the splitting method. We obtain $\infty$-error using the finest time step solution ($\Delta t = 10^{-4}$).}
 	\label{fig_infError_vel}
 	\end{center}
 \end{figure}

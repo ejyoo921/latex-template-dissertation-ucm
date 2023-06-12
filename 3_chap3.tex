@@ -348,134 +348,6 @@ Lastly, the advection-diffusion equation becomes,
 using the velocity field, equation (\ref{eq_vel_all_onS_nonD}), for the advection term.
 For the rest of this chapter, we drop the prime for simplicity and use only dimensionless forms. 
 
-%Rotation==============================================
-\section{Rotation}
-{\color{blue}QUESTION: MAYBE I SHOULD MOVE THIS SECTION TO NUMERICAL METHODS?}
-To have more realistic simulations, we allow our aggregate model to rotate while they settle.
-We here focus on the angular velocity, $\vec{\Omega} = \Delta \theta / \Delta t$, which tells us how much the aggregate rotates ($\theta)$ in one time step, $\Delta t$. 
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[scale=0.25]{./figures/fig_rotation_schematics.pdf}
-	\caption{Schematics of the rotation of an aggregate. The blue grid is the fluid domain and the green rectangle represents an aggregate. Red stars show points on the aggregate.}
-	\label{fig_rotation_schematics}
-\end{center}
-\end{figure}
-This information lives in the orientation matrix, $\mathcal{Q}(t)$. We can update our aggregate position from $\vec{x}$ to $\vec{x}_{\mathcal{R}}$ using
-\[
-\vec{x}_{\mathcal{R}}(t) = \mathcal{Q}(t) \vec{x}.
-\]
-Note that $\mathcal{Q}(0) = \bar{\bar{I}}$ (identity matrix) at initial time. After we move forward one time step, we may update this orientation matrix as 
-\begin{equation}
-	\mathcal{Q}(t + \Delta t) = \mathcal{R} \mathcal{Q}(t),
-\end{equation} 
-where $\mathcal{R}$ is the rotation matrix. 
-\par
-Assume we obtain the angular velocity, $\vec{\Omega}$ from a time step. (Initially, it is a zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
-The matrix $\mathcal{A}$ is then defined as 
-\begin{equation}
-	\mathcal{A}
-	=\begin{bmatrix}
-	 0 & - \Delta \theta_3 & \Delta \theta_2  \\
-	 \Delta \theta_3 & 0  & -\Delta \theta_1  \\
-	 - \Delta \theta_2 & \Delta \theta_1 & 0  \\
-	\end{bmatrix},
-	\label{eq_rotation_mx}
-\end{equation}
-From here, we have the rotation matrix $\mathcal{R} = e^{\mathcal{A}}.$
-We can compute the matrix exponential $e^{\mathcal{A}}$ using Rodrigues' formula,
-\begin{equation}
-	\mathcal{R} = 
-e^{\mathcal{A}} 
- = \bar{\bar{I \ }} 
- + \frac{\sin(\phi)}{\phi} \mathcal{A}
- + \frac{1-\cos(\phi)}{\phi^2} \mathcal{A}^2,
-\label{eq_R_eA}
-\end{equation} 
-where $\phi = \|\Delta \vec{\theta}\|_2$.
-With this $\mathcal{R}$ and orientation matrix $\mathcal{Q}$, we are ready to update the fluid grid.
-
-
-	
-\subsection{Linear system in a rotated coordinate}
-We first solve for the stress at the center of each square face of an aggregate, $\vec{y} = \vec{x}_i$, 
-using the same formula as equation (\ref{eq_vel_all_onS_nonD}),
-\begin{equation}
-	\vec{u} \left(\vec{x}_i \right) 
-		  = -\int_{S}  
-		 \vec{f}(\vec{x}) 
-		 \cdot \bar{\bar{G \ }} (\vec{x}, \vec{x}_i) 
-		 \ \textrm{d}S 
-		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \vec{x}_i)
-		 \ \text{d}V,
-		 \nonumber
-\end{equation}
-As we allow rotation, we can express the above equation as
-\begin{align}
-	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
-		  = & - \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\mathcal{Q} \vec{x}) 
-		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
-		 \ \textrm{d}S
-		 \nonumber \\
-		 & - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
-		 \ \text{d}V.
-	\label{eq_slp_On_rotate}
-\end{align}
-Since the rotation matrix $Q$ is constant and it is normalized, it is valid to say that
-\[
- \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
-	 = \bar{\bar{G}}( \vec{x}, \vec{x}_i).
-\]
-We now solve for unknowns, including the translational and angular velocities,
-in a rotated coordinate system $\mathcal{Q} \vec{x}_i $.
-Note that the stress values we obtain here 
-are located in the same one as the rotated positions.  
-To complete the linear system to solve for stress, translational, and angular velocities, we temporarily map the fluid domain grid into the same coordinate system as the boundary integral term.
-We can simply muptipliy by $\mathcal{Q}^{-1} = \mathcal{Q}^{T}$ as 
-\begin{align}
-	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
-		  & + \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\mathcal{Q} \vec{x}) 
-		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
-		 \ \textrm{d}S
-		 \nonumber \\ & =
-		 \mathcal{Q}^{-1}
-		 \left[
-		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
-		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
-		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
-		 \ \text{d}V
-		 \right].
-	\label{eq_slp_vol_R}
-\end{align}
-For the other force equations as well, we implement the following
-\begin{equation}
-	\int_{S} \vec{f}(\vec{x}) \  \text{d}S(\vec{x})
-	= \mathcal{Q}^{-1} \vec{F}_o
-	 \label{eq_drag_code}
-	 \end{equation} 
-	 \begin{equation}
-		 \int_S \vec{f} (\vec{x})  \times (\vec{x} - \vec{x}_{cm}) 
-		 \ \textrm{d}S(\vec{x}) 
-		 = \vec{0}.
-	 \label{eq_torque_code}
-	 \end{equation}
-Once we solve the linear system, we may return the values on the fluid grid to the Cartesian coordinate system.
-% We need to rotate them using
-% \[
-% \vec{f}(\vec{x}_s) = \mathcal{Q} \vec{f}(\vec{x}).	
-% \]
-% \[
-% \vec{U}_a (\vec{x}_s) = \mathcal{Q} \vec{U}_a (\vec{x}).	
-% \]
-% \[
-% \vec{\Omega}(\vec{x}_s) = \mathcal{Q} \vec{\Omega}(\vec{x}).	
-% \]
-% The validation of stress is in section (\ref{validation_rot}).
 \subsection{Velocity compuation}
 Once we solve the stress, we are supposed to use the same 
 equation (\ref{eq_vel_all_onS_nonD}) 
@@ -1087,6 +959,124 @@ After implementing the FMM3D library into our program, we timed one more time to
 	\label{fig_vel_mm5_t1}
 \end{center}
 \end{figure}
+
+%Rotation==============================================
+\subsection{Rotation}
+To have more realistic simulations, we allow our aggregate model to rotate while they settle.
+We here focus on the angular velocity, $\vec{\Omega} = \Delta \theta / \Delta t$, which tells us how much the aggregate rotates ($\theta)$ in one time step, $\Delta t$. 
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[scale=0.25]{./figures/fig_rotation_schematics.pdf}
+	\caption{Schematics of the rotation of an aggregate. The blue grid is the fluid domain and the green rectangle represents an aggregate. Red stars show points on the aggregate.}
+	\label{fig_rotation_schematics}
+\end{center}
+\end{figure}
+This information lives in the orientation matrix, $\mathcal{Q}(t)$. We can update our aggregate position from $\vec{x}$ to $\vec{x}_{\mathcal{R}}$ using
+\[
+\vec{x}_{\mathcal{R}}(t) = \mathcal{Q}(t) \vec{x}.
+\]
+Note that $\mathcal{Q}(0) = \bar{\bar{I}}$ (identity matrix) at initial time. After we move forward one time step, we may update this orientation matrix as 
+\begin{equation}
+	\mathcal{Q}(t + \Delta t) = \mathcal{R} \mathcal{Q}(t),
+\end{equation} 
+where $\mathcal{R}$ is the rotation matrix. 
+\par
+Assume we obtain the angular velocity, $\vec{\Omega}$ from a time step. (Initially, it is a zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
+The matrix $\mathcal{A}$ is then defined as 
+\begin{equation}
+	\mathcal{A}
+	=\begin{bmatrix}
+	 0 & - \Delta \theta_3 & \Delta \theta_2  \\
+	 \Delta \theta_3 & 0  & -\Delta \theta_1  \\
+	 - \Delta \theta_2 & \Delta \theta_1 & 0  \\
+	\end{bmatrix},
+	\label{eq_rotation_mx}
+\end{equation}
+From here, we have the rotation matrix $\mathcal{R} = e^{\mathcal{A}}.$
+We can compute the matrix exponential $e^{\mathcal{A}}$ using Rodrigues' formula,
+\begin{equation}
+	\mathcal{R} = 
+e^{\mathcal{A}} 
+ = \bar{\bar{I \ }} 
+ + \frac{\sin(\phi)}{\phi} \mathcal{A}
+ + \frac{1-\cos(\phi)}{\phi^2} \mathcal{A}^2,
+\label{eq_R_eA}
+\end{equation} 
+where $\phi = \|\Delta \vec{\theta}\|_2$.
+With this $\mathcal{R}$ and orientation matrix $\mathcal{Q}$, we are ready to update the fluid grid.
+
+
+	
+\subsubsection{Linear system in a rotated coordinate}
+We first solve for the stress at the center of each square face of an aggregate, $\vec{y} = \vec{x}_i$, 
+using the same formula as equation (\ref{eq_vel_all_onS_nonD}),
+\begin{equation}
+	\vec{u} \left(\vec{x}_i \right) 
+		  = -\int_{S}  
+		 \vec{f}(\vec{x}) 
+		 \cdot \bar{\bar{G \ }} (\vec{x}, \vec{x}_i) 
+		 \ \textrm{d}S 
+		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
+		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
+		 \bar{\bar{G \ }}(\vec{x}, \vec{x}_i)
+		 \ \text{d}V,
+		 \nonumber
+\end{equation}
+As we allow rotation, we can express the above equation as
+\begin{align}
+	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
+		  = & - \frac{1}{8 \pi} \int_{S}  
+		 \vec{f}(\mathcal{Q} \vec{x}) 
+		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+		 \ \textrm{d}S
+		 \nonumber \\
+		 & - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
+		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
+		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
+		 \ \text{d}V.
+	\label{eq_slp_On_rotate}
+\end{align}
+Since the rotation matrix $Q$ is constant and it is normalized, it is valid to say that
+\[
+ \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+	 = \bar{\bar{G}}( \vec{x}, \vec{x}_i).
+\]
+We now solve for unknowns, including the translational and angular velocities,
+in a rotated coordinate system $\mathcal{Q} \vec{x}_i $.
+Note that the stress values we obtain here 
+are located in the same one as the rotated positions.  
+To complete the linear system to solve for stress, translational, and angular velocities, we temporarily map the fluid domain grid into the same coordinate system as the boundary integral term.
+We can simply muptipliy by $\mathcal{Q}^{-1} = \mathcal{Q}^{T}$ as 
+\begin{align}
+	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
+		  & + \frac{1}{8 \pi} \int_{S}  
+		 \vec{f}(\mathcal{Q} \vec{x}) 
+		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+		 \ \textrm{d}S
+		 \nonumber \\ & =
+		 \mathcal{Q}^{-1}
+		 \left[
+		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
+		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
+		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
+		 \ \text{d}V
+		 \right].
+	\label{eq_slp_vol_R}
+\end{align}
+For the other force equations as well, we implement the following
+\begin{equation}
+	\int_{S} \vec{f}(\vec{x}) \  \text{d}S(\vec{x})
+	= \mathcal{Q}^{-1} \vec{F}_o
+	 \label{eq_drag_code}
+	 \end{equation} 
+	 \begin{equation}
+		 \int_S \vec{f} (\vec{x})  \times (\vec{x} - \vec{x}_{cm}) 
+		 \ \textrm{d}S(\vec{x}) 
+		 = \vec{0}.
+	 \label{eq_torque_code}
+	 \end{equation}
+Once we solve the linear system, we may return the values on the fluid grid to the Cartesian coordinate system.
+
 
 
 %validation---------------------------------------------------

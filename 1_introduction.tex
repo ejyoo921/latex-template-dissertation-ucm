@@ -182,18 +182,18 @@ Determining one's yield stress is critical to understand rheological behavior ac
    \boldsymbol{\tau} = \mu(\dot{\gamma}) \boldsymbol{D}.
 \end{equation}
 It was brought to our attention that there are characteristics that could be neglected when we consider the stress linear in $\boldsymbol{D}$. For instance, curvature in free-surface flows, anomalous stress profile in cylindrical Couette flows, or negative rod climbing effect (Weissenberg effect). We thus propose to implement the computational tools to study these secondary flows using the following stress tensor expression:
+{\color{blue} REPLACE WITH THE ERICKSON- RIVKIN TENSOR:\@ GENERAL FORM.}
 \begin{align}
 \bar{\bar{\sigma}}
   = -P \bar{\bar{I}}  + \ &\mu_1 {\bm D} 
   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
-  \nonumber \\
-  & + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
++ \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
   + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
   - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
+\label{eq_sigma_noN}
 \end{align}
 The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
 \\
-{\color{blue} ADD DESCRIPTION ABOUT ERICKSON- RIVKIN TENSOR:\@ GENERAL FORM.}
 
 
 
