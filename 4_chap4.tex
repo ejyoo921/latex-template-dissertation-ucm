@@ -1,7 +1,5 @@
 \par
-With a constitutive rheology code, we can capture such complex continuum hydrodynamics. We thus consider both the shear stress rate and the pressure onto the materials of interest as the sources of the yield stress. 
-We use the \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. 
-We implement the granular material viscosity computation in \verb+incflo+, which is the AMReX-based module for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
+% We implement the granular material viscosity computation in \verb+incflo+, which is the AMReX-based module for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
 \begin{itemize}
   \item In Summer 22, I implemented the granular rheology, the viscosity computation, in the  'incflo' module and connect this to solve an incompressible flow model. 
   \item  However, due to the nonlinearity in velocity, we only could use the explicit method, which is the explicit Euler method and was already available.
@@ -38,27 +36,7 @@ The incompressible flow motion is governed by the law of conservation of mass an
 \section{Normal stress differences}
 There have been discoveries regarding the importance of normal stress difference effects in complex fluids. In particular, many works have shown that the second normal stress difference effects are substantial in certain cases. [{\color{blue} REFERNCES}]
 % We first introduce Reiner and Rivlin's stress tensor.
-From the following Cauchy stress tensor, 
-\begin{equation}
-  \bar{\bar{\sigma}} = 
-  \begin{bmatrix}
-    \sigma_{xx} & \sigma_{xy} & 0 
-    \\
-    \sigma_{xy} & \sigma_{yy} & 0 
-    \\
-    0 & 0 & \sigma_{zz},
-  \end{bmatrix}
-  \label{eq_cauchy_mx}
-\end{equation} 
-we define the first normal stress difference $N_1$ as 
-\begin{equation}
-  N_1 = \sigma_{xx} - \sigma_{yy}
-\end{equation}
-and the second normal stress difference $N_2$,
-\begin{equation}
-  N_2 = \sigma_{yy} - \sigma_{zz}.
-\end{equation}
-Unlike a Newtonian fluid, we may observe $\sigma_{xx} \neq \sigma_{yy} \neq \sigma_{zz}$ in behaviors of a non-Newtonian type shear flow.
+
 \begin{itemize}
   \item Examples of second normal stress difference
   \item How can we define alphas here? 
@@ -70,11 +48,7 @@ Unlike a Newtonian fluid, we may observe $\sigma_{xx} \neq \sigma_{yy} \neq \sig
 We recall the stress tensor for the fluid momentum equation, introduced in Chapter 1, for a non-Newtonian fluid:
 \begin{align}
   \bar{\bar{\sigma}}
-    = -P \bar{\bar{I}}  + \mu_1 {\bm D} 
-    + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
-   + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
-    + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
-    - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
+    = -P \bar{\bar{I}}  + \mu(\dot{\gamma}) {\bm D}.
   \end{align}
 {\color{red}WARNING: NOTATIONS}
 \\

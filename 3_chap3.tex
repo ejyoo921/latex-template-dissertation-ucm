@@ -2,29 +2,26 @@
 
 
 In the last few decades, several scientists have modeled the dynamics and ecological impact of marine aggregates \cite{jackson_aggregation_1998, kiorboe_mechanisms_2002}. 
-Their effects on bacterial transport \cite{jackson_simulation_1989} and algal bloom \cite{jackson_model_1990} have been described in models that use simplified descriptions of the aggregates' settling speeds. Moreover, accumulation of aggregates in thin layers where the ambient fluid is stratified has been reported \cite{macintyre_accumulation_1995, alldredge_occurrence_2002} and more recently modeled experimentally \cite{prairie_delayed_2013}, analytically \cite{camassa_retention_2013}, and computationally \cite{panah_simulations_2017}. Understanding the formation and persistence of these thin layers is ecologically important. 
+Their effects on bacterial transport \cite{jackson_simulation_1989} and algal bloom \cite{jackson_model_1990} have been described in models that use simplified descriptions of the aggregates' settling speeds. Moreover, accumulation of aggregates in thin layers where the ambient fluid is stratified has been reported \cite{macintyre_accumulation_1995, alldredge_occurrence_2002} and more recently modeled experimentally \cite{prairie_delayed_2013}, analytically \cite{camassa_retention_2013}, and computationally \cite{panah_simulations_2017}. 
+Understanding marine aggregate's formation, settling speed, and persistence of these thin layers is ecologically important. 
 Therefore, in this chapter, we discuss the dynamics of settling marine aggregates in a density-stratified fluid. 
-%---------------------------------------------------------
-\par
-Instead of constant density $\rho$, we suppose the background fluid density varies linearly in the vertical direction,
+%--------------------------------------------------------
+\section{Governing Equations}
+Now, instead of constant density $\rho$, as in Chapter 2, we suppose the background fluid density varies linearly in the vertical direction,
 \begin{equation}
 \rho_{bg}(z) =  \rho_0 \left(1 - \gamma z \right),
 \label{eq_rho_bg}
 \end{equation}
-where $\rho_0$ is the fluid density where the aggregate's center of mass is located at rest and $\gamma > 0$ is constant.
-Over the time $t$, some perturbations, $C(\vec{y},t)$, occur due to the concentration, $\tilde{S}(\vec{y},t)$, difference between the background fluid and settling aggregate,
-\begin{equation}
-C(\vec{y}, t) =  \tilde{S}(\vec{y},t) - \rho_{bg}(z).
-\label{eq_perturb_C}
-\end{equation}
-From equations (\ref{eq_rho_bg}) and (\ref{eq_perturb_C}), we can establish the fluid density variation over time,
+where $\rho_0$ is the fluid density where the aggregate's center of mass is located at rest initially and $\gamma > 0$ is constant.
+Over time, perturbations, $C(\vec{y},t)$, in the fluid density occur due to the settling motion. More specifically, we define $C$ as the concentration difference between the values at initial and time $t$.
+From this, we can establish the fluid density variation over time,
 \begin{equation}
 	\rho(\vec{y},t ) 
 	= \rho_{bg}(z) +  \alpha \rho_0 C(\vec{y},t) 
 	 = \rho_0 \left( 1 - \gamma z  + \alpha  C(\vec{y},t) \right),
 \label{eq_density}
 \end{equation}
-where the non-zero constant $\alpha $ describes type of solute. Knowing that the concentration is the amount of mole per volume, the density of the fluid would differ by the type of solute or chemicals with the same amount of molecules.
+where the non-zero constant $\alpha$ is based on the type of solute. 
 \begin{figure}[ht]
 	\begin{center}
 	\includegraphics[scale=0.4]{./figures/fig_stratification_schematics}
@@ -32,24 +29,20 @@ where the non-zero constant $\alpha $ describes type of solute. Knowing that the
 	\label{fig_stratification_schematics}
 	\end{center}
 \end{figure}
-To track the perturbation $C(\vec{y},t)$, we couple the advection-diffusion equation with the modified Stokes equations that we will describe in the next section. 
-%------------------------------------------------------------------------------
-\section{Governing Equations}
-The non-constant density $\rho(\vec{y},t)$ plays a role as an external source of the fluid. This changes the momentum equation,
-	Due to varying density, $\rho(\vec{y}, t)$, 
+The non-constant density $\rho(\vec{y},t)$ changes the momentum equation from (\ref{eq_stokes3}) to 
 		 \begin{equation}
 		\ \tilde{\mu}\nabla^2 \vec{u}(\vec{y})
 		- \nabla P_d (\vec{y}) \ + \  
 		 \rho_0 \alpha C(\vec{y},t) \vec{g} =0 , 
 	\label{eq_extra_C}
 	\end{equation}
-	where $P_d$ is dynamic pressure, defined as
+	where $P_d$ is the dynamic pressure, defined as
 \begin{equation}
 	P_d (\vec{y})
 	 = P (\vec{y}) \ - \int \rho_{bg}(z) g   \textrm{d}z.
 	\label{eq_Pd}
 \end{equation}
-To take the perturbation effect into account, we find the particular solution to the momentum equation (\ref{eq_extra_C}). Once we have one, simple addition to the homogenous solution would give us the entire solution due to the linearity of the system. 
+To take the perturbation of the ambient fluid into account, we find the particular solution to the momentum equation (\ref{eq_extra_C}). Once we have one, simple addition to the homogenous solution would give us the entire solution due to the linearity of the system. 
 \par
 % \subsection{Particular solution to Stokes equations with the stratification}
 %----------------------------------------------------------------------
@@ -62,8 +55,8 @@ To derive the particular solution, we consider the singularly forced Stokes prob
 \end{equation}
 where $\vec{q}$ is an arbitrary constant vector, $\vec{y}$ is an arbitrary point in fluid domain, and $\delta$ is the three-dimensional delta function.
 The problem (\ref{eq_single_stokes}) 
-describes the effect coming from a single force applied at $\vec{x} = \vec{y}.$
-The fundamental solutions to equation (\ref{eq_single_stokes}) with the continuity equation are
+describes the effect coming from a singular force applied at $\vec{x} = \vec{y}.$
+The fundamental solution to equation (\ref{eq_single_stokes}) coupled with the continuity equation (\ref{eq_conserv_mass}) are
 \begin{equation}
 	\vec{u} (\vec{y}) = \ \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q}.
@@ -75,12 +68,7 @@ The fundamental solutions to equation (\ref{eq_single_stokes}) with the continui
 	\cdot  \vec{q},
 \label{eq_fund_p}
 \end{equation}
-where the kernel $\bar{\bar{G \ }}$ is called \textit{Stokeslet}, defined as 
-\begin{equation}
-	\bar{\bar{G}}( \vec{x}, \vec{y}) = 
-	\frac{\bar{\bar{I \ }}}{||\vec{x}-\vec{y} ||} + \frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y})^T}{||\vec{x}-\vec{y} ||^3}.
-	% \label{eq_stokeslet_repeat}
-\end{equation} 
+where the kernel $\bar{\bar{G \ }}$ is the \textit{Stokeslet}, introduced in Chapter 1, euation (\ref{eq_stokeslet}).
 This implies that the solutions (\ref{eq_fund_u}) and (\ref{eq_fund_p}) satisfy equation (\ref{eq_single_stokes}) as
 \begin{equation}
 	\ \tilde{\mu} \nabla^2 
@@ -93,18 +81,18 @@ This implies that the solutions (\ref{eq_fund_u}) and (\ref{eq_fund_p}) satisfy 
 	=0.
 \label{eq_single_stokes_sub}
 \end{equation}
-As we multiply by $\left( C(\vec{x}, t) \right)$ on both sides and integrate the entire equation over the domain, $V(\vec{x})$, we get
+When we multiply by $ C $ on both sides and integrate the entire equation over the domain, $V(\vec{x})$, we get
 \begin{equation}
 	\int_{V}
 	\biggl[
 	\ \tilde{\mu} \nabla^2 
-	\biggl( \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
-	\cdot  \vec{q} \biggr)
+	\biggl( \frac{ \bar{\bar{G \ }}(\vec{x}, \vec{y})
+	\cdot  \vec{q}}{8\pi \tilde{\mu}}  \biggr)
 	C(\vec{x}, t)
 	-
-	\nabla \biggl(\ \frac{1}{4\pi }  
-	\frac{\vec{x} - \vec{y}}{\| \vec{x} - \vec{y}\|^3}
-	\cdot  \vec{q} \biggr)
+	\nabla \biggl( 
+	\frac{(\vec{x} - \vec{y}) \cdot  \vec{q} }{4 \pi \| \vec{x} - \vec{y}\|^3}
+	\biggr)
 	C(\vec{x}, t)
 	+ \vec{q} \ \delta \left(\vec{x} - \vec{y} \right)
 	C(\vec{x}, t)
@@ -112,27 +100,24 @@ As we multiply by $\left( C(\vec{x}, t) \right)$ on both sides and integrate the
 	\ \textrm{d}V(\vec{x}) = 0 .
 \label{eq_single_stokes_sub2}
 \end{equation}
-
-Note that the operator $\nabla$ is linear and used with respect to $\vec{x}$. We are able to switch the order with the integral operator as follows,
+Note that the operator $\nabla$ is linear and with respect to $\vec{x}$. We are able to switch the order with the integral operator as follows,
 \begin{equation}
 	\tilde{\mu} \ \nabla^2 
 	\int_{V}
-	\biggl( \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
-	\cdot  \vec{q} \biggr)
+	\biggl( \frac{\bar{\bar{G \ }}(\vec{x}, \vec{y})
+	\cdot  \vec{q} }{8\pi \tilde{\mu}}  \biggr)
 	C(\vec{x}, t)
 	\ \textrm{d}V(\vec{x})
 	-
 	\nabla 
 	\int_{V}
-	\biggl(\ \frac{1}{4\pi }  
-	\frac{\vec{x} - \vec{y}}{\| \vec{x} - \vec{y}\|^3}
-	\cdot  \vec{q} \biggr)
-	C(\vec{x}, t)
+	\biggl(
+	\frac{	C(\vec{x}, t)(\vec{x} - \vec{y})\cdot  \vec{q} }{4 \pi \| \vec{x} - \vec{y}\|^3} \biggr)
 	\ \textrm{d}V(\vec{x})
 	+\vec{q} C(\vec{x}, t) = 0 .
 \label{eq_single_stokes_sub3}
 \end{equation}
-By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find the particular solutions to our modified Stokes equations, (\ref{eq_extra_C}),
+By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find a articular solution to our modified Stokes momentum equation, (\ref{eq_extra_C}),
 \begin{equation}
 	\vec{u} (\vec{y}) =
 	 \frac{\rho_0 \alpha }{8\pi \tilde{\mu}}
@@ -163,82 +148,69 @@ The entire velocity solution, thus, becomes
 	\ \text{d}V(\vec{x}).
 \label{eq_vel_HP}
 \end{equation}
-As we see, the velocity at a point $\vec{u}$ is now depending on space and time. We can update the velocity field in time by coupling the solution (\ref{eq_vel_HP}) with the advection-diffusion equation. 
+As we see, the velocity at a point $\vec{u}$ is now dependent on space and time compared to the homogeneous fluid case. We can update the velocity field in time by coupling the solution (\ref{eq_vel_HP}) with the advection-diffusion equation (\ref{eq_ad_diff_nonD}) to model the solute perturbation, $C$.
+ 
 %------------------------------------------------------------------
 \subsection{Force balance}
 \label{sec:force_balance}
 \par
-We also want to point out that we can no longer impose the velocity of the aggregate since it is not physically valid.
-This implies that the velocity on the aggregate, equation (\ref{eq_solidbody}), that is
+We can no longer impose the velocity of the aggregate, rather we need to solve for it.
+This implies that the velocity of the aggregate, equation (\ref{eq_solidbody}),
 \begin{equation}
 	\vec{u}_s (\vec{x}, t)  = \vec{U}_a + \vec{\Omega} \times (\vec{x}- \vec{x}_{cm}),
 	\nonumber
 \end{equation}
-becomes an unknown value. Specifically, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, by prescribing the total body force and total torque. 
-We can close the system since we have three vector equations for all unknowns. 
-As we mentioned, to close the system of equations, we prescribe the following total drag force, $\vec{F}_o$, and torque, $\vec{Q}_o $,
+is an unknown. Specifically, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, by prescribing the total body force and total torque from the fluid on the aggregate.
+To close the system of equations, we prescribe the total drag force, $\vec{F}_o$, and total torque, $\vec{Q}_o$. 
+
+First, we know that the total drag is sum of stress vectors, $\vec{f}$,
 \begin{equation}
-	\int_S \vec{f} (\vec{x}) \ \textrm{d}S = \vec{F}_o
-\label{eq_Fo}
-\end{equation}
-and
-\begin{equation}
-	\int_S \vec{f}\times (\vec{x} - \vec{x}_{cm}) \ \textrm{d}S = \vec{Q}_o = \vec{0}.
-\label{eq_Qo}
-\end{equation}
- Note that the drag force is induced by the dynamic pressure $P_d$ defined in equation (\ref{eq_Pd}). This implies that 
-\begin{equation}
-	\vec{F}_o 
-	 = - \int_S \left[ 
+	 \vec{F}_o = \int_S \vec{f} (\vec{x}) \ \textrm{d}S 
+	= - \int_S \left[ 
 	 - \left( P -  \int \rho_{bg}(z) g \ \textrm{d}z \right) \bar{\bar{I \ }} 
 	 + \tilde{\mu} \left( \nabla \vec{u} + (\nabla \vec{u})^{T} \right)
 	 \right] \cdot \hat{n} \ \textrm{d}S (\vec{y}).
-\label{eq_Fo_Pd}
+\label{eq_Fo}
 \end{equation}
-As we observe the stress tensor inside of equation (\ref{eq_Fo_Pd}), 
+To impose the total drag (\ref{eq_Fo}), we observe the right-hand side of the equation(\ref{eq_Fo}) which includes the gravity and buoyancy forces. The net force balance between all three types of force at equilibrium  is
 \begin{equation}
-	\bar{\bar{\sigma \ }} = 
- -  P  \bar{\bar{I \ }} 
- + \tilde{\mu} \left( \nabla \vec{u} + (\nabla \vec{u})^{T} \right).
+	\vec{F}_o (t)+\vec{F}_g(t) + \vec{F}_b = \vec{0},
+\end{equation} 
+where the gravity force acting on the aggregate, $\vec{F}_g$, can be expressed as
+\begin{equation}
+	\vec{F}_g = \rho_a V_a \vec{g}, 
 \end{equation}
-Thus, the full body force, $\vec{F}_g$, can be found in the following net force balance equation at equilibrium,
+with aggregate density $\rho_a$ and volume $V_a$. 
+To calculate the aggregate density, $\rho_a$, we should take its porosity, $\phi$, that is $ 0 \leq \phi \leq 1$.
+ We then define the density of an aggregate as 
 \begin{equation}
-	\vec{F}_o (t)
-	= - \vec{F}(t) - \vec{F}_b
-	  = - \vec{F}_g(t)
-	  -  \int_S \left( 
+	\rho_a (t) = \phi \rho_{f}(t) + (1-\phi) \rho_{s},
+	\label{eq_rho_a}
+\end{equation}
+where $\rho_{f}$ and $\rho_s$ are the density of the liquid and solid portion of the aggregate, respectively. To obtain the liquid portion of the aggregate density, we take an average of the fluid density where the aggregate is located,
+\begin{equation}
+	\rho_{f}(t) = \frac{1}{V_a}\int_{V_a} \rho(\vec{x}, t) \  \textrm{d}V(\vec{x}))
+\end{equation}
+We here consider the solid part of the aggregate density as $\rho_s \approx 1400 $kg$/$m$^3.$ 
+We also set the porosity to $95\%$, or $\phi = 0.95$.
+Meanwhile, we find the buoyancy force, $\vec{F}_b$, from the equation (\ref{eq_Fo}),
+\begin{equation}
+ \vec{F}_b =	  -  \int_S \left( 
 	   \int \rho_{bg}(z) g \ \textrm{d}z 
 	 \right) \bar{\bar{I \ }}  \cdot
 	\hat{n} \ \textrm{d}S (\vec{y}).
 \label{eq_Full_Force}
 \end{equation}
-The last term, $\vec{F}_b$, in equation (\ref{eq_Full_Force}) represents buoyancy acting toward the aggregate. 
-This gravitational force, $\vec{F}_g$, can also be interpreted as the gravitational force acting on the aggregate,
-\begin{equation}
-	% \vec{F} = (\rho_a - \rho)V_a\vec{g}
-	\vec{F}(t) = \rho_a(t) V_a \vec{g}, 
-\end{equation}
-where $\rho_a$  and $V_a$ are the aggregate density and volume, respectively. 
-% In addition to equation (\ref{eq_vel_HP}), we may use equations (\ref{eq_Full_Force}) and (\ref{eq_total_Torque_dlp}) to solve for velocity $\vec{u}(\vec{x}_s)$ and the unknown density, $\vec{\psi} \in [0, 1]$, on the aggregate.
-%------------------------------------------------------------------
-% \subsection{Aggregate density}
-Marine aggregates are typically very porous, yet their permeability is low. To take the porosity, denoted as $\phi \in [0,1]$, into account, we define the density of an aggregate as 
-\begin{equation}
-	\rho_a (t) = \phi \rho_{f}(t) + (1-\phi) \rho_{s},
-	\label{eq_rho_a}
-\end{equation}
-where $\rho_{f}$ and $\rho_s$ are the liquid and solid portion of the entire aggregate density, respectively. To obtain the liquid portion of the aggregate density, we take an average of fluid density where the aggregate locates $\rho_{f},$
-\begin{equation}
-	\rho_{f}(t) = \frac{1}{V_a}\int_{V_a} \rho(\vec{x}, t) \  \textrm{d}V(\vec{x}))
-\end{equation}
-We here consider the solid part of the aggregate density as $\rho_s \approx 1400 $kg$/$m$^3.$ 
-We also set the porosity about $95\%$, or $\phi = 0.95$.
 
-% I don't think the following belongs here:
-
+For the total torque, we use the form (\ref{eq_torquebal}), 
+\begin{equation}
+	\vec{Q}_o =\int_S \vec{f}\times (\vec{x} - \vec{x}_{cm}) \ \textrm{d}S =  \vec{0}.
+\label{eq_Qo}
+\end{equation}
+As we wrote in the equation (\ref{eq_Qo}), we set zero total torque. Note that this does not imply that the aggregate is not rotating. 
 %--------------------------------------------------
-\subsection{Advection-Diffusion equation}
-Since the perturbation $C(\vec{x}, t)$ is time-dependent, we couple the Stokes equations with the advection-diffusion equation to update $C(\vec{x}, t)$ in time. To take the background density into account, what we should update is the entire fluid density,
+\subsection{Perturbation variation}
+As the aggregate settles, the concentration and, therefore, the fluid density change,
 \begin{equation}
 	\frac{\partial \rho(\vec{y},t)}{\partial t}
 	+ \vec{u}(\vec{y}) \cdot \nabla \rho(\vec{y},t)
@@ -246,28 +218,16 @@ Since the perturbation $C(\vec{x}, t)$ is time-dependent, we couple the Stokes e
 \label{eq_AD_rho}
 \end{equation}
 where $D$ is the diffusion coefficient.
-For salinity of seawater, we find the diffusion coefficient, $D_{salt} = 2 \times 10^{-9}  (\text{m}^2\text{/s})$ from \text{\it Wollast and Garrels (1971)} \cite{wollast_diffusion_1971}. In addition, we recall the aggregate's settling speed ($U_s$), its maximum radius ($R_a$),
-\begin{align}
-	\text{Pe} 
-	= \frac{U_s R_a }{D_{salt}} 
-	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{2 \times 10^{-9} (\text{m}^2\text{/s})} = 9.5
-\end{align}
-\par 
-For the thermal diffusivity, $D_{heat}$, we consider the value referred by {\it Nayar et. al (2016)} \cite{nayar_thermophysical_2016} and {\it Sharqawy et. al (2010)} \cite{sharqawy_thermophysical_2010},
-\begin{align}
-	\text{Pe} 
-	= \frac{U_s R_a }{D_{heat}} 
-	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} \approx 10^{-2}.
-\end{align} 
-Since the fluid density is evolving only in the gravitational direction, $z-$direction, we can simplify the re-write the equation (\ref{eq_AD_rho}) in terms of $C(z,t)$, 
+By applying the relationship between fluid density $\rho$ and perturbation $C$ from equation (\ref{eq_density}), we can re-write the equation (\ref{eq_AD_rho}) in terms of $C$, 
 \begin{equation}
-	\frac{\partial C(z,t)}{\partial t}
-	+ \vec{u}(\vec{y}) \cdot \nabla C(z,t)
-	 = D \nabla^2 C(z,t)
+	\frac{\partial C(\vec{y},t)}{\partial t}
+	+ \vec{u}(\vec{y}) \cdot \nabla C(\vec{y},t)
+	 = D \nabla^2 C(\vec{y},t)
 	 + \frac{\gamma}{\alpha}\vec{u}(\vec{y})  \cdot \hat{k}.
 \label{eq_AD_C}
 \end{equation}
-We track the perturbation $C(z,t)$ for every time step by solving the equation (\ref{eq_AD_C}).
+Note that the perturbation $C$ is dependent only on the gravitational direction ($z-$axis) since we assume the fluid density evolves on $z-$direction.
+
 %------------------------------------------------------------------
 \section{Dimensional analysis}
 To facilitate further analysis, we non-dimensionalize our new equations. We mainly use the same parameters we introduced in section \ref{section3}, equations (\ref{eq_nonD}), in addition to the following dimensionless parameters:
@@ -283,27 +243,22 @@ U_s = \frac{g  L^2}{\tilde{\mu}}(\rho_s - \rho_0)(1-\phi),
 since we consider the porosity of an aggregate as (\ref{eq_rho_a}).
 % Note that the Reynolds number is approximately 0.03.
  % Here $\rho_a$ is the density of aggregate.
-For the scale of the perturbation, $C$, we introduce the maximum density difference of the background density profile in the fluid domain at the initial time, i.e., 
+For the scale of the perturbation, $C$, we introduce the maximum density difference of the background density profile in the fluid domain at the initial time, i.e., {\color{blue} WHAT IS THE UNIT OF $C$? -> NOT THE SAME AS $\rho$}
 \[
 C_{max} = 
 \left|
 \max_{(x,y,z) \in V} \left(\rho_{bg}(z)  \right)
 \ - \min_{(x,y,z) \in V} \left(\rho_{bg}(z)  \right) \right|.
- % \left| \tilde{S}(z_\text{top}, \ 0 )
- % - \tilde{S} \left( z_\text{bottom}, \ 0 \right) \right|. 
 \] 
-As we want to see the settling of an aggregate throughout the fluid having a density gradient, we decided to have a 1\% density difference between the top and bottom layers of the fluid domain.
-%  {\color{red}NEED NUMBER WITH UNIT AND A REFERENCE!}
 \par
-We first derived the dimensionless modified Stokes momentum equation,
+We first derive the dimensionless modified Stokes momentum equation,
 \begin{equation}
 	{\nabla'}^2  \vec{u}'(\vec{y})
 	= \nabla {P_d}'(\vec{y}) \ - \  
 	\frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} \alpha C_{max} C'\left(\vec{y},t \right)   \hat{k},
 \label{eq_extra_C_nonD}
 \end{equation}
-along with the velocity field
-%  on the aggregate boundary surface $\vec{y}' = \vec{x}'_s$, using 
+which is then solved for the velocity,
  \begin{align}
 		\vec{u}'(\vec{y})
 			  & =- \frac{1}{8 \pi} \int_{S'}  
@@ -346,41 +301,17 @@ Lastly, the advection-diffusion equation becomes,
 	\label{eq_AD_nonD}
 	\end{equation}
 using the velocity field, equation (\ref{eq_vel_all_onS_nonD}), for the advection term.
+Note that we discussed the Péclet number in Chapter (\ref{sec:concentration}), while introducing its definition in equation (\ref{eq_def_Pe}).
+In addition to the diffusion effect due to salinity, one may consider the thermal diffusivity of the ocean, $D_{heat}$~\cite{nayar_thermophysical_2016,sharqawy_thermophysical_2010}: we get a Péclet number of
+\begin{align}
+	\text{Pe} 
+	= \frac{U_s R_a }{D_{heat}} 
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} \approx 10^{-2}.
+\end{align} 
+\par
 For the rest of this chapter, we drop the prime for simplicity and use only dimensionless forms. 
 
-\subsection{Velocity compuation}
-Once we solve the stress, we are supposed to use the same 
-equation (\ref{eq_vel_all_onS_nonD}) 
-to solve for velocity in the fluid grid, which stays in the Cartesian coordinates.
-Although the volume integral term can stay as it is,  
-the boundary integral needs some special treatment
-since it has two mixed coordinate systems.
-We particularly pay more attention to the Stokeslet,
-\[
-	\bar{\bar{G \ }} (\mathcal{Q}\vec{x},\vec{y}) 
-	= 
-	\frac{\bar{\bar{I \ }}}{||\mathcal{Q}\vec{x}-\vec{y} ||} 
-	+ \frac{(\mathcal{Q}\vec{x}-\vec{y})(\mathcal{Q}\vec{x}-\vec{y})^T}{||\mathcal{Q}\vec{x}-\vec{y} ||^3}, 	 
-\]
-where $\mathcal{Q}\vec{x}$ is in the aggregate rotated grid. Since we cannot compute the boundary integral of the Stokeslet when $\mathcal{Q}\vec{x}$ and $\vec{y}$ are not in the same coordinate system, we need to express $\vec{y}$ using another vector $\vec{v}$ that is in the rotated grid such that 
-\[
-	\mathcal{Q}\vec{x} - \vec{y} = \vec{x} - \vec{v},
-	% \mathcal{Q}\vec{x}-\vec{v} = \vec{x} - \vec{y},
-\]
-or equivalently,
-\[
-	\vec{v} = \left(   \bar{\bar{I}} - \mathcal{Q} \right) \vec{x}  + \vec{y}.
-\]
-% {\color{blue} Need to type below figure.}
-% \begin{figure}[h]
-% 	\begin{center}
-% 		\includegraphics[scale=0.45]{./figures/fig_vel_y_map}		
-% 		\caption{Mapping for $\vec{y}$ grid.}
-% 		\label{fig_vel_y_map}
-% \end{center}
-% \end{figure}
 
-After we solve for the velocity field of the fluid domain, we rotate the velocity field back to the original coordinate by multiplying by the inverse of $\mathcal{Q}$ for the concentration update. 
 %---------------Numerics--------------------------------------
 \section{Numerical methods}
 %-------------------------------------------------------------
@@ -1077,59 +1008,76 @@ For the other force equations as well, we implement the following
 	 \end{equation}
 Once we solve the linear system, we may return the values on the fluid grid to the Cartesian coordinate system.
 
+\subsection{Velocity compuation}
+Once we solve the stress, we are supposed to use the same 
+equation (\ref{eq_vel_all_onS_nonD}) 
+to solve for velocity in the fluid grid, which stays in the Cartesian coordinates.
+Although the volume integral term can stay as it is,  
+the boundary integral needs some special treatment
+since it has two mixed coordinate systems.
+We particularly pay more attention to the Stokeslet,
+\[
+	\bar{\bar{G \ }} (\mathcal{Q}\vec{x},\vec{y}) 
+	= 
+	\frac{\bar{\bar{I \ }}}{||\mathcal{Q}\vec{x}-\vec{y} ||} 
+	+ \frac{(\mathcal{Q}\vec{x}-\vec{y})(\mathcal{Q}\vec{x}-\vec{y})^T}{||\mathcal{Q}\vec{x}-\vec{y} ||^3}, 	 
+\]
+where $\mathcal{Q}\vec{x}$ is in the aggregate rotated grid. Since we cannot compute the boundary integral of the Stokeslet when $\mathcal{Q}\vec{x}$ and $\vec{y}$ are not in the same coordinate system, we need to express $\vec{y}$ using another vector $\vec{v}$ that is in the rotated grid such that 
+\[
+	\mathcal{Q}\vec{x} - \vec{y} = \vec{x} - \vec{v},
+	% \mathcal{Q}\vec{x}-\vec{v} = \vec{x} - \vec{y},
+\]
+or equivalently,
+\[
+	\vec{v} = \left(   \bar{\bar{I}} - \mathcal{Q} \right) \vec{x}  + \vec{y}.
+\]
 
 
+After we solve for the velocity field of the fluid domain, we rotate the velocity field back to the original coordinate by multiplying by the inverse of $\mathcal{Q}$ for the concentration update. 
 %validation---------------------------------------------------
 \section{Validation}
-As we explained in the previous section, the computation time in this entire simulation with an aggregate model using 100 cubes, which we desire to observe, may take up to a few weeks. We thus need to determine the parameters to optimize the computing time, while validating the code. We examine the simplified results, using an aggregate with 10 cubes shown in Figure \ref{fig_sample_agg10}, by varying 1) the $s$ factor for domain sizes, 2) space step $\Delta x$, and 3) time step  $\Delta t$. Note that we use uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To differ the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and the maximum radius of the aggregate, $R_m$.
-From $\vec{x}_{cm}$, we scale the domain s$V$ with a constant $s$,
-\[
-	V = 
-	\begin{bmatrix}
-	 \ \vec{x}_{cm} - \begin{pmatrix}
-		1 \\ 1 \\ 2
-		\end{pmatrix} s R_m , 
-		\ \vec{x}_{cm} + \begin{pmatrix}
-			1 \\ 1 \\ 2
-			\end{pmatrix} s R_m
-	\end{bmatrix}.
-\]
+As we explained in the previous section, the run time of the entire simulation with an aggregate model using 100 cubes, which we desire to observe, may take up to a few weeks. We thus need to determine the parameters to optimize the computing time, while maintaining an acceptable degree of accuracy. We examine a smaller simulation, using an aggregate with 10 cubes shown in Figure \ref{fig_sample_agg10}, by varying 1) the $s$ factor for domain size, 2) grid spacing $\Delta x$, and 3) time step  $\Delta t$. Note that we use uniform spacing for all directions, i.e., $\Delta x = \Delta y = \Delta z$. To vary the fluid domain size, we consider the center of mass,  $\vec{x}_{cm}$, and maximum radius, $R_m$, of the aggregate.
+We use a domain centered at $\vec{x}_{cm}$ of size  $2s\left[  R_m \times   R_m \times 2 R_m \right]$. We note that $s$ is thus the ratio of the domain size to the aggregate diameter. See Figure \ref{fig_sample_agg10}.
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.5]{./figures/fig_sample_agg10.pdf}
+		\includegraphics[scale=0.35]{./figures/fig_sample_agg10.pdf}
 		\caption{Sample aggregate with ten cubes. This model is used to obtain simulations presented in Figure \ref{fig_NC10_snaps_all}.}
 		\label{fig_sample_agg10}
 	\end{center}
 \end{figure}
 \par
-Since we are interested in the aggregate's behavior, we measure its (a) translational velocity $\vec{U}_a$, (b) location of $\vec{x}_{cm}$, and (c) drag $\vec{F}_o$. In particular, we present the vertical component of these three values, focusing on the settling direction.
-In terms of fluid, the main quantity we want to observe is the (d) perturbation $C(\vec{x},t)$ close to the aggregate. At a location that is far away from the aggregate, we expect to see very small, almost zero, perturbation.
-We thus focus on the perturbation value near the aggregate.
+Since we are interested in the aggregate's long-term settling behavior, we measure its (a) translational velocity $\vec{U}_a$, (b) location of $\vec{x}_{cm}$, and (c) drag $\vec{F}_o$ as a function of time. 
+In particular, we present the vertical component of these three values, focusing on the settling direction.
+We also want to observe the (d) perturbation $C(\vec{x},t)$. At locations far from the aggregate, we expect to see very small, almost zero, perturbation.
+We thus focus on the perturbation value near the aggregate, denoted by $\vec{x}^{\star}$, which is distanced by approximately $(1.2 + R_m)$ from the center of mass. 
 \par
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.235]{./figures/fig_NC10_snaps_all.pdf}
+		\includegraphics[scale=0.23]{./figures/fig_NC10_snaps_all.pdf}
 		\caption{Snapshots of the perturbation obtained with $\Delta t = 0.75, \ \Delta x = 1,$ and $s = 5$. We look at the $y-z$ plane at $x = -0.3$, which is near the center of mass of the aggregate. The small white dot is located outside of, but very close to, the aggregate.}
 		\label{fig_NC10_snaps_all}
 	\end{center}
 \end{figure}
-Before we proceed, we show three snapshots of the perturbation $C$, obtained with $\Delta t = 0.75, \ \Delta x = 1$, and $s = 5$, at $x = -0.3$ as a sample result in Figure \ref{fig_NC10_snaps_all}. Note that the white star point is at $(-0.3, \    6.9, \      0.4)$, which is the particular point we focus on for further analysis. Since we use the moving frame of reference to compute the perturbation, we see that the aggregate stays in the middle of the fluid domain in Figure \ref{fig_NC10_snaps_all}.
-We notice slight instabilities on the top of the fluid domain, where the zero-flux boundary condition is applied, as the perturbation increases. Considering a large enough fluid domain compared to the aggregate size, we would like to observe the convergence of the quantities of interest near the aggregate. 
-\subsection{Various domain sizes}
-As we described in section \ref{subsec:AD_numerics_space}, we have periodic boundary conditions on the horizontal plane to resemble the infinite domain where the velocity vanishes to zero. 
-We assume that this is approximately possible by having the domain size with the factor $s = 5$. Nonetheless, it is worthwhile to confirm whether the aggregate dynamics change drastically when we put it in a smaller domain. If we can obtain good information on the aggregate in a smaller domain, we could use smaller $s$ in case we need more rapid computations or the memory capacity of our computer. 
+Before we proceed, we show three snapshots of the perturbation $C$ at three different times, obtained with $\Delta t = 0.75, \ \Delta x = 1$, and $s = 5$, at $x = -0.3$ as a sample result in Figure \ref{fig_NC10_snaps_all}. Note that the white star point is at ${\vec{x}^{\star}} = (-0.3, \    6.9, \      0.4)$, which is the particular point we record $C$. Since we use the moving frame of reference to compute the perturbation, we see that the aggregate stays in the middle of the fluid domain in Figure \ref{fig_NC10_snaps_all}.
+We notice slight oscillations near the top of the fluid domain, where the zero-flux boundary condition is applied, as the perturbation increases. 
+However, these oscillations remain relatively small and do not extend to the vicinity of the aggregate. 
+Considering a large enough fluid domain compared to the aggregate size, we would like to observe the convergence of the quantities of interest, $\vec{U}_a(t), \ \vec{x}_{cm} (t), \ \vec{F}_o(t)$, and $C(\vec{x}^{\star}, t)$.
+\subsection{Varying the domain size, via parameter $s$}
+As we described in section \ref{subsec:AD_numerics_space}, we have periodic boundary conditions on the horizontal plane to model the infinite domain where the velocity vanishes to zero. 
+We seek to determine to domain size, via the multiplicative factor $s$, required to approximate these conditions.
+If we can obtain good information on the aggregate in a smaller domain, we could use smaller $s$ that results in more rapid computations and smaller memory requirements. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_s_Ua3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_s_cm3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_s_Fo3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_s_C_star}
-	\caption{Compare various domain sizes with $ s = 3, \ 4, \ 5$ in the time step  $\Delta t = 0.5$ and space step $\Delta x = 1$.}
+		\includegraphics[scale=0.35]{./figures/fig_NC10_s_Ua3_all}
+		\includegraphics[scale=0.35]{./figures/fig_NC10_s_cm3_all}
+		\includegraphics[scale=0.35]{./figures/fig_NC10_s_Fo3_all}
+		\includegraphics[scale=0.35]{./figures/fig_NC10_s_C_star}
+	\caption{Compare various domain sizes with $ s = 3, \ 4, \ 5$ in the time step  $\Delta t = 0.5$ and space step $\Delta x = 1$. We show the settling speed (a), the position of the center of mass (b), the vertical force on the aggregate (c) and the value of the perturbation near the aggregate (d)}
 	\label{fig_NC10_compare_s}
 \end{center}
 \end{figure}
 \par
-I Figure \ref{fig_NC10_compare_s}, we see three different domain sizes with the $s$ factor $s = 3, \ 4$, and $5$. At first glance, we can barely tell the differences between all three cases. In other words, there is no significant impact on aggregate behavior when reducing the domain size up to $s = 3$. Although we notice that the perturbations at the white star point are not aligned as much as other plots do, this is not considerable. 
+In Figure \ref{fig_NC10_compare_s}, we see three different domain sizes with the $s$ factor $s = 3, \ 4$, and $5$. At first glance, we can barely tell the differences between all three cases. In other words, there is no significant impact on aggregate behavior when reducing the domain size down to $s = 3$. Although we notice that the perturbations at $\vec{x}^{\star}$ show a little more variation with $s$, this remains a negligible effect.
 
 \subsection{Various time step sizes}
 We now differ the time step size, $\Delta t$. We consider three different cases, $\Delta t = 0.75, \ 0.5, $, and $0.25$. We are able to run simulations with somewhat large time steps since the aggregate size is small enough to have a large velocity. When the initial settling velocity is high, the CFL condition (\ref{eq_CFL}) can break and lead to instability. As the aggregate settle, the surrounding fluid becomes denser. It makes the velocity should decrease, and so does the CFL number. Thus, we care more about the velocities at the beginning of the simulation. 

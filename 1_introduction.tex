@@ -25,7 +25,7 @@ Our research is centered on computing the velocity field around settling marine 
 
 	\caption{Example aggregate model with 10 cubes. We denote $S$ as the aggregate boundary surface and $\hat{n}$ as its normal. The vectors $\vec{x}$ and $\vec{y}$ are points on and outside of $S$. The solid lines represent the fluid domain boundaries. } 
 
-   \label{fig_cube10}
+\label{fig_cube10}
 \end{center}
 \end{figure}
 
@@ -43,12 +43,12 @@ To describe the incompressible fluid motion that takes place around marine aggre
 \end{align}
 where $ \rho$ is fluid density (constant) and $\vec{u}, \ \vec{g}$ are fluid velocity and gravity vectors, respectively.
 The first equation (\ref{eq_conserv_mass}) shows the conservation of mass and the equation (\ref{eq_momentum_NS}) describes the momentum conservation. 
-We also introduce the stress tensor, $\bar{\bar{\sigma}}$ as 
+We also introduce the stress tensor, $\bar{\bar{\sigma}}$ as sum of the fluid pressure $P$ and deviatoric stress tensor $\bm{\tau}$,
 \begin{equation}
-   \bar{\bar{\sigma}} = -P \bar{\bar{I}} + {\tilde{\mu}} {\bm D},
+   \bar{\bar{\sigma}} =-P \bar{\bar{I}} + {\bm \tau} = -P \bar{\bar{I}} + {\tilde{\mu}} {\bm D},
    \label{eq_stress_tensor}
 \end{equation}
-where $P$ is fluid pressure and ${\tilde{\mu}}$ is fluid viscosity. Here, ${\bm D}$ is the symmetric strain rate tensor,
+where ${\tilde{\mu}}$ is constant fluid viscosity and ${\bm D}$ is the symmetric strain rate tensor, that is,
 \begin{equation}
    \boldsymbol{D} = \frac{1}{2} \left( \nabla \vec{u} + {(\nabla  \vec{u} )}^T \right).
    \label{eq_strain_rate}
@@ -163,37 +163,76 @@ When $S$ is the boundary of a solid object, in our case an aggregate, the genera
 \section{Non-Newtonian fluid}
 In the last part of this thesis, we will turn our attention to non-Newtonian fluids. This topic is added to my thesis as an extension of one summer internship at the Lawrence Berkeley National Lab in 2022, under the guidance of Dr.Ishan Srivastava. 
 \par
-A non-Newtonian fluid shows many interesting behaviors quite different than Newtonian fluids. It has variable viscosity that changes the state of fluid depending on flow conditions, i.e., the viscosity term,${\tilde{\mu}}$ in the stress tensor (\ref{eq_stress_tensor}) is not constant; rather it is a function of the shear rate ($\dot{\gamma}$), i.e., $\mu(\dot{\gamma})$, where
-  $ \dot{\gamma} = \left| 
-   {\boldsymbol{D}}
-   \right|.
-$
-Due to this varying viscosity, the constitutive behavior of non-Newtonian fluids is highly complex. They show intriguing phenomena such as shear thickening, shear thinning, jamming, shear banding, and normal stress differences. This broad class of fluids encompasses various materials of industrial and natural importance, such as granular fluids, polymeric fluids, gels, and suspensions. Complex fluids exhibit two phases as responses to applied stress. This thesis examines the time-dependent coexistence between a fluid's solid and liquid states: the study for this particular fluid type is called {\textit{rheology}}. As the viscosity of a non-Newtonian fluid can be a function of the shear rate, a defining feature of many complex fluids is the presence of yield stress: for an insufficiently stressed material, they behave like an elastic solid, but once the yield stress is exceeded, they flow like a fluid. 
+A non-Newtonian fluid shows many interesting behaviors quite different than Newtonian fluids. The major difference we focus on here is the viscous stress tensor, $\bar{\bar{\sigma}}$. The viscosity term, which is part of $\bm{\tau}$ in equation (\ref{eq_stress_tensor}), is not constant anymore; rather it is a function of the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$.
+Due to this varying viscosity, the constitutive behavior of non-Newtonian fluids is highly complex. 
+\par
+They show intriguing phenomena such as shear thickening, shear thinning, and jamming. Figure \ref{fig_rheology} shows an idea of those different behaviors depending on the relationships between shear stress and rate. 
+
+This broad class of fluids encompasses various materials of industrial and natural importance, such as granular fluids, polymeric fluids, gels, and suspensions. Complex fluids exhibit two phases as responses to applied stress and the study for this fluid type is called {\textit{rheology}}. 
+% As the viscosity of a non-Newtonian fluid can be a function of the shear rate, a defining feature of many complex fluids is the presence of yield stress: for an insufficiently stressed material, they behave like an elastic solid, but once the yield stress is exceeded, they flow like a fluid. 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.25]{figures/fig_yield_stress_graph.pdf}
 	\end{center}
-   \caption{Solid lines show different types of non-Newtonian behavior with examples; the red star describes yield stress. The dashed line represents Newton's law of viscosity.}
-	\label{fig_rheology}
+   \caption{Solid lines show different types of non-Newtonian behavior with examples in the parenthesis. The red star describes yield stress. The dashed line represents Newton's law of viscosity.}
+\label{fig_rheology}
 \end{figure}
 \par
-Determining one's yield stress is critical to understand rheological behavior accurately. Typically, the stress for a complex fluid can be computed as
+From the Cauchy stress tensor, showing its explicit form, 
 \begin{equation}
-   \boldsymbol{\tau} = \mu(\dot{\gamma}) \boldsymbol{D}.
+  \bar{\bar{\sigma}} = 
+  \begin{bmatrix}
+    \sigma_{xx} & \sigma_{xy} & 0 
+    \\
+    \sigma_{xy} & \sigma_{yy} & 0 
+    \\
+    0 & 0 & \sigma_{zz},
+  \end{bmatrix}
+  \label{eq_cauchy_mx}
+\end{equation} 
+we define the first normal stress difference $N_1$
+\begin{equation}
+  N_1 = \sigma_{xx} - \sigma_{yy}
 \end{equation}
-It was brought to our attention that there are characteristics that could be neglected when we consider the stress linear in $\boldsymbol{D}$. For instance, curvature in free-surface flows, anomalous stress profile in cylindrical Couette flows, or negative rod climbing effect (Weissenberg effect). We thus propose to implement the computational tools to study these secondary flows using the following stress tensor expression:
-{\color{blue} REPLACE WITH THE ERICKSON- RIVKIN TENSOR:\@ GENERAL FORM.}
-\begin{align}
-\bar{\bar{\sigma}}
-  = -P \bar{\bar{I}}  + \ &\mu_1 {\bm D} 
-  + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
-+ \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
-  + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
-  - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
-\label{eq_sigma_noN}
-\end{align}
-The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
-\\
+and the second normal stress difference $N_2$,
+\begin{equation}
+  N_2 = \sigma_{yy} - \sigma_{zz}.
+\end{equation}
+Unlike a Newtonian case having $N_1 = N_2 = 0$, we can observe $\sigma_{xx} \neq \sigma_{yy} \neq \sigma_{zz}$ for a non-Newtonian fluid in shear flows.
+To describe a non-Newtonian flow behavior, the deviatoric stress tensor requires a higher-order relationship with the strain rate tensor $\bm{D}$. The following form is introduced by Colemann and Noll~\cite{coleman_approximation_1960} with complexity order 2,
+\begin{equation}
+   \boldsymbol{\tau} = \nu_1 {\bm A_1} + \alpha_1 {\bm A_2} + \alpha_2 {\bm A_1^2},
+   \label{eq_CN_tau}
+\end{equation}
+where $\nu_1$ is the constant viscosity and $\alpha_i = N_i / \dot{\gamma}$ for $i = 1,  2$.
+The $\bm{A_i}$ are called Rivlin-Ericksen tensors defined by
+\begin{equation}
+   {\bm A_1}  = \nabla \vec{u} +  \left( \nabla \vec{u} \right)^T = 2 \bm{D}
+\end{equation}
+and 
+\begin{equation}
+   \boldsymbol{A}_2
+   % =\frac{D}{D t} \boldsymbol{A}_1+\boldsymbol{A}_1 \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_1
+   =\frac{\partial \boldsymbol{A}_1}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_1+\boldsymbol{A}_1 \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_1
+\end{equation}
+One may notice that many researchers did not include the effect of $\bm{A_1}^2$. For polymer solutions, the most studied in the complex fluids field, it is well-known that $N_2$ is small enough to ignore, compared to $N_1$~\cite{bird_dynamics_1987}. However, there are potentially important characteristics that are neglected when we consider the stress linear in $\boldsymbol{D}$ only. For instance, curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011}. We thus want to implement computational tools to study these normal stress differences. 
+% \begin{align}
+% \bar{\bar{\sigma}}
+%   = -P \bar{\bar{I}}  + \ &\mu_1 {\bm D} 
+%   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
+% + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
+%   + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
+%   - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
+% \label{eq_sigma_noN}
+% \end{align}
+% The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
+\par
+With a constitutive rheology code, we can capture such complex continuum hydrodynamics. 
+We work on the \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. In Summer 2022, following Dr. Strastava's guidance, we focused on granular rheology, implementing the particular viscosity term, by considering both the shear rate and external pressure, in an individual module of AMReX called \textit{incflo}. 
+\par
+As a first step, we connect the granular rheology code to an incompressible flow model, assuming a steady state. To solve an incompressible flow velocity using equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}), it is necessary to evaluate the divergence of the stress tensor, $\nabla \cdot \bar{\bar{\sigma}}$. Once we have the stress tensor of the form (\ref{eq_CN_tau}), which is non-linear in velocity, it becomes numerically complicated to solve the Navier-Stokes equations. The most convenient choice of time integration would be an explicit method. However, it is not the best option, considering stability and efficiency. In incflo, at the moment I was interning, there were three integrations were available: 1) Explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
+% We thus consider both the shear stress rate and the pressure onto the materials of interest as the sources of the yield stress. 
+
 
 
 
