@@ -117,7 +117,7 @@ Note that the operator $\nabla$ is linear and with respect to $\vec{x}$. We are 
 	+\vec{q} C(\vec{x}, t) = 0 .
 \label{eq_single_stokes_sub3}
 \end{equation}
-By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find a articular solution to our modified Stokes momentum equation, (\ref{eq_extra_C}),
+By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find a particular solution to our modified Stokes momentum equation, (\ref{eq_extra_C}),
 \begin{equation}
 	\vec{u} (\vec{y}) =
 	 \frac{\rho_0 \alpha }{8\pi \tilde{\mu}}
@@ -163,7 +163,7 @@ This implies that the velocity of the aggregate, equation (\ref{eq_solidbody}),
 is an unknown. Specifically, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, by prescribing the total body force and total torque from the fluid on the aggregate.
 To close the system of equations, we prescribe the total drag force, $\vec{F}_o$, and total torque, $\vec{Q}_o$. 
 
-First, we know that the total drag is sum of stress vectors, $\vec{f}$,
+First, we know that the total drag is the sum of stress vectors, $\vec{f}$,
 \begin{equation}
 	 \vec{F}_o = \int_S \vec{f} (\vec{x}) \ \textrm{d}S 
 	= - \int_S \left[ 
@@ -243,13 +243,14 @@ U_s = \frac{g  L^2}{\tilde{\mu}}(\rho_s - \rho_0)(1-\phi),
 since we consider the porosity of an aggregate as (\ref{eq_rho_a}).
 % Note that the Reynolds number is approximately 0.03.
  % Here $\rho_a$ is the density of aggregate.
-For the scale of the perturbation, $C$, we introduce the maximum density difference of the background density profile in the fluid domain at the initial time, i.e., {\color{blue} WHAT IS THE UNIT OF $C$? -> NOT THE SAME AS $\rho$}
-\[
+For the scale of the perturbation, $C$, we introduce the maximum density difference of the background density profile in the fluid domain at the initial time, i.e., 
+\begin{equation}
 C_{max} = 
+\frac{1}{\alpha \rho_0}
 \left|
-\max_{(x,y,z) \in V} \left(\rho_{bg}(z)  \right)
-\ - \min_{(x,y,z) \in V} \left(\rho_{bg}(z)  \right) \right|.
-\] 
+\max_{\vec{x}\in V} \left(\rho_{bg}(z)  \right)
+\ - \min_{\vec{x} \in V} \left(\rho_{bg}(z)  \right) \right|.
+\end{equation}
 \par
 We first derive the dimensionless modified Stokes momentum equation,
 \begin{equation}
@@ -301,13 +302,20 @@ Lastly, the advection-diffusion equation becomes,
 	\label{eq_AD_nonD}
 	\end{equation}
 using the velocity field, equation (\ref{eq_vel_all_onS_nonD}), for the advection term.
-Note that we discussed the Péclet number in Chapter (\ref{sec:concentration}), while introducing its definition in equation (\ref{eq_def_Pe}).
-In addition to the diffusion effect due to salinity, one may consider the thermal diffusivity of the ocean, $D_{heat}$~\cite{nayar_thermophysical_2016,sharqawy_thermophysical_2010}: we get a Péclet number of
+Note that we discussed the Péclet number with CO$_2$ diffusivity in Chapter (\ref{sec:concentration}) while introducing its definition in equation (\ref{eq_def_Pe}).
+In addition, we can find the thermal diffusivity of the ocean, $D_{heat}$~\cite{nayar_thermophysical_2016,sharqawy_thermophysical_2010}: we get a Péclet number of
+
 \begin{align}
-	\text{Pe} 
+	\text{Pe}_{heat} 
 	= \frac{U_s R_a }{D_{heat}} 
-	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} \approx 10^{-2}.
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{1.5 \times 10^{-7} (\text{m}^2\text{/s})} \approx 10^{-2},
 \end{align} 
+and the diffusion effect due to salinity~\cite{wollast_diffusion_1971}, 
+\begin{align}
+	\text{Pe}_{salt}
+	= \frac{U_s R_a }{D_{salt}} 
+	\approx \frac{3.8 \times 10^{-4}(\text{m/s}) \times \left(5 \times 10^{-5} \right) (\text{m})}{ 2\times 10^{-9} (\text{m}^2\text{/s})} \approx 9.5.
+\end{align}
 \par
 For the rest of this chapter, we drop the prime for simplicity and use only dimensionless forms. 
 
@@ -893,8 +901,8 @@ After implementing the FMM3D library into our program, we timed one more time to
 
 %Rotation==============================================
 \subsection{Rotation}
-To have more realistic simulations, we allow our aggregate model to rotate while they settle.
-We here focus on the angular velocity, $\vec{\Omega} = \Delta \theta / \Delta t$, which tells us how much the aggregate rotates ($\theta)$ in one time step, $\Delta t$. 
+To have more realistic simulations, we allow our model aggregates to rotate while they settle.
+We here focus on the angular velocity, $\vec{\Omega} = \Delta \theta / \Delta t$, which tells us how much the aggregate rotates ($\Delta \theta)$ in one time step, $\Delta t$. 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.25]{./figures/fig_rotation_schematics.pdf}
@@ -902,18 +910,20 @@ We here focus on the angular velocity, $\vec{\Omega} = \Delta \theta / \Delta t$
 	\label{fig_rotation_schematics}
 \end{center}
 \end{figure}
-This information lives in the orientation matrix, $\mathcal{Q}(t)$. We can update our aggregate position from $\vec{x}$ to $\vec{x}_{\mathcal{R}}$ using
+This information is stored in the orientation matrix, $\mathcal{Q}(t)$. 
+We can compute the position, $x_R(t)$ of a point of the surface of the rotated aggregated using
 \[
-\vec{x}_{\mathcal{R}}(t) = \mathcal{Q}(t) \vec{x}.
+\vec{x}_{\mathcal{R}}(t) = \mathcal{Q}(t) \vec{x}_a,
 \]
-Note that $\mathcal{Q}(0) = \bar{\bar{I}}$ (identity matrix) at initial time. After we move forward one time step, we may update this orientation matrix as 
+where $\vec{x}_a $ is the position of a point of the aggregate surface relative to the center of mass expressed in a coordinate system that rotated with the aggregate. We note that $\vec{x}_a$ is constant in time and $\mathcal{Q}(0) = \bar{\bar{I}}$ (identity matrix) initially. After we move forward one time step, we may update this orientation matrix as 
 \begin{equation}
 	\mathcal{Q}(t + \Delta t) = \mathcal{R} \mathcal{Q}(t),
 \end{equation} 
-where $\mathcal{R}$ is the rotation matrix. 
+where $\mathcal{R}$ is a rotation matrix. 
 \par
-Assume we obtain the angular velocity, $\vec{\Omega}$ from a time step. (Initially, it is a zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
-The matrix $\mathcal{A}$ is then defined as 
+We implement updates to the orientation matrix as follows~\cite{polimeno_toward_2022}.
+Assume we obtain the angular velocity, $\vec{\Omega}$, from solving equation (\ref{eq_slp_linear_system}) at every time step. (Initially, it is the zero vector). With this, we can find the three-dimensional change of angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
+The matrix $\mathcal{A}$ is then defined such that $\mathcal{A} \vec{x} = \Delta \theta \times \vec{x}$,
 \begin{equation}
 	\mathcal{A}
 	=\begin{bmatrix}
@@ -924,7 +934,7 @@ The matrix $\mathcal{A}$ is then defined as
 	\label{eq_rotation_mx}
 \end{equation}
 From here, we have the rotation matrix $\mathcal{R} = e^{\mathcal{A}}.$
-We can compute the matrix exponential $e^{\mathcal{A}}$ using Rodrigues' formula,
+We can compute the matrix exponential $e^{\mathcal{A}}$ using Rodrigues' formula, for antisymmetric matrices
 \begin{equation}
 	\mathcal{R} = 
 e^{\mathcal{A}} 
@@ -953,11 +963,13 @@ using the same formula as equation (\ref{eq_vel_all_onS_nonD}),
 		 \ \text{d}V,
 		 \nonumber
 \end{equation}
-As we allow rotation, we can express the above equation as
+As we allow rotation, we can express the above equation as in a rotated frame of reference using $\vec{x}_{r, i} = \mathcal{Q} \vec{x}_i, \ \vec{u}_r = \mathcal{Q} \vec{u}$, and $\vec{f}_r = \mathcal{Q} \vec{f}$
 \begin{align}
+	\vec{u}_r(\vec{x}_{r, i}) =
+	\mathcal{Q}
 	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
 		  = & - \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\mathcal{Q} \vec{x}) 
+		 \vec{f}_r(\mathcal{Q} \vec{x}) 
 		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
 		 \ \textrm{d}S
 		 \nonumber \\
@@ -967,26 +979,30 @@ As we allow rotation, we can express the above equation as
 		 \ \text{d}V.
 	\label{eq_slp_On_rotate}
 \end{align}
-Since the rotation matrix $Q$ is constant and it is normalized, it is valid to say that
+Since the rotation matrix $\mathcal{Q}$ is constant in space and is a rotation matrix, it is valid to say that
 \[
  \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
 	 = \bar{\bar{G}}( \vec{x}, \vec{x}_i).
 \]
 We now solve for unknowns, including the translational and angular velocities,
-in a rotated coordinate system $\mathcal{Q} \vec{x}_i $.
+in a rotated coordinate system $\vec{x}_{r,i} $.
 Note that the stress values we obtain here 
-are located in the same one as the rotated positions.  
+are located in the rotated positions.  
 To complete the linear system to solve for stress, translational, and angular velocities, we temporarily map the fluid domain grid into the same coordinate system as the boundary integral term.
-We can simply muptipliy by $\mathcal{Q}^{-1} = \mathcal{Q}^{T}$ as 
+We can multiply by $\mathcal{Q}^{-1} = \mathcal{Q}^{T}$ as 
 \begin{align}
-	\vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
-		  & + \frac{1}{8 \pi} \int_{S}  
-		 \vec{f}(\mathcal{Q} \vec{x}) 
-		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
-		 \ \textrm{d}S
-		 \nonumber \\ & =
+	& \vec{u} \left(\mathcal{Q} \vec{x}_i \right) 
+		%  + \frac{1}{8 \pi} \int_{S}  
+		%  \vec{f}(\mathcal{Q} \vec{x}) 
+		%  \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+		%  \ \textrm{d}S
+		 \nonumber \\  & =
 		 \mathcal{Q}^{-1}
 		 \left[
+			- \frac{1}{8 \pi} \int_{S}  
+		 \vec{f}_r(\mathcal{Q} \vec{x}) 
+		 \cdot \bar{\bar{G \ }} (\mathcal{Q} \vec{x},\mathcal{Q}\vec{x}_i) 
+		 \ \textrm{d}S
 		 - \frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)}
 		 \int_V  C \left(\vec{x} ,t \right) \hat{k} \cdot
 		 \bar{\bar{G \ }}(\vec{x}, \mathcal{Q} \vec{x}_i)
@@ -1008,7 +1024,7 @@ For the other force equations as well, we implement the following
 	 \end{equation}
 Once we solve the linear system, we may return the values on the fluid grid to the Cartesian coordinate system.
 
-\subsection{Velocity compuation}
+\subsection{Velocity computation}
 Once we solve the stress, we are supposed to use the same 
 equation (\ref{eq_vel_all_onS_nonD}) 
 to solve for velocity in the fluid grid, which stays in the Cartesian coordinates.
@@ -1177,6 +1193,10 @@ Meanwhile, we want the aggregate reaches a neutral buoyancy. To see this, we ass
 	\item Some snapshots? 
 	\item Aggregate models that are used to get the data? (different shapes)
 \end{itemize}
+\subsection{Base case analysis}
+\subsection{Various shapes of aggregates}
+\subsection{Various Péclet number}
+\subsection{Various stratification strength}
 \section{Discussions (Conclusion)}
 I am going to fill this section with:
 \begin{itemize}

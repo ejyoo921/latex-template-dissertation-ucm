@@ -1,49 +1,206 @@
 \par
-% We implement the granular material viscosity computation in \verb+incflo+, which is the AMReX-based module for modeling the variable density incompressible Navier-Stokes equations without subcycling in time.
-\begin{itemize}
-  \item In Summer 22, I implemented the granular rheology, the viscosity computation, in the  'incflo' module and connect this to solve an incompressible flow model. 
-  \item  However, due to the nonlinearity in velocity, we only could use the explicit method, which is the explicit Euler method and was already available.
-  \item I implemented an explicit RK 2 method for a higher convergence, but we see some instabilities for certain cases.
-  \item Implicit type may be coming. 
-  \item For the granular material, the viscosity computation is pressure dependent. 
-  \item Connect to the incompressible flow computation 
+In this chapter, I report the summer 2023 internship work at LBNL and additional numerical implementations I continued to finish this thesis.
 
-  
-  \item We thus decided to show validation of the RK 2 method with another example.  
-\end{itemize}
-% Further developments included modeling solid boundaries in viscoplastic fluids using embedded boundary methods.
-
-
-%section2----------------------------------------------------------------------------------------------------
-{\color{blue}We introduced the incompressible flow in Chapter 1, and the stress tensor form - a general one for non-Newtonian fluid. Point the equation number here.}
-% \par
-The incompressible flow motion is governed by the law of conservation of mass and momentum,
+As we mentioned in Chapter \ref{sec:intro_complex_fluid}, we consider the stress tensor of the form as in equation (\ref{eq_CN_tau}), 
 \begin{equation}
-  \frac{\partial {\bm u}}{\partial t} 
-  + {\bm u} \cdot \nabla {\bm u} = \frac{1}{\rho}
+  \boldsymbol{\tau} =
+  \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2 ,
+\nonumber
+\end{equation}
+to solve an incompressible flow with the Navier-Stokes equation,
+\begin{align}
+  \nabla \cdot \vec{u} = 0 
+  \nonumber \\
+  \rho 
   \left( 
-    -\nabla p + \nabla \cdot {\bm {\bm \tau}}\right) + {\bm g},
-  % \label{eq_momentum}
-\end{equation}
-\begin{equation}
-  \nabla \cdot {\bm u} = 0,
-  % \label{eq_mass}
-\end{equation}
-\begin{itemize}
-  \item In the following tensor term, the coefficients depend on the inertial number I, which is defined later. 
-  \item For the validation example, 
-\end{itemize}
-\section{Normal stress differences}
-There have been discoveries regarding the importance of normal stress difference effects in complex fluids. In particular, many works have shown that the second normal stress difference effects are substantial in certain cases. [{\color{blue} REFERNCES}]
-% We first introduce Reiner and Rivlin's stress tensor.
+     \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
+  \right)
+  + \nabla P 
+    = \nabla \cdot   \bm{\tau} 
+    +  \rho  \vec{g} ,
+  \nonumber
+  \end{align}
+in which  they were introduced in Chapter 1; equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}).
+In the AMReX-incflo code, three ways of time integration methods are implemented to update the velocity and pressure. Among them, we can only use the explicit Euler scheme since we have a $\bm{\tau}$ having a quadratic relationship with the strain rate $\bm{D}$, which is a function of the velocity $\vec{u}$. 
+We re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
+\[
+ {\bm \tau}= {\bm \tau_1} + {\bm \tau_2},
+\] 
+where ${\bm \tau_1}$ and ${\bm \tau_2}$ are the linear and quadratic effects in terms of strain rate, ${\bm D}$, of the deviatoric stress tensor, i.e., 
+\[
+  {\boldsymbol \tau_1} \propto \boldsymbol{D}
+  \ \ \ \ \ \text{and}
+   \ \ \ \ \ 
+{\boldsymbol \tau_2} \propto {\boldsymbol D^2}.
+\]
+\section{Divergence of the econd-order strain rate stress tensor}
+Why do we need the 'divtau'? how is this connected? 
+-> need to explain the Navier stokes first. 
+In the AMReX library, the linear shear stress tensor computation is already implemented. For the higher-order term,
+\[
+  {\bm \tau}_{2} = 
+  \tilde{\eta}_2
+  \left( {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right)
+  + \tilde{\eta_3} 
+  \biggl( {\bm{DW}} - {\bm{WD}} \biggr)  
+\]
+we needed to create a new operator to compute $ {\bm \tau}_{2}$. Moreover, the divergence of it, $\nabla \cdot {\bm \tau}_{2}$, is required to solve for velocity. Note that 
+\[
+\tilde{\mu_2} =  \mu_2  \dot{\gamma}^2
++  \kappa_2 
+\ \ \ \ \ \text{and} \ \ \ \ \ \
+\tilde{\eta_3} =    \eta_3 \dot{\gamma}^2 .
+\]
+We use Mathematica to find the exact component of  ${\bm D}^2 - (\text{tr}({\bm D}^2)/3) {\bm I} = \left[ D_1  \ D_2 \ D_3 \right]$:
+\\
+First column:
+\[
+D_1 =
+\begin{bmatrix}
+   \frac{1}{3} \left(\left(u_y+v_x\right)^2+\left(u_z+w_x\right)^2+8 u_x^2-2 \left(v_z+w_y\right)^2-4 v_y^2-4 w_z^2\right)
+   \\
+   \left(u_z+w_x\right) \left(v_z+w_y\right)+2 \left(u_x+v_y\right) \left(u_y+v_x\right)
+   \\
+   \left(u_y+v_x\right) \left(v_z+w_y\right)+2 \left(u_x+w_z\right) \left(u_z+w_x\right)
+\end{bmatrix}
+\]
+Second column:
+\[
+D_2 = 
+\begin{bmatrix}
+   \left(u_z+w_x\right) \left(v_z+w_y\right)+2 \left(u_x+v_y\right) \left(u_y+v_x\right)
+   \\
+   \frac{1}{3} \left(\left(u_y+v_x\right)^2-2 \left(u_z+w_x\right)^2-4 u_x^2+\left(v_z+w_y\right)^2+8 v_y^2-4 w_z^2\right)
+   \\
+   \left(u_y+v_x\right) \left(u_z+w_x\right)+2 \left(v_y+w_z\right) \left(v_z+w_y\right)
+\end{bmatrix}
+\]
+Third one:
+\[
+D_3 = 
+\begin{bmatrix}
+   \left(u_y+v_x\right) \left(v_z+w_y\right)+2 \left(u_x+w_z\right) \left(u_z+w_x\right),
+    \\
+   \left(u_y+v_x\right) \left(u_z+w_x\right)+2 \left(v_y+w_z\right) \left(v_z+w_y\right),
+   \\
+   \frac{1}{3} \left(-2 \left(\left(u_y+v_x\right)^2+2 \left(u_x^2+v_y^2\right)\right)+\left(u_z+w_x\right)^2+\left(v_z+w_y\right)^2+8 w_z^2\right)
+\end{bmatrix}
+\]
+We also can write each column of ${\bm{DW}} - {\bm{WD}} = \left[ DW_1 \ DW_2 \ DW_3  \right]$:
+\\
+First column:
+\[
+DW_1 = 
+\begin{bmatrix}
+    2 \left(- u_{y}^2-u_{z}^2  + v_{x}^2 + w_{x}^2\right)
+    \\
+    -2 \left(u_{z} v_{z}+\left(v_{y}-u_{x}\right) \left(u_{y}-v_{x}\right)-w_{y} w_{x}\right)
+    \\
+    -2 
+    \left(
+    u_{y} w_{y}+ \left(w_{z}-u_{x}\right) \left(u_{z}-w_{x}\right)- v_{z} v_{x}
+    \right)
+\end{bmatrix}
+\]
+Second column:
+\[
+DW_1 = 
+\begin{bmatrix}
+    -2 \left(u_{z} v_{z}+\left(v_{y}-u_{x}\right) \left(u_{y}-v_{x}\right)-w_{y} w_{x}\right)
+    \\
+    2 \left(- v_{x}^2 - v_{z}^2 +u_{y}^2 + w_{y}^2\right)
+    \\
+    -2 
+    \left(
+    -u_{z} u_{y}+ \left(w_{z}-v_{y}\right) \left(v_{z}-w_{y}\right)+ v_{x} w_{x}
+    \right)
+\end{bmatrix}
+\]
+Third column:
+\[
+DW_1 = 
+\begin{bmatrix}
+   -2 u_{y} w_{y}-2 \left(w_{z}-u_{x}\right) \left(u_{z}-w_{x}\right)+2 v_{z} v_{x}
+   \\
+   2 u_{z} u_{y}-2 \left(w_{z}-v_{y}\right) \left(v_{z}-w_{y}\right)-2 v_{x} w_{x}
+   \\
+   2 \left(u_{z}^2+v_{z}^2-w_{y}^2-w_{x}^2\right)
+\end{bmatrix}
+\]
+For now, we compute each stress term separately and assemble them when we need to use them. We might want to explore other ways to process these steps more efficiently. 
+\section{Numerical implementation for a time integral}
+\section{Explicit Runge-Kutta 2 (RK2) method}
+What do you have here?
+\section{Predictor-Corrector method}
+This is the same idea as the 2-stage Runge-Kutta method. We denote the advection term, ${\bm u} \cdot \nabla {\bm u}$ as ${\bm A}$. 
+\\
+$<${\bf Predictor}$>$
+\\
+First, consider the non-linear stress tensor, ${\bm \tau_2}$ as a force term, and solve for the first predictor values, that are ${\bm u}^*$ and ${\bm u}^*$:
+\[
+\frac{{\color{blue}{\bm u}^*} - {\bm u}^n}{\Delta t} 
++  {\bm A}^{n+1/2} 
+=- \frac{1}{\rho}  \biggl(
+\frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*} + \nabla \cdot{\bm \tau}_1^n}{2} 
++ \nabla \cdot {\bm \tau}_2^n 
+- \nabla p^n
++{\bm g}
+\biggr)
+\]
+We solve for blue terms - 
+\[
+{\color{blue}{\bm u}^*} +
+\frac{1}{\rho} 
+\left( 
+\frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*}}{2}
+\right)
+=
+{\bm u}^n
+- {\bm A}^{n+1/2} \Delta t
+- \frac{\Delta t}{\rho} \biggl(
+\frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
++ \nabla \cdot {\bm \tau}_2^n 
+- \nabla p^n
++{\bm g}
+\biggr)
+\]
+\\
+$<${\bf Corrector}$>$
+\\
+Once we obtain the predictor (star) velocity, we use it to compute the second order stress tensor, ${\bm \tau}_2^*$.
+\[
+\frac{{\color{red}{\bm u}^{n+1}} - {\bm u}^n}{\Delta t} 
++  {\bm A}^{n+1/2} 
+=- \frac{1}{\rho}  \biggl(
+\frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}} + \nabla \cdot{\bm \tau}_1^n}{2} 
++ \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
+- \nabla p^n
+\biggr)
+\]
 
+Now, we need to solve for red - next time step values:
+\[
+{\color{red}{\bm u}^{n+1}} 
++\frac{1}{\rho} 
+\left(
+\frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}}}{2}
+\right)
+=
+{\bm u}^n 
+ -{\bm A}^{n+1/2} \Delta t
+- \frac{\Delta t}{\rho}  \biggl(
+\frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
++ \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
+- \nabla p^n
+\biggr)
+\]
+Note that ${\bm \tau}_i^* = {\bm \tau}({\bm u}^*, \eta_i)$.
+\section{Validation}
 \begin{itemize}
-  \item Examples of second normal stress difference
-  \item How can we define alphas here? 
-  \item Why are they important to understand? 
+  \item We follow the experiment setup found in \cite{couturier_suspensions_2011}
+  \item We want to present the N1 and N2 values with various volume fractions: from 0.1 to 0.5.
+  \item the geometry of a tilted trough with rigid spheres in a Newtonian fluid. 
 \end{itemize}
-
-%subsection-------------------------------------------------------------------
 \section{Granular rheology}
 We recall the stress tensor for the fluid momentum equation, introduced in Chapter 1, for a non-Newtonian fluid:
 \begin{align}
@@ -218,6 +375,26 @@ When we have a periodic boundary in the gravity direction, we might need to pres
 The main challenge we faced to implement the pressure-dependent viscosity was connecting the pressure in addition to the strain rate into the rheology code.
 {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
 
+% a little more details
+\section{Viscosity regularization}
+In the viscosity computations, we presented in sections XX and XX, we encounter a singularity as $\dot{\gamma}$ approaches zero in viscosity evaluations. 
+As AMReX-\verb+incflo+ has the Papanastasiou regularization method implemented, we apply the same method for the new viscosity terms.
+\par
+By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
+\[
+  \frac{1}{\dot{\gamma}} \rightarrow \frac{1-e^{-\dot{\gamma} / \varepsilon}}{\dot{\gamma}}  
+\]
+for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
+The detailed mathematics and analysis can be found in Sverdrup 2018~\cite{sverdrup_highly_2018}
+ The followings are my main contribution to  Summer 2023 internship:
+\begin{itemize}
+	\item Add new rheology for granular flows: Compute a pressure-dependent apparent viscosity.
+	\item Compute the second-order strain tensor.
+	\item Solve for velocity using an explicit method for the diffusion portion: Implement an efficient method to handle the nonlinear divergence of a new stress tensor.
+\end{itemize}
+In this section, we briefly cover those three parts.
+\subsection{Example case with a shear flow}
+
 \section{Suspension rheology}
 In this section, we summarize the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
 \par
@@ -233,238 +410,10 @@ For numerical validations, we follow the experiments presented in Couturier $\te
   \item We want to observe the relationship between $\alpha_i(\phi) = N_i / |\sigma_{xy}|$, where $i = 1,2$.
 \end{itemize}
 
-\section{Viscosity regularization}
-In the viscosity computations, we presented in sections XX and XX, we encounter a singularity as $\dot{\gamma}$ approaches zero in viscosity evaluations. 
-As AMReX-\verb+incflo+ has the Papanastasiou regularization method implemented, we apply the same method for the new viscosity terms.
-\par
-By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
-\[
-  \frac{1}{\dot{\gamma}} \rightarrow \frac{1-e^{-\dot{\gamma} / \varepsilon}}{\dot{\gamma}}  
-\]
-for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
-The detailed mathematics and analysis can be found in Sverdrup 2018~\cite{sverdrup_highly_2018}
-%section3----------------------------------------------------------------------------------------------------
-\section{Numerical methods}
-% The main job for this summer project was the implementation of a new stress tensor with higher-order strain rates effect in incflo.
- The followings are my main contribution to  Summer 2023 internship:
-\begin{itemize}
-	\item Add new rheology for granular flows: Compute a pressure-dependent apparent viscosity.
-	\item Compute the second-order strain tensor.
-	\item Solve for velocity using an explicit method for the diffusion portion: Implement an efficient method to handle the nonlinear divergence of a new stress tensor.
-\end{itemize}
-In this section, we briefly cover those three parts.
-
-\subsection{Second-order strain rate stress tensor}
-In the AMReX library, the linear shear stress tensor computation is already implemented. For the higher-order term,
-\[
-  {\bm \tau}_{2} = 
-  \tilde{\eta}_2
-  \left( {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right)
-  + \tilde{\eta_3} 
-  \biggl( {\bm{DW}} - {\bm{WD}} \biggr)  
-\]
-we needed to create a new operator to compute $ {\bm \tau}_{2}$. Moreover, the divergence of it, $\nabla \cdot {\bm \tau}_{2}$, is required to solve for velocity. Note that 
-\[
-\tilde{\mu_2} =  \mu_2  \dot{\gamma}^2
-+  \kappa_2 
-\ \ \ \ \ \text{and} \ \ \ \ \ \
-\tilde{\eta_3} =    \eta_3 \dot{\gamma}^2 .
-\]
-We use Mathematica to find the exact component of  ${\bm D}^2 - (\text{tr}({\bm D}^2)/3) {\bm I} = \left[ D_1  \ D_2 \ D_3 \right]$:
-\\
-First column:
-\[
-D_1 =
-\begin{bmatrix}
-   \frac{1}{3} \left(\left(u_y+v_x\right)^2+\left(u_z+w_x\right)^2+8 u_x^2-2 \left(v_z+w_y\right)^2-4 v_y^2-4 w_z^2\right)
-   \\
-   \left(u_z+w_x\right) \left(v_z+w_y\right)+2 \left(u_x+v_y\right) \left(u_y+v_x\right)
-   \\
-   \left(u_y+v_x\right) \left(v_z+w_y\right)+2 \left(u_x+w_z\right) \left(u_z+w_x\right)
-\end{bmatrix}
-\]
-Second column:
-\[
-D_2 = 
-\begin{bmatrix}
-   \left(u_z+w_x\right) \left(v_z+w_y\right)+2 \left(u_x+v_y\right) \left(u_y+v_x\right)
-   \\
-   \frac{1}{3} \left(\left(u_y+v_x\right)^2-2 \left(u_z+w_x\right)^2-4 u_x^2+\left(v_z+w_y\right)^2+8 v_y^2-4 w_z^2\right)
-   \\
-   \left(u_y+v_x\right) \left(u_z+w_x\right)+2 \left(v_y+w_z\right) \left(v_z+w_y\right)
-\end{bmatrix}
-\]
-Third one:
-\[
-D_3 = 
-\begin{bmatrix}
-   \left(u_y+v_x\right) \left(v_z+w_y\right)+2 \left(u_x+w_z\right) \left(u_z+w_x\right),
-    \\
-   \left(u_y+v_x\right) \left(u_z+w_x\right)+2 \left(v_y+w_z\right) \left(v_z+w_y\right),
-   \\
-   \frac{1}{3} \left(-2 \left(\left(u_y+v_x\right)^2+2 \left(u_x^2+v_y^2\right)\right)+\left(u_z+w_x\right)^2+\left(v_z+w_y\right)^2+8 w_z^2\right)
-\end{bmatrix}
-\]
-We also can write each column of ${\bm{DW}} - {\bm{WD}} = \left[ DW_1 \ DW_2 \ DW_3  \right]$:
-\\
-First column:
-\[
-DW_1 = 
-\begin{bmatrix}
-    2 \left(- u_{y}^2-u_{z}^2  + v_{x}^2 + w_{x}^2\right)
-    \\
-    -2 \left(u_{z} v_{z}+\left(v_{y}-u_{x}\right) \left(u_{y}-v_{x}\right)-w_{y} w_{x}\right)
-    \\
-    -2 
-    \left(
-    u_{y} w_{y}+ \left(w_{z}-u_{x}\right) \left(u_{z}-w_{x}\right)- v_{z} v_{x}
-    \right)
-\end{bmatrix}
-\]
-Second column:
-\[
-DW_1 = 
-\begin{bmatrix}
-    -2 \left(u_{z} v_{z}+\left(v_{y}-u_{x}\right) \left(u_{y}-v_{x}\right)-w_{y} w_{x}\right)
-    \\
-    2 \left(- v_{x}^2 - v_{z}^2 +u_{y}^2 + w_{y}^2\right)
-    \\
-    -2 
-    \left(
-    -u_{z} u_{y}+ \left(w_{z}-v_{y}\right) \left(v_{z}-w_{y}\right)+ v_{x} w_{x}
-    \right)
-\end{bmatrix}
-\]
-Third column:
-\[
-DW_1 = 
-\begin{bmatrix}
-   -2 u_{y} w_{y}-2 \left(w_{z}-u_{x}\right) \left(u_{z}-w_{x}\right)+2 v_{z} v_{x}
-   \\
-   2 u_{z} u_{y}-2 \left(w_{z}-v_{y}\right) \left(v_{z}-w_{y}\right)-2 v_{x} w_{x}
-   \\
-   2 \left(u_{z}^2+v_{z}^2-w_{y}^2-w_{x}^2\right)
-\end{bmatrix}
-\]
-For now, we compute each stress term separately and assemble them when we need to use them. We might want to explore other ways to process these steps more efficiently. 
-\subsection{Velocity computation}
-For updating velocity, we recall the incompressible Navier-Stokes equations. We re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
-\[
- {\bm \tau}= {\bm \tau_1} + {\bm \tau_2},
-\] 
-where ${\bm \tau_1}$ and ${\bm \tau_2}$ are the linear and quadratic effects in terms of strain rate, ${\bm D}$, of the deviatoric stress tensor, i.e., 
-\[
-  {\boldsymbol \tau_1} \propto \boldsymbol{D}
-  \ \ \ \ \ \text{and}
-   \ \ \ \ \ 
-{\boldsymbol \tau_2} \propto {\boldsymbol D^2}.
-\]
-We then have
-\begin{equation}
-  \frac{\partial {\bm u}}{\partial t} 
-  + {\bm u} \cdot \nabla {\bm u} = \frac{1}{\rho}
-  \left( 
-    -\nabla p + \nabla \cdot \left( {\bm \tau_1} + {\bm \tau_2} \right)\right) + {\bm g}.
-  \label{eq_momentum2}
-\end{equation}
-{\color{red} The grid system may have changed - viscosity is stored on nodes.}
-\\
-We use a standard marker-and-cell (MAC) grid; See Figure 
-\begin{figure}[ht]
-	\begin{center}
-	
-		\includegraphics[scale=0.5]{figures/fig_mac_grid.png}
-		\caption{MAC grid cell; Square, triangle, and circle represent cell-face, -corner, and -center, respectively.}
-	\label{fig_mac_grid}
-	\end{center}
-\end{figure}
-The AMReX-incflo allows us to use either implicit, explicit, or Crank-Nicolson methods to solve for velocity and pressure. Due to our non-linear stress tensor, we were not able to use any implicit-kind methods directly. At the same time, the explicit method shows quite slow computation. We thus splitting the tensor terms into ${\bm \tau_1}$ and
-${\bm \tau_2}$ so that we can use a partly implicit method, particularly backward-Euler, with ${\bm \tau_1}$ and consider ${\bm \tau_2}$ as a part of external force. This method seems working, yet more concrete validation should be done. We found that we were not able to have second order which is expected in the backward-Euler method due to the splitting. See Figure \ref{fig_infError_vel}.
-\begin{figure}[ht]
-	\begin{center}
-	
-		\includegraphics[scale=0.5]{figures/fig_infError_vel.eps}
-		\caption{Order convergence plot of the splitting method. We obtain $\infty$-error using the finest time step solution ($\Delta t = 10^{-4}$).}
-	\label{fig_infError_vel}
-	\end{center}
-\end{figure}
-To avoid order reduction, we want to use a two-stage explicit method. This work is in progress.
-{\color{red} HOW DID YOU OBTAIN THE FIGURE \ref{fig_infError_vel}?}
-\section{Explicit Runge-Kutta 2 (RK2) method}
-What do you have here?
-\section{Predictor-Corrector method}
-This is the same idea as the 2-stage Runge-Kutta method. We denote the advection term, ${\bm u} \cdot \nabla {\bm u}$ as ${\bm A}$. 
-\\
-$<${\bf Predictor}$>$
-\\
-First, consider the non-linear stress tensor, ${\bm \tau_2}$ as a force term, and solve for the first predictor values, that are ${\bm u}^*$ and ${\bm u}^*$:
-\[
-\frac{{\color{blue}{\bm u}^*} - {\bm u}^n}{\Delta t} 
-+  {\bm A}^{n+1/2} 
-=- \frac{1}{\rho}  \biggl(
-\frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*} + \nabla \cdot{\bm \tau}_1^n}{2} 
-+ \nabla \cdot {\bm \tau}_2^n 
-- \nabla p^n
-+{\bm g}
-\biggr)
-\]
-We solve for blue terms - 
-\[
-{\color{blue}{\bm u}^*} +
-\frac{1}{\rho} 
-\left( 
-\frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*}}{2}
-\right)
-=
-{\bm u}^n
-- {\bm A}^{n+1/2} \Delta t
-- \frac{\Delta t}{\rho} \biggl(
-\frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
-+ \nabla \cdot {\bm \tau}_2^n 
-- \nabla p^n
-+{\bm g}
-\biggr)
-\]
-\\
-$<${\bf Corrector}$>$
-\\
-Once we obtain the predictor (star) velocity, we use it to compute the second order stress tensor, ${\bm \tau}_2^*$.
-\[
-\frac{{\color{red}{\bm u}^{n+1}} - {\bm u}^n}{\Delta t} 
-+  {\bm A}^{n+1/2} 
-=- \frac{1}{\rho}  \biggl(
-\frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}} + \nabla \cdot{\bm \tau}_1^n}{2} 
-+ \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
-- \nabla p^n
-\biggr)
-\]
-
-Now, we need to solve for red - next time step values:
-\[
-{\color{red}{\bm u}^{n+1}} 
-+\frac{1}{\rho} 
-\left(
-\frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}}}{2}
-\right)
-=
-{\bm u}^n 
- -{\bm A}^{n+1/2} \Delta t
-- \frac{\Delta t}{\rho}  \biggl(
-\frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
-+ \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
-- \nabla p^n
-\biggr)
-\]
-Note that ${\bm \tau}_i^* = {\bm \tau}({\bm u}^*, \eta_i)$.
-\section{Validation}
-\begin{itemize}
-  \item We follow the experiment setup found in \cite{couturier_suspensions_2011}
-  \item We want to present the N1 and N2 values with various volume fractions: from 0.1 to 0.5.
-  \item the geometry of a tilted trough with rigid spheres in a Newtonian fluid. 
-\end{itemize}
 
 
-\section{Future work}
+
+\section{Discussion and future work}
 We propose to extend this work by incorporating elastic effects through the implementation of elastoviscoplastic (EVP) models in this numerical framework. The robustness of the numerical implementation will be extensively tested in various flow scenarios (such as Poiseuille and Couette flows) for a range of Weissenberg and Bingham numbers.  Another potential avenue for development will involve implementing immersed boundary methods (IBM) to model a suspension of solid particles in such complex fluids, which is an important application area that has received significant research interest lately. 
 \par
 Add surface tension effect in incflo. 
