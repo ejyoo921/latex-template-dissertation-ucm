@@ -1056,7 +1056,7 @@ As we explained in the previous section, the run time of the entire simulation w
 We use a domain centered at $\vec{x}_{cm}$ of size  $2s\left[  R_m \times   R_m \times 2 R_m \right]$. We note that $s$ is thus the ratio of the domain size to the aggregate diameter. See Figure \ref{fig_sample_agg10}.
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.35]{./figures/fig_sample_agg10.pdf}
+		\includegraphics[scale=0.4]{./figures/fig_sample_agg10.pdf}
 		\caption{Sample aggregate with ten cubes. This model is used to obtain simulations presented in Figure \ref{fig_NC10_snaps_all}.}
 		\label{fig_sample_agg10}
 	\end{center}
@@ -1084,10 +1084,10 @@ We seek to determine to domain size, via the multiplicative factor $s$, required
 If we can obtain good information on the aggregate in a smaller domain, we could use smaller $s$ that results in more rapid computations and smaller memory requirements. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_s_Ua3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_s_cm3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_s_Fo3_all}
-		\includegraphics[scale=0.35]{./figures/fig_NC10_s_C_star}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_s_Ua3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_s_cm3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_s_Fo3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_s_C_star}
 	\caption{Compare various domain sizes with $ s = 3, \ 4, \ 5$ in the time step  $\Delta t = 0.5$ and space step $\Delta x = 1$. We show the settling speed (a), the position of the center of mass (b), the vertical force on the aggregate (c) and the value of the perturbation near the aggregate (d)}
 	\label{fig_NC10_compare_s}
 \end{center}
@@ -1102,10 +1102,10 @@ To compare different $\Delta t$, we set the domain size with $s = 5$ and the spa
 The main takeaway of Figure \ref{fig_NC10_compare_dt} is that there are no significant differences in the values we observe. Once again, we notice some variations of the perturbation at a later time. We yet do not concern much since it essentially goes to zero as the aggregate and surrounding fluid densities become neutral. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_Ua3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_cm3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_Fo3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_C_star}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_Ua3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_cm3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_Fo3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_C_star}
 	\caption{Compare various $\Delta t = 0.75, \ 0.5, \ 0.25$ in the domain size factor $s = 5$ with $\Delta x = 1$.}
 	\label{fig_NC10_compare_dt}
 \end{center}
@@ -1115,10 +1115,10 @@ To convince readers, we also obtained the absolute differences between consecuti
 It is clear to see that the errors of all four cases are fairly small compared to the corner error we found in section \ref{subsec:FMM}. For the time integration scheme we use, which is the explicit RK2 method, we typically expect to have second-order convergence. These error plots support that our solutions already reached convergence.
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_Ua3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_cm3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_Fo3_all}
-		\includegraphics[scale=0.2]{./figures/fig_NC10_dt_diff_C_star}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_diff_Ua3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_diff_cm3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_diff_Fo3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dt_diff_C_star}
 	\caption{Absolute differences between two lines from Figure \ref{fig_NC10_compare_dt}. }
 	\label{fig_NC10_dt_diff_all}
 \end{center}
@@ -1131,9 +1131,9 @@ The number of fluid grid points could be an obstacle in terms of memory. We coul
 For this validation, we only investigate  (a), (b), and (c), which are the aggregate's responses, due to having difficulties capturing the perturbation at the same location. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_Ua3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_cm3_all}
-		\includegraphics[scale=0.25]{./figures/fig_NC10_dx_Fo3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dx_Ua3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dx_cm3_all}
+		\includegraphics[scale=0.4]{./figures/fig_NC10_dx_Fo3_all}
 	\caption{Compare various $\Delta x = 1, \ 2, \ 4$ in the domain size factor $s = 5$ with $\Delta t = 0.75$.}
 	\label{fig_NC10_compare_dx}
 \end{center}

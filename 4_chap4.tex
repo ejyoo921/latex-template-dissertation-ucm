@@ -1,13 +1,14 @@
 \par
 In this chapter, I report the summer 2023 internship work at LBNL and additional numerical implementations I continued to finish this thesis.
 
-As we mentioned in Chapter \ref{sec:intro_complex_fluid}, we consider the stress tensor of the form as in equation (\ref{eq_CN_tau}), 
+As we mentioned in Chapter \ref{sec:intro_complex_fluid}, we consider the deviatoric stress tensor of the form as in equation (\ref{eq_CN_tau}), 
 \begin{equation}
   \boldsymbol{\tau} =
   \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2 ,
 \nonumber
 \end{equation}
-to solve an incompressible flow with the Navier-Stokes equation,
+where each $\nu_i$ for $i = 0,1,2$ is dependent on the materials or flow types. In this project, we study 1) granular materials and 2) non-colloidal suspension in a Newtonian fluid. 
+Once we establish the viscosity term, we can examine the flows in geometry by solving the Navier-Stokes equation,
 \begin{align}
   \nabla \cdot \vec{u} = 0 
   \nonumber \\
@@ -20,127 +21,71 @@ to solve an incompressible flow with the Navier-Stokes equation,
     +  \rho  \vec{g} ,
   \nonumber
   \end{align}
-in which  they were introduced in Chapter 1; equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}).
-In the AMReX-incflo code, three ways of time integration methods are implemented to update the velocity and pressure. Among them, we can only use the explicit Euler scheme since we have a $\bm{\tau}$ having a quadratic relationship with the strain rate $\bm{D}$, which is a function of the velocity $\vec{u}$. 
-We re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
+in which they were introduced in Chapter 1; equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}).
+In the AMReX-incflo code, three different time integrations are implemented to update the velocity and pressure. Among them, we can only use the explicit Euler method due to the stress tensor $\bm{\tau}$ having a quadratic relationship with the strain rate $\bm{D}$, which is a function of the velocity $\vec{u}$. 
+\par
+To clarify, we write the tensor $\bm{\tau}$ in terms of $\bm{D}$ explicitly,
+\begin{equation}
+  \boldsymbol{\tau} =
+  2 \nu_0  \bm{D} +  2 \nu_1  \bm{D}^2 
+  + 2\nu_2 \left(
+    \frac{\partial \bm{D}}{\partial t} + 
+     \vec{u} \cdot \nabla \bm{D}
+    +\bm{D} \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \bm{D} 
+   \right)
+\end{equation}
+Let's look at the last term a little more closely:
+\begin{equation}
+  \nu_2 \left(
+   \frac{\partial }{\partial t}\left( \nabla \vec{u} +  \nabla\vec{u}^T \right) + 
+    \vec{u} \cdot \nabla \left(  \nabla\vec{u} +  \nabla\vec{u}^T \right) 
+   +\left(  \nabla\vec{u} + \nabla \vec{u}^T \right)  \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \left(  \nabla\vec{u} +  \nabla\vec{u}^T \right) 
+  \right)
+\end{equation}
+\begin{equation}
+  \nu_2 \left(
+   2\frac{\partial \bm{D} }{\partial t}
+   + \left(\nabla\vec{u}  \right)^2
+  + 2(\nabla \vec{u})^T  \nabla \vec{u}+
+   \left(    \nabla\vec{u}^T \right)^2
+  \right)
+\end{equation}
+\par
+We first introduce those two methods we implement in the AMReX-incflo. Then, we explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. We close this chapter by showing some numerical results.
+\section{Time integrations}
+Since an explicit scheme tends to show lower-order convergence and more stability issues, it would be beneficial to have an implicit scheme. We thus attempt to implement two more time integrations: 1) a second-order explicit Runge-Kutta scheme, and 2) a predictor-corrector method, which is a semi-implicit formula. 
+\subsection{Explicit Runge-Kutta 2 (RK2)}
+As an easier step, we first try out the second-order RK method. We already introduced this scheme for solving the advection-diffusion equation in Chapter \ref{sec:AD_times}. We recall here, 
+\begin{align}
+	\vec{u}_{j}^{temp} = \vec{u}_j^{n} + \frac{\Delta t}{2} {\bm F_{MAC}} \left( \vec{u}_j^{n} \right)
+	\label{eq_RK2_s1} \\ 
+	\vec{u}_j^{n+1} = \vec{u}_j^{n} + \Delta t {\bm F_{MAC}} \left( \vec{u}_j^{temp} \right),
+	\label{eq_RK2_s2}
+\end{align}
+where ${\bm F_{MAC}}$ represents the spatial discretization that AXMReX uses for an incompressible Navier-Stokes. 
+
+
+\section{Predictor-Corrector method}
+To enlarge the numerical stability region, we implement a semi-implicit method. To do so, we first re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
 \[
  {\bm \tau}= {\bm \tau_1} + {\bm \tau_2},
 \] 
-where ${\bm \tau_1}$ and ${\bm \tau_2}$ are the linear and quadratic effects in terms of strain rate, ${\bm D}$, of the deviatoric stress tensor, i.e., 
+where ${\bm \tau_1}$ and ${\bm \tau_2}$ are, respectively, the linear and quadratic relationship with ${\bm D}$, i.e., 
 \[
   {\boldsymbol \tau_1} \propto \boldsymbol{D}
   \ \ \ \ \ \text{and}
    \ \ \ \ \ 
 {\boldsymbol \tau_2} \propto {\boldsymbol D^2}.
 \]
-\section{Divergence of the econd-order strain rate stress tensor}
-Why do we need the 'divtau'? how is this connected? 
--> need to explain the Navier stokes first. 
-In the AMReX library, the linear shear stress tensor computation is already implemented. For the higher-order term,
-\[
-  {\bm \tau}_{2} = 
-  \tilde{\eta}_2
-  \left( {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right)
-  + \tilde{\eta_3} 
-  \biggl( {\bm{DW}} - {\bm{WD}} \biggr)  
-\]
-we needed to create a new operator to compute $ {\bm \tau}_{2}$. Moreover, the divergence of it, $\nabla \cdot {\bm \tau}_{2}$, is required to solve for velocity. Note that 
-\[
-\tilde{\mu_2} =  \mu_2  \dot{\gamma}^2
-+  \kappa_2 
-\ \ \ \ \ \text{and} \ \ \ \ \ \
-\tilde{\eta_3} =    \eta_3 \dot{\gamma}^2 .
-\]
-We use Mathematica to find the exact component of  ${\bm D}^2 - (\text{tr}({\bm D}^2)/3) {\bm I} = \left[ D_1  \ D_2 \ D_3 \right]$:
-\\
-First column:
-\[
-D_1 =
-\begin{bmatrix}
-   \frac{1}{3} \left(\left(u_y+v_x\right)^2+\left(u_z+w_x\right)^2+8 u_x^2-2 \left(v_z+w_y\right)^2-4 v_y^2-4 w_z^2\right)
-   \\
-   \left(u_z+w_x\right) \left(v_z+w_y\right)+2 \left(u_x+v_y\right) \left(u_y+v_x\right)
-   \\
-   \left(u_y+v_x\right) \left(v_z+w_y\right)+2 \left(u_x+w_z\right) \left(u_z+w_x\right)
-\end{bmatrix}
-\]
-Second column:
-\[
-D_2 = 
-\begin{bmatrix}
-   \left(u_z+w_x\right) \left(v_z+w_y\right)+2 \left(u_x+v_y\right) \left(u_y+v_x\right)
-   \\
-   \frac{1}{3} \left(\left(u_y+v_x\right)^2-2 \left(u_z+w_x\right)^2-4 u_x^2+\left(v_z+w_y\right)^2+8 v_y^2-4 w_z^2\right)
-   \\
-   \left(u_y+v_x\right) \left(u_z+w_x\right)+2 \left(v_y+w_z\right) \left(v_z+w_y\right)
-\end{bmatrix}
-\]
-Third one:
-\[
-D_3 = 
-\begin{bmatrix}
-   \left(u_y+v_x\right) \left(v_z+w_y\right)+2 \left(u_x+w_z\right) \left(u_z+w_x\right),
-    \\
-   \left(u_y+v_x\right) \left(u_z+w_x\right)+2 \left(v_y+w_z\right) \left(v_z+w_y\right),
-   \\
-   \frac{1}{3} \left(-2 \left(\left(u_y+v_x\right)^2+2 \left(u_x^2+v_y^2\right)\right)+\left(u_z+w_x\right)^2+\left(v_z+w_y\right)^2+8 w_z^2\right)
-\end{bmatrix}
-\]
-We also can write each column of ${\bm{DW}} - {\bm{WD}} = \left[ DW_1 \ DW_2 \ DW_3  \right]$:
-\\
-First column:
-\[
-DW_1 = 
-\begin{bmatrix}
-    2 \left(- u_{y}^2-u_{z}^2  + v_{x}^2 + w_{x}^2\right)
-    \\
-    -2 \left(u_{z} v_{z}+\left(v_{y}-u_{x}\right) \left(u_{y}-v_{x}\right)-w_{y} w_{x}\right)
-    \\
-    -2 
-    \left(
-    u_{y} w_{y}+ \left(w_{z}-u_{x}\right) \left(u_{z}-w_{x}\right)- v_{z} v_{x}
-    \right)
-\end{bmatrix}
-\]
-Second column:
-\[
-DW_1 = 
-\begin{bmatrix}
-    -2 \left(u_{z} v_{z}+\left(v_{y}-u_{x}\right) \left(u_{y}-v_{x}\right)-w_{y} w_{x}\right)
-    \\
-    2 \left(- v_{x}^2 - v_{z}^2 +u_{y}^2 + w_{y}^2\right)
-    \\
-    -2 
-    \left(
-    -u_{z} u_{y}+ \left(w_{z}-v_{y}\right) \left(v_{z}-w_{y}\right)+ v_{x} w_{x}
-    \right)
-\end{bmatrix}
-\]
-Third column:
-\[
-DW_1 = 
-\begin{bmatrix}
-   -2 u_{y} w_{y}-2 \left(w_{z}-u_{x}\right) \left(u_{z}-w_{x}\right)+2 v_{z} v_{x}
-   \\
-   2 u_{z} u_{y}-2 \left(w_{z}-v_{y}\right) \left(v_{z}-w_{y}\right)-2 v_{x} w_{x}
-   \\
-   2 \left(u_{z}^2+v_{z}^2-w_{y}^2-w_{x}^2\right)
-\end{bmatrix}
-\]
-For now, we compute each stress term separately and assemble them when we need to use them. We might want to explore other ways to process these steps more efficiently. 
-\section{Numerical implementation for a time integral}
-\section{Explicit Runge-Kutta 2 (RK2) method}
-What do you have here?
-\section{Predictor-Corrector method}
-This is the same idea as the 2-stage Runge-Kutta method. We denote the advection term, ${\bm u} \cdot \nabla {\bm u}$ as ${\bm A}$. 
+We denote the advection term, $\vec{u} \cdot \nabla \vec{u}$ as ${\bm A}$. 
 \\
 $<${\bf Predictor}$>$
 \\
-First, consider the non-linear stress tensor, ${\bm \tau_2}$ as a force term, and solve for the first predictor values, that are ${\bm u}^*$ and ${\bm u}^*$:
+First, consider the non-linear stress tensor, ${\bm \tau_2}$ as a force term, and solve for the first predictor values, that are $\vec{u}^*$ and $\vec{u}^*$:
 \[
-\frac{{\color{blue}{\bm u}^*} - {\bm u}^n}{\Delta t} 
+\frac{{\color{blue}\vec{u}^*} - \vec{u}^n}{\Delta t} 
 +  {\bm A}^{n+1/2} 
-=- \frac{1}{\rho}  \biggl(
+= \frac{1}{\rho}  \biggl(
 \frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*} + \nabla \cdot{\bm \tau}_1^n}{2} 
 + \nabla \cdot {\bm \tau}_2^n 
 - \nabla p^n
@@ -149,15 +94,15 @@ First, consider the non-linear stress tensor, ${\bm \tau_2}$ as a force term, an
 \]
 We solve for blue terms - 
 \[
-{\color{blue}{\bm u}^*} +
-\frac{1}{\rho} 
+{\color{blue}\vec{u}^*} -
+\frac{\Delta t}{\rho} 
 \left( 
 \frac{\nabla \cdot {\color{blue}{\bm \tau}_1^*}}{2}
 \right)
 =
-{\bm u}^n
+\vec{u}^n
 - {\bm A}^{n+1/2} \Delta t
-- \frac{\Delta t}{\rho} \biggl(
++ \frac{\Delta t}{\rho} \biggl(
 \frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
 + \nabla \cdot {\bm \tau}_2^n 
 - \nabla p^n
@@ -169,9 +114,9 @@ $<${\bf Corrector}$>$
 \\
 Once we obtain the predictor (star) velocity, we use it to compute the second order stress tensor, ${\bm \tau}_2^*$.
 \[
-\frac{{\color{red}{\bm u}^{n+1}} - {\bm u}^n}{\Delta t} 
+\frac{{\color{red}\vec{u}^{n+1}} - \vec{u}^n}{\Delta t} 
 +  {\bm A}^{n+1/2} 
-=- \frac{1}{\rho}  \biggl(
+=  \frac{1}{\rho}  \biggl(
 \frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}} + \nabla \cdot{\bm \tau}_1^n}{2} 
 + \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
 - \nabla p^n
@@ -180,27 +125,25 @@ Once we obtain the predictor (star) velocity, we use it to compute the second or
 
 Now, we need to solve for red - next time step values:
 \[
-{\color{red}{\bm u}^{n+1}} 
-+\frac{1}{\rho} 
+{\color{red}\vec{u}^{n+1}} 
+-\frac{1}{\rho} 
 \left(
 \frac{\nabla \cdot {\color{red}{\bm \tau}_1^{n+1}}}{2}
 \right)
 =
-{\bm u}^n 
+\vec{u}^n 
  -{\bm A}^{n+1/2} \Delta t
-- \frac{\Delta t}{\rho}  \biggl(
+ +\frac{\Delta t}{\rho}  \biggl(
 \frac{ \nabla \cdot{\bm \tau}_1^n}{2} 
 + \frac{\nabla \cdot {\bm \tau}_2^{n} + \nabla \cdot {\color{blue}{\bm \tau}_2^*}}{2} 
 - \nabla p^n
 \biggr)
 \]
-Note that ${\bm \tau}_i^* = {\bm \tau}({\bm u}^*, \eta_i)$.
-\section{Validation}
-\begin{itemize}
-  \item We follow the experiment setup found in \cite{couturier_suspensions_2011}
-  \item We want to present the N1 and N2 values with various volume fractions: from 0.1 to 0.5.
-  \item the geometry of a tilted trough with rigid spheres in a Newtonian fluid. 
-\end{itemize}
+Note that ${\bm \tau}_i^* = {\bm \tau}(\vec{u}^*, \eta_i)$.
+
+
+
+
 \section{Granular rheology}
 We recall the stress tensor for the fluid momentum equation, introduced in Chapter 1, for a non-Newtonian fluid:
 \begin{align}
@@ -218,7 +161,7 @@ In this section, we explain the details of the methodology to compute granular f
   \label{fig_Laminar_shear}
 \end{figure}
 
-To describe a non-isotropic flow, we consider the Cauchy stress tensor, $\bar{\bar{\sigma}}$, up to the second order of strain rate \cite{srivastava_viscometric_2021}. In particular, we see the deviatoric tensor, $\bar{\bar{\sigma}} - P \bar{\bar{I}}$, as 
+To describe a non-isotropic flow, we consider the Cauchy stress tensor, $\bar{\bar{\sigma}}$, up to the second order of strain rate \cite{srivastava_viscometric_2021}. In particular, we see 
 % \begin{align*}
 % \bar{\bar{\sigma}} - P {\bm I} \equiv
 %   {\bm {\bm \tau}}
@@ -231,12 +174,12 @@ To describe a non-isotropic flow, we consider the Cauchy stress tensor, $\bar{\b
 %   - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right],
 % \end{align*}
 \begin{equation}
-  \bar{\bar{\sigma}}
-  = -P \bar{\bar{I}}  + \mu_1 {\bm D} 
+\bm{\tau} =  \mu_1 {\bm D} 
   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
  + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
   + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
   - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right]
+  + \mu_3  \left[ {\bm D}{\bm W} - {\bm W}{\bm D} \right]
 \end{equation}
 or equivalently, 
 \begin{equation}
@@ -248,18 +191,18 @@ or equivalently,
   \right) \frac{1}{\dot{\gamma}^2}
   \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
   \ + \
-  \left( \eta_3 \dot{\gamma}^2 \right)
+  \left( \mu_3 \dot{\gamma}^2 \right)
   \frac{1}{\dot{\gamma}^2}
     \left[ {\bm D}{\bm W} - {\bm W}{\bm D} \right]
 \label{eq_2ndOrder_tau}
 \end{equation}
 where ${\bm D} $ is the shear stress tensor, that is
 \[
-	{\bm D} = \frac{1}{2}\left( \nabla {\bm u} + \nabla {\bm u}^{T}\right)	
+	{\bm D} = \frac{1}{2}\left( \nabla \vec{u} + \nabla \vec{u}^{T}\right)	
 \]
 and ${\bm W}$ is a vorticity tensor, defined as 
 \[
-	{\bm W} = \frac{1}{2}\left( \nabla {\bm u} - \nabla {\bm u}^{T}\right).
+	{\bm W} = \frac{1}{2}\left( \nabla \vec{u} - \nabla \vec{u}^{T}\right).
 \]
 We also use a conventional notation $\dot{\gamma} = \left| {\bm D} \right|$, applying the scaled Frobenius norm for a second-order tensor, 
 \[
@@ -376,7 +319,7 @@ The main challenge we faced to implement the pressure-dependent viscosity was co
 {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
 
 % a little more details
-\section{Viscosity regularization}
+\subsection{Viscosity regularization}
 In the viscosity computations, we presented in sections XX and XX, we encounter a singularity as $\dot{\gamma}$ approaches zero in viscosity evaluations. 
 As AMReX-\verb+incflo+ has the Papanastasiou regularization method implemented, we apply the same method for the new viscosity terms.
 \par
@@ -410,8 +353,12 @@ For numerical validations, we follow the experiments presented in Couturier $\te
   \item We want to observe the relationship between $\alpha_i(\phi) = N_i / |\sigma_{xy}|$, where $i = 1,2$.
 \end{itemize}
 
-
-
+\section{Numerical results}
+\begin{itemize}
+  \item We follow the experiment setup found in \cite{couturier_suspensions_2011}
+  \item We want to present the N1 and N2 values with various volume fractions: from 0.1 to 0.5.
+  \item the geometry of a tilted trough with rigid spheres in a Newtonian fluid. 
+\end{itemize}
 
 \section{Discussion and future work}
 We propose to extend this work by incorporating elastic effects through the implementation of elastoviscoplastic (EVP) models in this numerical framework. The robustness of the numerical implementation will be extensively tested in various flow scenarios (such as Poiseuille and Couette flows) for a range of Weissenberg and Bingham numbers.  Another potential avenue for development will involve implementing immersed boundary methods (IBM) to model a suspension of solid particles in such complex fluids, which is an important application area that has received significant research interest lately. 

@@ -863,8 +863,8 @@ Based on the the diffusicity of CO$_2$ in seawater \textit{Park and Choi} measur
 Note that this could differ by the size of an aggregate and we will explore various Péclet numbers for our simulations within a reasonable range. 
 \par 
 In the following subsection, we explain the numerical methods to solve and couple the boundary integral equation with the advection-diffusion equation in time and space. We close this chapter by presenting preliminary results of the concentration dynamics in a homogeneous fluid. 
-\subsection{Numerical methods for the advection-diffusion equation}
- 
+\subsection{Time integration}
+\label{sec:AD_times}
 The main role of coupling the advection-diffusion equation is to update the concentration $C$ in time. The velocity field of the advection term in equation (\ref{eq_ad_diff_nonD}) is obtained using the boundary integral equations. Note that the velocity does not depend on time. 
 We only update $C$ in time. Since our entire fluid velocity computation is already large and slow, we try to focus on efficiency for the concentration evaluation.
 \par
@@ -878,8 +878,9 @@ we initially selected the trapezoidal rule as the implicit method,
 and the two-stages Runge-Kutta as the explicit scheme,
 \begin{align}
 	C_{j}^{temp} = C_j^{n} + \frac{\Delta t}{2} {\bm F} \left( C_j^{n} \right)
-	\\ 
+	\label{eq_RK_step1} \\ 
 	C_j^{n+1} = C_j^{n} + \Delta t {\bm F} \left( C_j^{temp} \right),
+	\label{eq_RK_step2}
 \end{align}
 where where $C_j^n$  represents the discrete concentration value $C'$ at a numerical grid $x_j$ and $n-$th time step.
 Here, the function, $\bm{F}$, represents any choice of spatial discretization method. 
