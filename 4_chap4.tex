@@ -7,8 +7,7 @@ As we mentioned in Chapter \ref{sec:intro_complex_fluid}, we consider the deviat
   \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2 ,
 \nonumber
 \end{equation}
-where each $\nu_i$ for $i = 0,1,2$ is dependent on the materials or flow types. In this project, we study 1) granular materials and 2) non-colloidal suspension in a Newtonian fluid. 
-Once we establish the viscosity term, we can examine the flows in geometry by solving the Navier-Stokes equation,
+where each $\nu_i$ for $i = 0,1,2$ is dependent on the materials or flow types. In this project, we explore two examples: 1) granular materials and 2) non-colloidal suspension in a Newtonian fluid. While the big picture of a viscous term is the same as described in equation (\ref{eq_CN_tau}), the way to obtain the coefficients $\nu_i$ are different. We thus address establishing the viscosity terms first for both examples. Then, we examine each flow in geometry by solving the Navier-Stokes equation,
 \begin{align}
   \nabla \cdot \vec{u} = 0 
   \nonumber \\
@@ -22,8 +21,8 @@ Once we establish the viscosity term, we can examine the flows in geometry by so
   \nonumber
   \end{align}
 in which they were introduced in Chapter 1; equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}).
-In the AMReX-incflo code, three different time integrations are implemented to update the velocity and pressure. Among them, we can only use the explicit Euler method due to the stress tensor $\bm{\tau}$ having a quadratic relationship with the strain rate $\bm{D}$, which is a function of the velocity $\vec{u}$. 
 \par
+As we mentioned in Chapter 1.3, three different time integrations are implemented to solve for the velocity and pressure in the AMReX-incflo code. Among them, we can only use the explicit Euler method due to the stress tensor $\bm{\tau}$ having a quadratic relationship with the strain rate $\bm{D}$, which is a function of the velocity $\vec{u}$. 
 To clarify, we write the tensor $\bm{\tau}$ in terms of $\bm{D}$ explicitly,
 \begin{equation}
   \boldsymbol{\tau} =
@@ -34,26 +33,27 @@ To clarify, we write the tensor $\bm{\tau}$ in terms of $\bm{D}$ explicitly,
     +\bm{D} \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \bm{D} 
    \right)
 \end{equation}
-Let's look at the last term a little more closely:
-\begin{equation}
-  \nu_2 \left(
-   \frac{\partial }{\partial t}\left( \nabla \vec{u} +  \nabla\vec{u}^T \right) + 
-    \vec{u} \cdot \nabla \left(  \nabla\vec{u} +  \nabla\vec{u}^T \right) 
-   +\left(  \nabla\vec{u} + \nabla \vec{u}^T \right)  \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \left(  \nabla\vec{u} +  \nabla\vec{u}^T \right) 
-  \right)
-\end{equation}
-\begin{equation}
-  \nu_2 \left(
-   2\frac{\partial \bm{D} }{\partial t}
-   + \left(\nabla\vec{u}  \right)^2
-  + 2(\nabla \vec{u})^T  \nabla \vec{u}+
-   \left(    \nabla\vec{u}^T \right)^2
-  \right)
-\end{equation}
+% Let's look at the last term a little more closely:
+% \begin{equation}
+%   \nu_2 \left(
+%    \frac{\partial }{\partial t}\left( \nabla \vec{u} +  \nabla\vec{u}^T \right) + 
+%     \vec{u} \cdot \nabla \left(  \nabla\vec{u} +  \nabla\vec{u}^T \right) 
+%    +\left(  \nabla\vec{u} + \nabla \vec{u}^T \right)  \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \left(  \nabla\vec{u} +  \nabla\vec{u}^T \right) 
+%   \right)
+% \end{equation}
+% \begin{equation}
+%   \nu_2 \left(
+%    2\frac{\partial \bm{D} }{\partial t}
+%    + \left(\nabla\vec{u}  \right)^2
+%   + 2(\nabla \vec{u})^T  \nabla \vec{u}+
+%    \left(    \nabla\vec{u}^T \right)^2
+%   \right)
+% \end{equation}
+To achieve second-order convergence, we implement two more time integration methods in incflo. As a simpler step, we coded the explicit Runge-Kutta 2 (RK2) scheme. We then attempt to use a predictor-corrector method, which is a fully implicit formula.
 \par
-We first introduce those two methods we implement in the AMReX-incflo. Then, we explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. We close this chapter by showing some numerical results.
+The order of this chapter is following. We explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. Then, we discuss the numerical methods,   Then,  We close this chapter by showing some numerical results.
 \section{Time integrations}
-Since an explicit scheme tends to show lower-order convergence and more stability issues, it would be beneficial to have an implicit scheme. We thus attempt to implement two more time integrations: 1) a second-order explicit Runge-Kutta scheme, and 2) a predictor-corrector method, which is a semi-implicit formula. 
+Since an explicit scheme tends to show lower-order convergence and more stability issues, it would be beneficial to have an implicit scheme.  
 \subsection{Explicit Runge-Kutta 2 (RK2)}
 As an easier step, we first try out the second-order RK method. We already introduced this scheme for solving the advection-diffusion equation in Chapter \ref{sec:AD_times}. We recall here, 
 \begin{align}
@@ -65,7 +65,7 @@ As an easier step, we first try out the second-order RK method. We already intro
 where ${\bm F_{MAC}}$ represents the spatial discretization that AXMReX uses for an incompressible Navier-Stokes. 
 
 
-\section{Predictor-Corrector method}
+\subsection{Predictor-Corrector method}
 To enlarge the numerical stability region, we implement a semi-implicit method. To do so, we first re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
 \[
  {\bm \tau}= {\bm \tau_1} + {\bm \tau_2},
