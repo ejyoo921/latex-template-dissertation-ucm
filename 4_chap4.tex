@@ -237,7 +237,7 @@ By introducing a small parameter, denoted as $\varepsilon$, we can regularize th
 for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
 The detailed mathematics and analysis can be found in Sverdrup 2018~\cite{sverdrup_highly_2018}.
 \section{Suspension rheology}
-In this section, we summarize the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
+This section summarizes the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
 \par
 We use the constitutive equation proposed by Reiner \cite{reiner_mathematical_1945} and Rivlin \cite{rivlin_stress-deformation_1955},  
 \begin{equation}
@@ -253,9 +253,11 @@ For numerical validations, we follow the experiments presented in Couturier $\te
 
 \section{Velocity computation}
 Once we decide on a non-Newtonian model, in geometry, we solve flow velocity and pressure by solving the following Navier-Stokes equation,
-\begin{align}
+\begin{equation}
   \nabla \cdot \vec{u} = 0 
-  \label{eq_div_free} \\
+  \label{eq_div_free} 
+\end{equation}
+\begin{equation}
      \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
 = \frac{1}{\rho}
 \left(
@@ -264,7 +266,7 @@ Once we decide on a non-Newtonian model, in geometry, we solve flow velocity and
     +  \rho  \vec{g} 
     \right),
   \label{eq_NS_ch4}
-  \end{align}
+  \end{equation}
 where we find $\tau$ using equation (\ref{eq_2ndOrder_tau}) for a granular flow. 
 We first write the momentum equation in a discretized form.,
 \begin{align}
@@ -273,30 +275,30 @@ We first write the momentum equation in a discretized form.,
 -\vec{u}^n \cdot \nabla \vec{u}^n 
 +\frac{1}{\rho}
 \left(
-- \nabla P 
-    + \nabla \cdot   \bm{\tau} 
+- \nabla P^n 
+    + \nabla \cdot   \bm{\tau}^n 
     +  \rho  \vec{g} 
     \right),
   \end{align}
-where the superscription $n$ represents the current time (known) value, $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The intermediate velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). We thus need to project $\vec{u}^*$ onto the divergence-free space. 
+where the superscription $n$ represents the current time (known) value; for example, the known velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we should project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
 \par
-For the projection step, we express the velocity ${\bm u}^{*}$ as
+For the projection step, we express $\vec{u}^{*}$ as
 \begin{equation}
-  {\bm u}^* = {\bm u}^{n+1} + \nabla \phi,
+  \vec{u}^* = \vec{u}^{n+1} + \nabla \phi,
   \label{eq_ustar}
 \end{equation}
-where ${\bm u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar.
+where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar.
 Taking the divergence of the equation (\ref{eq_ustar}), we find the Poisson equation for $\phi$,
 \[
-  \nabla^2 \phi = \nabla {\bm u}^*.  
+  \nabla^2 \phi = \nabla \vec{u}^*.  
 \]
-After we solve for $\phi$, applying given boundary conditions, we find the updated velocity, projecting the velocity ${\bm u}^*$ onto the divergence-free space to find the new time-level solutions.
+After we solve for $\phi$, applying given boundary conditions, we find the updated velocity, projecting the velocity $\vec{u}^*$ onto the divergence-free space to get the new time-level solutions.
 \[
-  {\bm u}^{m+1} = {\bm u}^* - \nabla \phi.
+  \vec{u}^{m+1} = \vec{u}^* - \nabla \phi.
 \]
 
 In this thesis, we focus on the time integration. 
-Since an explicit scheme tends to show lower-order convergence and more stability issues, it would be beneficial to have an implicit scheme performing a higher-order convergence.  
+Since an explicit scheme tends to show lower-order convergence and more stability issues, having an implicit method performing a higher-order convergence would be beneficial.  
 \subsection{Explicit Runge-Kutta 2 (RK2)}
 As an easier step, we first try out the second-order RK method. We already introduced this scheme for solving the advection-diffusion equation in Chapter \ref{sec:AD_times}. We recall here, 
 \begin{align}
