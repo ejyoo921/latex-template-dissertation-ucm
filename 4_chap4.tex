@@ -268,7 +268,7 @@ Once we decide on a non-Newtonian model, in geometry, we solve flow velocity and
   \label{eq_NS_ch4}
   \end{equation}
 where we find $\tau$ using equation (\ref{eq_2ndOrder_tau}) for a granular flow. 
-We first write the momentum equation in a discretized form.,
+We first write the momentum equation in a discretized form, considering the explicit Euler scheme,
 \begin{align}
      \frac{\vec{u}^* - \vec{u}^n}{\Delta t} 
 = 
@@ -282,12 +282,25 @@ We first write the momentum equation in a discretized form.,
   \end{align}
 where the superscription $n$ represents the current time (known) value; for example, the known velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we should project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
 \par
-For the projection step, we express $\vec{u}^{*}$ as
+If we want to implement an implicit method, we find
+\begin{align}
+  \frac{\vec{u}^* - \vec{u}^n}{\Delta t} 
+= 
+-\vec{u}^n \cdot \nabla \vec{u}^n 
++\frac{1}{\rho}
+\left(
+- \nabla P^n 
+ + \nabla \cdot   \bm{\tau}^* 
+ +  \rho  \vec{g} 
+ \right),
+\end{align}
+\par
+For the projection step, we express $\vec{u}^{*}$ as, according to the Helmholtz-Hodge-Decomposition, 
 \begin{equation}
   \vec{u}^* = \vec{u}^{n+1} + \nabla \phi,
   \label{eq_ustar}
 \end{equation}
-where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar.
+where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar function.
 Taking the divergence of the equation (\ref{eq_ustar}), we find the Poisson equation for $\phi$,
 \[
   \nabla^2 \phi = \nabla \vec{u}^*.  
