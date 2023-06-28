@@ -1286,31 +1286,31 @@ Lastly, we investigate three different $\gamma = 10^{-4} \times \left[ \ 1, \ 4 
 \end{center}
 \end{figure}
 \par
-We first present quantities of interest regarding the aggregate itself in Figure~\ref{fig_NC50_Seeds}. In plot (a), we see that the settling speed of the same aggregate would drop faster when the gradient of fluid density gets sharper. Similar results are shown for the total drag over time in plot (b). To clarify, we find the ratio of the drag to the settling speed in plot (c). We observe very similar behavior as a homogeneous fluid case with the smallest $\gamma = 10^{-4}$. Note that this $\gamma$ is considered a small value for the aggregate radius $R_a \approx 9$. For instance, the same $\gamma$ may be a large enough value to observe a clear background fluid stratification effect for an aggregate radius 20.
+We first present quantities of interest regarding the aggregate itself in Figure~\ref{fig_NC50_Seeds}. In plot (a), we see that the settling speed of the same aggregate would drop faster when the fluid density gradient gets sharper. Similar results are shown for the total drag over time in plot (b). To clarify, we find the ratio of the drag to the settling speed in plot (c). We observe very similar behavior as a homogeneous fluid case with the smallest $\gamma = 10^{-4}$. Note that this $\gamma$ is considered a small value for the aggregate radius $R_a \approx 9$. For instance, the same $\gamma$ may be a large enough value to observe a clear background fluid stratification effect for an aggregate radius 20.
 We also look at the center of mass of aggregate over time. Since $\gamma = 10^{-4}$ mimics a homogeneous fluid, the aggregate travels more, yet with a slower speed, demonstrated by the blue solid line in plot (d).
 \par
-From a fluid perspective, we obtain the perturbation over time at two different points. In Figure~\ref{fig_NC50_gCM}, the left plot is the perturbation at the usual point, $\vec{x}^{\star}$, where the white star is located in Figure~\ref{fig_NC50_snaps_all}. It is located outside of the aggregate, yet very close. On the right side, we examine the perturbation inside of the aggregate, particularly at the center of the fluid domain. By looking at the magnitude of $C$, there are certainly higher perturbations for all three $\gamma$ cases. Moreover, we see the perturbation varying range is quite large for the light stratification case (blue line). As we mentioned, it is because, in a stronger density-stratified fluid, the same aggregate stop moving due to reaching neutral buoyancy.
+From a fluid perspective, we obtain the perturbation over time at two different points. In Figure~\ref{fig_NC50_gCM}, the left plot is the perturbation at the usual point, $\vec{x}^{\star}$, where the white star is located in Figure~\ref{fig_NC50_snaps_all}. It is located outside of the aggregate, yet very close. On the right side, we examine the perturbation inside of the aggregate, particularly at the center of the fluid domain. By looking at the magnitude of $C$, there are certainly higher perturbations for all three $\gamma$ cases. Moreover, we see the perturbation varying range is quite large for the light stratification case (blue line). As we mentioned, it is because the same aggregate stops moving in a stronger density-stratified fluid due to reaching neutral buoyancy.
 \section{Conclusion}
-As an extension study of homogeneous model~\cite{yoo_hydrodynamic_2020}, we have developed a numerical method to simulate a settling marine aggregate model, randomly formed with cubes, using a boundary integral method in a density-stratified fluid.
-Applying the net force equilibrium in a Stokes regime, we prescribe the total drag and torque to solve for the stress vectors on the aggregate and its settling velocity using the single-layer potential formula.
-With the velocity field obtained, we advance the perturbation in time by coupling the advection-diffusion equation. 
-To accelerate the evaluation of integrals of Stokeslet, we incorporate the Fast Multipole Method, by modifying the Laplace kernel.
+As an extension of our study of the homogeneous system~\cite{yoo_hydrodynamic_2020}, we have developed a numerical method to simulate a settling marine aggregate, randomly formed with cubes, using a boundary integral method in a density-stratified fluid.
+Applying the net force equilibrium in a Stokes regime, we prescribed the total drag and torque to solve for the stress on the aggregate and its settling velocity using the single-layer potential formula.
+With the velocity field obtained, we advance the perturbation in time using the advection-diffusion equation. 
+To accelerate the evaluation of integrals of Stokeslet, we incorporate the Fast Multipole Method by modifying the Laplace kernel.
 \par
-We have validated our methods by providing results of a settling aggregate composed of 10 cubes while varying numerical grid and time steps and domain sizes. 
-Most of the errors for each comparison appeared to be much smaller than the largest error we estimated is about 23\% from the stress value on each square face of a cube.
+We have validated our methods by providing results of a settling aggregate composed of 10 cubes while varying the spatial grid, time steps, and domain sizes. 
+Most of the errors for each comparison appeared to be much smaller than those resulting from assuming that the stress is uniform on each square face of a cube.
 \par
-Furthermore, we simulated larger aggregates, made with 50 cubes, in different settings of fluids as numerical results. We have observed aggregate settling behavior before its density becomes neutral to surrounding fluid density.
-We find a somewhat consistent trend in the settling behaviors between different shapes of aggregates.   
-We can certainly simulate aggregates with more cubes to explore many more different shapes. It would allow us to have better statistical results. 
-Under the different Péclet number environments, we find the main changes in the perturbation, as expected, between Pe = 1 and Pe = 10. Since a smaller Péclet number implies a higher diffusivity, we observe the perturbation near the aggregate slows down 10\% faster than the other two cases. 
+Furthermore, we simulated larger aggregates, made with 50 cubes, in different settings. We have observed aggregate settling behavior before its density matches the surrounding fluid density.
+We found a consistent trend in the settling behaviors between different shapes of aggregates with, for example, variations in the drag coefficient of the order of 8\%.   
+In future work, we can simulate aggregates with more cubes and consider more different shapes for better statistical results. kk
+Under the different Péclet number environments, we find the main changes in the perturbation, as expected, between Pe = 1 and Pe = 10. Since a smaller Péclet number implies a higher diffusivity, the perturbation near the aggregate slows down 10\% faster than the other two cases. 
 \par
 We also explore various stratification strengths via $\gamma$ values. 
-As we mentioned, marine aggregates are highly porous and sensitive to surrounding fluid density stratification~\cite{prairie_delayed_2013}. Our results also support these characteristics, while we perform the simulations with three types of background fluid density gradients.
-In addition to our results shown in this thesis, potential future work includes considering another applicable regime with different parameters.
+Marine aggregates are highly porous and sensitive to surrounding fluid density stratification~\cite{prairie_delayed_2013}. Our results also support these characteristics while we perform the simulations with three types of background fluid density gradients.
+In addition to our results in this thesis, potential future work includes considering another applicable regime with different parameters.
 \par
 We note that a description of rotational flow results is missing, although we have allowed a rotation of an aggregate while obtaining all the numerical results. In short, we have found an approximate torque having the order $\mathcal{O}(10^{-4})$. This is quite a small value compared to the drag force and perturbation effects as a response to the background fluid stratification. 
 We consider analyzing more details as future work.
 \par
-There are several branches we can extend our research further with our comprehensive numerical tools developed. As much research work has been done with a sphere model as an aggregate, we would like to compare our results, such as the settling speed, drag acting on the aggregate, and/or the amount of concentration entrained. 
+There are several branches we can extend our research further with our comprehensive numerical tools developed. As much research work has been done with a sphere model as an aggregate, we would like to compare our results, such as the settling speed, drag acting on the aggregate, and the amount of concentration entrained. 
 
 
