@@ -1054,7 +1054,7 @@ We use a domain centered at $\vec{x}_{cm}$ of size  $2s\left[  R_m \times   R_m 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.4]{./figures/fig_sample_agg10.pdf}
-		\caption{Sample aggregate with ten cubes, that is used to obtain simulations presented in Figure~\ref{fig_NC10_snaps_all}. }
+		\caption{Sample aggregate with ten cubes in a $s=3$ scale domain, that is used to obtain simulations presented in Figure~\ref{fig_NC10_snaps_all}. }
 		\label{fig_sample_agg10}
 	\end{center}
 \end{figure}
@@ -1162,7 +1162,7 @@ Since there are a few parameters we are interested in varying, we decide on sett
 	\label{fig_NC50_base_seed2}
 \end{center}
 \end{figure}
-Concerning both the potential stability issue and the computing time, we choose the time step size $\Delta t = 0.5$ and grid spacing $\Delta x =1$. In section~\ref{sec:ch3_validation}, we have shown that it is safe to analyze aggregate behavior in a smaller domain, we simulate the settling aggregate in the domain size with the scaling factor $s = 3$.  Also, we apply Pe = 100 as we did for the homogeneous model in Chapter~\ref{sec:ch2_CO2_simulation} for this base model.
+To avoid any stability issues while being computationally efficient, we choose the time step size $\Delta t = 0.5$ and grid spacing $\Delta x =1$. In section~\ref{sec:ch3_validation}, we have shown that these choices provide good accuracy. Moreover, we found that simulating the settling aggregate in the domain size with the scaling factor $s = 3$ is sufficient to have negligible boundary effects.  Also, we apply Pe = 100 as we did for the homogeneous model in Chapter~\ref{sec:ch2_CO2_simulation} for this base model.
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.65]{./figures/fig_NC50_snaps_pt1.pdf}
@@ -1173,14 +1173,16 @@ Concerning both the potential stability issue and the computing time, we choose 
 \end{figure}
 \par
 Additionally, we select the stratification strength $\gamma$ more systematically. 
-To do so, we first consider the travel distance of an aggregate, denoting it as $z_T$. In Figure~\ref{fig_sample_agg10}, we showed that the aggregate is initially located in the middle of the domain. We suppose an aggregate with its radius $R_a$ settles approximately half of the fluid domain, which is $2 s R_a$. It implies that we set $z_T = 2sR_a$.
+To do so, we first consider the travel distance of an aggregate, denoting it as $z_T$. In Figure~\ref{fig_sample_agg10}, we showed that the aggregate is initially located in the middle of the domain. We are interested in observing a setup where $\gamma$ is as large as possible while allowing the aggregate to travel about $z_T = 6R_a$, before
+reaching its level of neutral buoyancy.
+% an aggregate with its radius $R_a$ settles approximately half of the fluid domain, which is $2 s R_a$. It implies that we set $z_T = 2sR_a$.
 At the vertical level $z_T$, equation (\ref{eq_rho_bg}) tells us to have background fluid density 
 \begin{equation}
-	\rho_{bg} = \rho_0 (1-\gamma z_T) =	\rho_0 (1 - 2sR_a \gamma).
+	\rho_{bg} = \rho_0 (1-\gamma z_T) =	\rho_0 (1 - 6R_a \gamma).
 	\label{eq_compute_G}
 \end{equation}
 Meanwhile, we want the aggregate density $\rho_a$, which is defined in equation (\ref{eq_rho_a}), to reach neutral buoyancy. To see this, we assume the initial aggregate density, when its fluid portion $\rho_f$ is $\rho_0$, is equal to the background fluid density after stop settling, i.e., $\rho_a = \rho_{bg}$. 
-For an aggregate composed of 50 cubes, we find an estimated average radius $R_a \approx 9$~\cite{yoo_hydrodynamic_2020}. By substituting $s = 3$, as we decided, we find the $\gamma \approx 4 \times 10^{-4}$.  
+For an aggregate composed of 50 cubes, we have an estimated average radius $R_a \approx 9$~\cite{yoo_hydrodynamic_2020}, and thus we find $\gamma \approx 4 \times 10^{-4}$.  
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_bs_Ua3_all.pdf}
@@ -1193,17 +1195,18 @@ For an aggregate composed of 50 cubes, we find an estimated average radius $R_a 
 \end{figure}
 \par 
 In Figure~\ref{fig_NC50_snaps_all}, we show several 2D snapshots, sliced in the middle of the domain ($x = -0.74$), of perturbation $C$ at various times. Note that we see negative values of $C$ since the perturbation is a concentration difference from its initial one. 
-We can observe much higher perturbation around the aggregate and it increases as time goes on, carrying upper-level concentration. 
+We can observe much higher perturbation around the aggregate that increases in magnitude as time goes on, as the aggregate entrains upper-level concentration. 
 \par
-We observe the aggregate behavior more closely in Figure~\ref{fig_NC50_base_case_all}. As we introduced in the previous chapter, we measure (a) the settling speed and (b) the normalized total drag of the aggregate. We also exhibit the ratio of total drag to the settling speed in the plot (c). Although both settling speed and drag seem to be decreasing over time, as fluid buoyancy balances, we find their ratio (c) increases non-linearly. This implies that the stratification of the fluid plays a role in the aggregate's settling behavior. 
+We observe the aggregate behavior more closely in Figure~\ref{fig_NC50_base_case_all}. As we introduced in the previous chapter, we measure (a) the settling speed and (b) the normalized total drag of the aggregate. We also exhibit the ratio of total drag to the settling speed in plot (c) as a measure of the coefficient in the linear relationship between drag and velocity
+that is observed in Stokes flow. Although both settling speed and drag seem to be decreasing over time, as fluid buoyancy balances, we find that their ratio (c) increases non-linearly. This implies that the stratification of the fluid plays a role in the aggregate's settling behavior, not only by reducing the buoyancy but also through the entrained fluid. 
 We would have observed a horizontal line if the surrounding fluid does not affect aggregate motion as it settles in a homogeneous fluid. 
 \par
-In the last plot (d), we observe the perturbation at a particular location outside the aggregate boundary. It is the white star point $\vec{x}^{\star} = (-0.74, 12.74, 0.24)$ in Figure~\ref{fig_NC50_snaps_all}. This point is approximately (1.01 + $R_m$) away from the center of mass of the aggregate. The perturbation is expected to grow over time. As the settling motion slows down, the magnitude of perturbation also smoothes out. 
+In the last plot (d), we observe the perturbation at a particular location outside the aggregate boundary. It is the white star point $\vec{x}^{\star} = (-0.74, 12.74, 0.24)$ in Figure~\ref{fig_NC50_snaps_all}. This point is approximately (1.01 + $R_m$) away from the center of mass of the aggregate. The perturbation is expected to grow in magnitude over time. As the settling motion slows down, the magnitude of perturbation also smoothes out. 
 \par
-In the next section, we explore various shapes of aggregates made with 50 cubes, in addition to the base case. Afterward, we will observe the effects of different Péclet numbers and background fluid density stratification. 
+In the next section, we explore various shapes of aggregates made with 50 cubes, in addition to the base case. Afterward, we will observe the effects of varying Péclet numbers and background fluid density stratification. 
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.42]{./figures/fig_seed11_15_all.pdf}
+		\includegraphics[scale=0.45]{./figures/fig_seed11_15_all.pdf}
 	\caption{Five sample aggregates composed of 50 cubes.}
 	\label{fig_seed11_15_all}
 \end{center}
@@ -1254,7 +1257,7 @@ Since we have more instability for lower Péclet numbers, we exceptionally reduc
 		\includegraphics[scale=0.35]{./figures/fig_NC50_Pe_Fo3_all}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_Pe_Fo3Ua_ratio}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_Pe_C_star}
-	\caption{Compare various Péclet numbers. We show (a) the settling speed, (b) the vertical force on the aggregate, (c) the ratio of (b) to (a) values, and (d)the value of the perturbation near the aggregate.}
+	\caption{Compare various Péclet numbers. We show (a) the settling speed, (b) the vertical force on the aggregate, (c) the ratio of (b) to (a) values, and (d) the value of the perturbation near the aggregate.}
 	\label{fig_NC50_Pe}
 \end{center}
 \end{figure}
@@ -1264,7 +1267,7 @@ Focusing on the perturbation plot (d), we can slightly see that more diffusion q
 Overall, it is clear that all four plots agree well with our expectations. 
 \subsection{Various stratification strength via $\gamma$}
 Lastly, we investigate three different $\gamma = 10^{-4} \times \left[ \ 1, \ 4 \ \text{(base case)}, \  6 \right]$. We anticipate observing conspicuous variations in both aggregate and fluid dynamics as we change the $\gamma$ value. Note that every other setup is the same as the base case. 
-\begin{figure}[ht]
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_g_Ua3_all}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_g_Fo3_all}
@@ -1274,7 +1277,7 @@ Lastly, we investigate three different $\gamma = 10^{-4} \times \left[ \ 1, \ 4 
 	\label{fig_NC50_gg}
 \end{center}
 \end{figure}
-\begin{figure}[ht]
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_g_C_star.pdf}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_g_C_M}
@@ -1287,18 +1290,27 @@ We first present quantities of interest regarding the aggregate itself in Figure
 We also look at the center of mass of aggregate over time. Since $\gamma = 10^{-4}$ mimics a homogeneous fluid, the aggregate travels more, yet with a slower speed, demonstrated by the blue solid line in plot (d).
 \par
 From a fluid perspective, we obtain the perturbation over time at two different points. In Figure~\ref{fig_NC50_gCM}, the left plot is the perturbation at the usual point, $\vec{x}^{\star}$, where the white star is located in Figure~\ref{fig_NC50_snaps_all}. It is located outside of the aggregate, yet very close. On the right side, we examine the perturbation inside of the aggregate, particularly at the center of the fluid domain. By looking at the magnitude of $C$, there are certainly higher perturbations for all three $\gamma$ cases. Moreover, we see the perturbation varying range is quite large for the light stratification case (blue line). As we mentioned, it is because, in a stronger density-stratified fluid, the same aggregate stop moving due to reaching neutral buoyancy.
+\section{Conclusion}
+As an extension study of homogeneous model~\cite{yoo_hydrodynamic_2020}, we have developed a numerical method to simulate a settling marine aggregate model, randomly formed with cubes, using a boundary integral method in a density-stratified fluid.
+Applying the net force equilibrium in a Stokes regime, we prescribe the total drag and torque to solve for the stress vectors on the aggregate and its settling velocity using the single-layer potential formula.
+With the velocity field obtained, we advance the perturbation in time by coupling the advection-diffusion equation. 
+To accelerate the evaluation of integrals of Stokeslet, we incorporate the Fast Multipole Method, by modifying the Laplace kernel.
+\par
+We have validated our methods by providing results of a settling aggregate composed of 10 cubes while varying numerical grid and time steps and domain sizes. 
+Most of the errors for each comparison appeared to be much smaller than the largest error we estimated is about 23\% from the stress value on each square face of a cube.
+\par
+Furthermore, we simulated larger aggregates, made with 50 cubes, in different settings of fluids as numerical results. We have observed aggregate settling behavior before its density becomes neutral to surrounding fluid density.
+We find a somewhat consistent trend in the settling behaviors between different shapes of aggregates.   
+We can certainly simulate aggregates with more cubes to explore many more different shapes. It would allow us to have better statistical results. 
+Under the different Péclet number environments, we find the main changes in the perturbation, as expected, between Pe = 1 and Pe = 10. Since a smaller Péclet number implies a higher diffusivity, we observe the perturbation near the aggregate slows down 10\% faster than the other two cases. 
+\par
+We also explore various stratification strengths via $\gamma$ values. 
+As we mentioned, marine aggregates are highly porous and sensitive to surrounding fluid density stratification~\cite{prairie_delayed_2013}. Our results also support these characteristics, while we perform the simulations with three types of background fluid density gradients.
+In addition to our results shown in this thesis, potential future work includes considering another applicable regime with different parameters.
+\par
+We note that a description of rotational flow results is missing, although we have allowed a rotation of an aggregate while obtaining all the numerical results. In short, we have found an approximate torque having the order $\mathcal{O}(10^{-4})$. This is quite a small value compared to the drag force and perturbation effects as a response to the background fluid stratification. 
+We consider analyzing more details as future work.
+\par
+There are several branches we can extend our research further with our comprehensive numerical tools developed. As much research work has been done with a sphere model as an aggregate, we would like to compare our results, such as the settling speed, drag acting on the aggregate, and/or the amount of concentration entrained. 
 
-\section{Discussions (Conclusion)}
-As an extension study of homogeneous model~\cite{yoo_hydrodynamic_2020}, we have developed a numerical method to simulate a settling marine aggregate model, composed of cubes, using a boundary integral method and advection-diffusion equation in a density-stratified fluid.
-Applying the net force equilibrium due to a Stokes regime, we prescribe the total drag and torque to solve for the stress vectors on the aggregate and its settling velocity using the single-layer potential formula.
-With the velocity field, we advance the perturbation, concentration difference between time $t$ and the initial one, by coupling the advection-diffusion equation.
 
-We mainly want to see aggregate behavior until its density becomes neutral to surrounding fluid density. 
-
-Although we have allowed a rotation of an aggregate while obtaining all the numerical results, we found quite a small value of the order $\mathcal{O}(10^{-4})$. 
-\begin{itemize}
-	\item one-two sentences of each (sub)section
-	\item What did we learn?
-	\item Any limitation?
-	\item Future potential direction? Are you going to publish this? 
-\end{itemize}

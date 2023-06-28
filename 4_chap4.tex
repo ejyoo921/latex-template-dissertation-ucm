@@ -37,7 +37,7 @@ To clarify, we write the tensor $\bm{\tau}$ in terms of $\bm{D}$ explicitly,
 %    \left(    \nabla\vec{u}^T \right)^2
 %   \right)
 % \end{equation}
-To achieve second-order convergence, we implement two more time integration methods in incflo. As a simpler step, we coded the explicit Runge-Kutta 2 (RK2) scheme. We then attempt to use a predictor-corrector method, which is a fully implicit formula.
+To achieve second-order convergence, we implement two more time integration methods in AMReX-incflo. As a simpler step, we coded the explicit Runge-Kutta 2 (RK2) scheme. We then attempt to use a predictor-corrector method, which is a fully implicit formula.
 \par
 The order of this chapter is the following. We explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. Then, we discuss the numerical methods,   Then,  We close this chapter by showing some numerical results.
 
@@ -218,7 +218,7 @@ By taking integral both sides of Equation (\ref{eq_p0_rho0}), we obtain
 \begin{equation}
     P_0 \approx p_{bg} + \nabla P_0 y.
 \end{equation}
-We would like to use this form since we already have the $p_{bg}$ term computed in the \verb+incflo+ code (This value is \verb+gp0+).
+We would like to use this form since we already have the $p_{bg}$ term computed in the AMReX-incflo code.
 %
 When we have a periodic boundary in the gravity direction, we might need to prescribe a pressure gradient to have an additional pressure effect. 
 \par
@@ -228,7 +228,7 @@ The main challenge we faced to implement the pressure-dependent viscosity was co
 % a little more details
 \subsection{Viscosity regularization}
 When we evaluate the viscosities, equations (\ref{eq_mu1_main}) and (\ref{eq_mu2_main}), we may encounter a (nearly) singularity as $\dot{\gamma}$ approaches zero.
-As AMReX-\verb+incflo+ has the Papanastasiou regularization method implemented, we simply apply the same method for the new granular flow viscosity computations.
+As AMReX-incflo has the Papanastasiou regularization method implemented, we simply apply the same method for the new granular flow viscosity computations.
 \par
 By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
 \[
@@ -268,59 +268,62 @@ Once we decide on a non-Newtonian model, in geometry, we solve flow velocity and
   \label{eq_NS_ch4}
   \end{equation}
 where we find $\tau$ using equation (\ref{eq_2ndOrder_tau}) for a granular flow. 
-We first write the momentum equation in a discretized form, considering the explicit Euler scheme,
+Note that there are three integrations available in AMReX-incflo: 1) explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
+Due to the non-linearity of the viscous term, $\bm{\tau}$, we began with the explicit Euler method during the internship. 
+Focusing on the time integration, We first write the momentum equation in a discretized form, 
 \begin{align}
-     \frac{\vec{u}^* - \vec{u}^n}{\Delta t} 
+    \vec{u}^*
 = 
+ \vec{u}^n + 
+{\Delta t} 
+\biggl(
 -\vec{u}^n \cdot \nabla \vec{u}^n 
 +\frac{1}{\rho}
 \left(
 - \nabla P^n 
     + \nabla \cdot   \bm{\tau}^n 
     +  \rho  \vec{g} 
-    \right),
+    \right)
+    \biggr),
   \end{align}
-where the superscription $n$ represents the current time (known) value; for example, the known velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we should project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
+where the superscription $n$ represents the current time (known) value; for example, the current time (known) velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we should project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
 \par
-If we want to implement an implicit method, we find
-\begin{align}
-  \frac{\vec{u}^* - \vec{u}^n}{\Delta t} 
-= 
--\vec{u}^n \cdot \nabla \vec{u}^n 
-+\frac{1}{\rho}
-\left(
-- \nabla P^n 
- + \nabla \cdot   \bm{\tau}^* 
- +  \rho  \vec{g} 
- \right),
-\end{align}
-\par
-For the projection step, we express $\vec{u}^{*}$ as, according to the Helmholtz-Hodge-Decomposition, 
+For the projection step, we express $\vec{u}^{*}$ as, according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
 \begin{equation}
   \vec{u}^* = \vec{u}^{n+1} + \nabla \phi,
   \label{eq_ustar}
 \end{equation}
 where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar function.
-Taking the divergence of the equation (\ref{eq_ustar}), we find the Poisson equation for $\phi$,
+To take advantage of the nature of $\vec{u}^{n+1}$, we find the divergence of the equation (\ref{eq_ustar}), leading to the Poisson equation for $\phi$,
 \[
   \nabla^2 \phi = \nabla \vec{u}^*.  
 \]
 After we solve for $\phi$, applying given boundary conditions, we find the updated velocity, projecting the velocity $\vec{u}^*$ onto the divergence-free space to get the new time-level solutions.
 \[
-  \vec{u}^{m+1} = \vec{u}^* - \nabla \phi.
+  \vec{u}^{n+1} = \vec{u}^* - \nabla \phi.
 \]
 
 In this thesis, we focus on the time integration. 
 Since an explicit scheme tends to show lower-order convergence and more stability issues, having an implicit method performing a higher-order convergence would be beneficial.  
 \subsection{Explicit Runge-Kutta 2 (RK2)}
-As an easier step, we first try out the second-order RK method. We already introduced this scheme for solving the advection-diffusion equation in Chapter \ref{sec:AD_times}. We recall here, 
+As an easier step, we first try out the second-order Runge-Kutta method. We already introduced this scheme for solving the advection-diffusion equation in Chapter \ref{sec:AD_times}. We recall here, 
 \begin{align}
-	\vec{u}_{j}^{temp} = \vec{u}_j^{n} + \frac{\Delta t}{2} {\bm F_{MAC}} \left( \vec{u}_j^{n} \right)
+	\vec{u}_{j}^{temp} = \vec{u}^{n} + \frac{\Delta t}{2} {\bm F} \left( \vec{u}^{n} \right)
 	\label{eq_RK2_s1} \\ 
-	\vec{u}_j^{n+1} = \vec{u}_j^{n} + \Delta t {\bm F_{MAC}} \left( \vec{u}_j^{temp} \right),
+	\vec{u}^{n+1} = \vec{u}^{n} + \Delta t {\bm F} \left( \vec{u}^{temp} \right),
 	\label{eq_RK2_s2}
 \end{align}
-where ${\bm F_{MAC}}$ represents the spatial discretization that AXMReX uses for an incompressible Navier-Stokes. 
+where 
+\[
+  {\bm F} = 
+    -\vec{u}^n \cdot \nabla \vec{u}^n 
+    +\frac{1}{\rho}
+    \left(
+    - \nabla P^n 
+        + \nabla \cdot   \bm{\tau}^n 
+        +  \rho  \vec{g} 
+        \right).
+\]
 
 
 \subsection{Predictor-Corrector method}
@@ -437,6 +440,6 @@ Specifically, we can find the coefficients of each shear rate term in Equation (
 \par
 We propose to extend this work by incorporating elastic effects through the implementation of elastoviscoplastic (EVP) models in this numerical framework. The robustness of the numerical implementation will be extensively tested in various flow scenarios (such as Poiseuille and Couette flows) for a range of Weissenberg and Bingham numbers.  Another potential avenue for development will involve implementing immersed boundary methods (IBM) to model a suspension of solid particles in such complex fluids, which is an important application area that has received significant research interest lately. 
 \par
-Add surface tension effect in incflo. 
+Add surface tension effect inAMReX-incflo. 
 \par 
 As a personal research interest, I would like to study more about biofluids to contribute to a blood separation method. 
