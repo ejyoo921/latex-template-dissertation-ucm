@@ -198,31 +198,31 @@ We can obtain the flow fitting parameters from particle-based simulations, such 
      One can find the corresponding $A_i$ values in Srivastava 2021 \cite{srivastava_viscometric_2021}.
 \subsection{Computation of pressure-dependent apparent viscosity}
 For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate viscosity.
-Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, and perturbation, $P'$ such that
+Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and perturbation, $P'$, such that
 \[
-P = P_0(y) + P'(x,y,z).\]
+P = P_0(z) + P'(x,y,z).\]
 Note that we can have the perturbations under gravity. Without gravitational force, we may simply input the constant pressure, $P_0$, and keep it over time.
 \par
-In case gravity is involved, we consider the density term, in order to approximate the perturbation, as 
+In case gravity is involved, we consider the density term in order to approximate the perturbation, as 
 \[
 \rho  = \rho_0  + \rho'(x,y,z), 
 \]
 where $\rho_0$ is constant and $\rho'$ is spacial-dependant density perturbation of the flow. 
 Here, we assume that 
 \begin{equation}
-    \nabla P_0  = \frac{d P_0}{d y} \approx \rho_0  g.  
+    \nabla P_0  = \frac{d P_0}{d z} \approx \rho_0  g.  
 \label{eq_p0_rho0}
 \end{equation}
 This recovers our momentum equation. As we would like to construct a background pressure that stays over time for our granular rheology, we may use this hidden assumption.
 By taking integral both sides of Equation (\ref{eq_p0_rho0}), we obtain
 \begin{equation}
-    P_0 \approx p_{bg} + \nabla P_0 y.
+    P_0 \approx p_{bg} + \nabla P_0 z.
 \end{equation}
 We would like to use this form since we already have the $p_{bg}$ term computed in the AMReX-incflo code.
 %
 When we have a periodic boundary in the gravity direction, we might need to prescribe a pressure gradient to have an additional pressure effect. 
 \par
-The main challenge we faced to implement the pressure-dependent viscosity was connecting the pressure in addition to the strain rate into the rheology code. To have physical consistency, we need to solve for a compressible flow model. We thus leave the pressure-dependent granular flow as a future work.
+The challenge we faced in implementing the pressure-dependent viscosity was connecting the pressure in addition to the strain rate into the rheology code. We need to solve for a compressible flow model to have physical consistency using a different numerical solver rather than AMReX-incflo. We thus leave the pressure-dependent granular flow as a future work.
 % {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
 
 % a little more details
