@@ -1214,7 +1214,7 @@ In the next section, we explore various shapes of aggregates made with 50 cubes,
 \par
 \subsection{Various shapes of aggregates}
 We first run simulations with randomly shaped aggregates using 50 cubes, in addition to the base case model that is the random seed \#2. We create five more different aggregates, numbering seeds from \#11 to \#15. See Figure~\ref{fig_seed11_15_all}.
-With these six sample aggregates, we examine their behaviors, resulting in Figure~\ref{fig_NC50_Seeds}.
+With these six sample aggregates, we examine their behaviors, as shown in Figure~\ref{fig_NC50_Seeds}.
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.29]{./figures/fig_NC50_sd_Ua3_all}
@@ -1228,14 +1228,14 @@ With these six sample aggregates, we examine their behaviors, resulting in Figur
 \par
 % When we analyzed the drag forces in a homogeneous fluid in Chapter~\ref{sec:results_translationflow}, we observed the drag distribution of about 15\% with aggregates made with 50 cubes; see Figure~\ref{fig_drag_raw}.
 There are some variations (less than 16\%) in aggregates settling behaviors, yet their speed, drag, and $\vec{x}_{cm}$ locations seem to have overall similar motions. 
-Meanwhile, plot (c) may show us more detailed differences between each aggregate shape. 
+Meanwhile, plot (c) shows larger differences between each aggregate shape. 
 We find this interesting feature that the drag-velocity ratio spread shows approximately a 12\% difference range and 5\% away from their mean value(at the final time). 
 Note that the sample mean value at the final time $t = 50$ is about 0.3241.
-It convinces us that there are physical forces or values overlooked when we model an aggregate as a sphere. 
+This demonstrates that modeling an aggregate as a sphere cannot accurately capture all physical forces involved.
 \par
-Based on this mean value of six samples, we can estimate $N_{sd}$ number of random seeds we should simulate to obtain a finer result. In particular, we want to get the $N_{sd}$ such that the relative error between the standard error ($SE$) and standard error of the mean ($SEM$) is 1\%, i.e.,
+Based on this mean value of six samples, we can estimate the number of random seeds, $N_{sd}$, we should simulate to obtain a finer result. In particular, we want to get the $N_{sd}$ such that the relative error between the standard error ($SE$) and standard error of the mean ($SEM$) is 1\%, i.e.,
 \begin{equation}
-	\frac{|SE \ - \ SEM|}{SE} \times 100 = 1 (\%).	
+	\frac{|SE \ - \ SEM|}{SE} < 1 (\%).	
 \end{equation}
 
 In our case, we have
@@ -1246,11 +1246,12 @@ and
 \begin{equation}
 	SEM \ = \frac{\text{Standard deviation of 6 samples}}{\sqrt{6}}.
 \end{equation}
-However, since we do not know the numerator of $SE$, we assume that it is the same as the sample standard deviation. We then can solve for $N_{sd} = 37$. Once time allows, we plan to run simulations with $N_{sd}$ many different randomly formed aggregates. 
+However, since we do not know the numerator of $SE$, we assume that it is the same as the sample standard deviation. We then can solve for $N_{sd} \geq 37$. Once time allows, we plan to run simulations with $N_{sd}$ many different randomly formed aggregates. 
 
 \subsection{Various Péclet number, Pe}
-Next, we vary Péclet numbers; Pe $=1, \ 10, $ and 100, comparing the simulations to the base case.  As a smaller Péclet number carries more diffusion effect under the same advection rate, we look for main differences in perturbation, while we predict to observe almost identical aggregate dynamics (velocity, traveling location, and total drag). 
-Since we have more instability for lower Péclet numbers, we exceptionally reduce the time step size to $\Delta t = 0.1$ for all three Péclet number cases.
+Next, we vary Péclet numbers; Pe $=1$ and $ 10$ comparing the simulations to the base case for which Pe = 100.  As a smaller Péclet number 
+implies more diffusive effects under the same advection rate, we look for differences in perturbation, while we predict to observe almost identical aggregate dynamics (velocity, traveling location, and total drag). 
+Since we have more numerical instability for lower Péclet numbers, we exceptionally reduce the time step size to $\Delta t = 0.1$ for all three Péclet number cases.
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_Pe_Ua3_all}
@@ -1263,10 +1264,10 @@ Since we have more instability for lower Péclet numbers, we exceptionally reduc
 \end{figure}
 \par
 Figure~\ref{fig_NC50_Pe} shows no drastic variations between all three Péclet numbers, especially for the velocity and total drag. 
-Focusing on the perturbation plot (d), we can slightly see that more diffusion quickly occurs for the smallest Péclet, Pe = 1, having steady perturbation after time $t = 30$.
-Overall, it is clear that all four plots agree well with our expectations. 
+Focusing on the perturbation plot (d), we can see that more diffusion occurs for the smallest Péclet, Pe = 1, having steady perturbation after time $t = 30$.
+Overall, it is clear that all four plots agree well with our expectations, even though the impact of varying the Péclet number is small in this regime. 
 \subsection{Various stratification strength via $\gamma$}
-Lastly, we investigate three different $\gamma = 10^{-4} \times \left[ \ 1, \ 4 \ \text{(base case)}, \  6 \right]$. We anticipate observing conspicuous variations in both aggregate and fluid dynamics as we change the $\gamma$ value. Note that every other setup is the same as the base case. 
+Lastly, we investigate three different stratification strengths, $\gamma = 10^{-4} \times \left[ \ 1, \ 4 \ \text{(base case)}, \  6 \right]$. We anticipate observing conspicuous variations in both aggregate and fluid dynamics as we change the $\gamma$ value. Note that every other parameter is the same as the base case. 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{./figures/fig_NC50_g_Ua3_all}
@@ -1279,15 +1280,15 @@ Lastly, we investigate three different $\gamma = 10^{-4} \times \left[ \ 1, \ 4 
 \end{figure}
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[scale=0.35]{./figures/fig_NC50_g_C_star.pdf}
-		\includegraphics[scale=0.35]{./figures/fig_NC50_g_C_M}
-	\caption{Perturbation with various $\gamma$ at (Left) the star position $\vec{x}^{\star}$ and (Right) the center of fluid domain.}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_g_C_star.pdf}
+		\includegraphics[scale=0.33]{./figures/fig_NC50_g_C_M}
+	\caption{Perturbation with various $\gamma$ at (a) the star position $\vec{x}^{\star}$, outside the aggregate, and (b) the center of the fluid domain, inside the aggregate.}
 	\label{fig_NC50_gCM}
 \end{center}
 \end{figure}
 \par
 We first present quantities of interest regarding the aggregate itself in Figure~\ref{fig_NC50_Seeds}. In plot (a), we see that the settling speed of the same aggregate would drop faster when the fluid density gradient gets sharper. Similar results are shown for the total drag over time in plot (b). To clarify, we find the ratio of the drag to the settling speed in plot (c). We observe very similar behavior as a homogeneous fluid case with the smallest $\gamma = 10^{-4}$. Note that this $\gamma$ is considered a small value for the aggregate radius $R_a \approx 9$. For instance, the same $\gamma$ may be a large enough value to observe a clear background fluid stratification effect for an aggregate radius 20.
-We also look at the center of mass of aggregate over time. Since $\gamma = 10^{-4}$ mimics a homogeneous fluid, the aggregate travels more, yet with a slower speed, demonstrated by the blue solid line in plot (d).
+We also look at the position of the center of mass of aggregate over time. Since $\gamma = 10^{-4}$ mimics a homogeneous fluid, the aggregate travels more, and with a faster speed, demonstrated by the blue solid line in plot (d).
 \par
 From a fluid perspective, we obtain the perturbation over time at two different points. In Figure~\ref{fig_NC50_gCM}, the left plot is the perturbation at the usual point, $\vec{x}^{\star}$, where the white star is located in Figure~\ref{fig_NC50_snaps_all}. It is located outside of the aggregate, yet very close. On the right side, we examine the perturbation inside of the aggregate, particularly at the center of the fluid domain. By looking at the magnitude of $C$, there are certainly higher perturbations for all three $\gamma$ cases. Moreover, the perturbation varying range is quite large for the light stratification case (blue line). As we mentioned, it is because the same aggregate stops moving in a stronger density-stratified fluid due to reaching neutral buoyancy.
 \section{Conclusion}
