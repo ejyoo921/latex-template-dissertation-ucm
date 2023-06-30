@@ -177,64 +177,15 @@ One defining feature of many complex fluids is the presence of a yield stress, w
    \caption{Classification of fluid types based on descriptions in~\cite{irgens_rheology_2014}. Solid lines show different types of non-Newtonian behavior with examples in the parenthesis. The red star describes yield stress. The dashed line represents Newton's law of viscosity.}
 \label{fig_rheology}
 \end{figure}
-This broad class of fluids encompasses various materials of industrial and natural importance, such as granular fluids, polymeric fluids, and suspensions. 
-% [{\color{blue}References for each of them}]
 \par
-Among these various features, we focus on the \textit{viscometric flow}; this type of flow is described by the viscosity $\mu$, and normal stress differences, called $N_1$ and $N_2$. To explain terminology, we write out $\bar{\bar{\sigma}}$ explicitly, 
-\begin{equation}
-  \bar{\bar{\sigma}} = 
-  \begin{bmatrix}
-    \sigma_{xx} & \sigma_{xy} & \sigma_{xz} 
-    \\
-    \sigma_{xy} & \sigma_{yy} & \sigma_{zy} 
-    \\
-    \sigma_{xz} & \sigma_{zy} & \sigma_{zz}.
-  \end{bmatrix}
-  \label{eq_cauchy_mx}
-\end{equation} 
-Here, we define the first normal stress difference $N_1$
-\begin{equation}
-  N_1 = \sigma_{xx} - \sigma_{yy}
-\end{equation}
-and the second normal stress difference $N_2$,
-\begin{equation}
-  N_2 = \sigma_{yy} - \sigma_{zz}.
-\end{equation}
-To describe a non-Newtonian flow behavior more accurately, the deviatoric stress tensor requires a higher-order relationship with the strain rate tensor $\bm{D}$. The following second-order complexity form of the deviatoric stress tensor is introduced by Rivlin-Ericksen tensors~\cite{rivlin_stress-deformation_1955},
-\begin{equation}
-   \boldsymbol{\tau} = 
-   % 2 \nu_1  \bm{D} + 2 \nu_2  \bm{D}^2 ,
-    \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2,
-   \label{eq_CN_tau}
-\end{equation}
-where $\nu_0$ is constant in shear flow, and $\nu_1$ and $\nu_2$ are a function of $\dot{\gamma}$.
-% where $\nu_1$ is the constant viscosity and $\alpha_i = N_i / \dot{\gamma}$ for $i = 1,  2$.
-Additionally, the terms $\bm{A_i}$ are defined as
-\begin{equation}
-   {\bm A_1}  = \nabla \vec{u} +  \left( \nabla \vec{u} \right)^T = 2 \bm{D} 
-\end{equation}
-and 
-\begin{equation}
-   \boldsymbol{A}_2
-   % =\frac{D}{D t} \boldsymbol{A}_1+\boldsymbol{A}_1 \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_1
-   =\frac{\partial \boldsymbol{A}_1}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_1+\boldsymbol{A}_1 \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_1
-\end{equation}
-One may notice that many researchers did not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$. For polymer solutions, the most studied in the complex fluids field, it is well-known that $N_2$, which can be induced by $\bm{D}^2$ term, is small enough to ignore, compared to $N_1$~\cite{bird_dynamics_1987}. However, for many other materials, e.g., granular material, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$, such as curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011}. We thus want to implement computational tools to study the second-order strain rate effect via two normal stress differences, $N_1$ and $N_2$. 
-% \begin{align}
-% \bar{\bar{\sigma}}
-%   = -P \bar{\bar{I}}  + \ &\mu_1 {\bm D} 
-%   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
-% + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
-%   + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
-%   - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
-% \label{eq_sigma_noN}
-% \end{align}
-% The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
+This broad class of fluids encompasses various materials of industrial and natural importance,
+such as granular fluids, polymeric fluids, and suspensions. 
+In this project, we focus on the granular materials and their flow in a long cube-shaped channel. Assuming a steady state, we incorporate the flow with the incompressible Navier-Stokes equations, which are introduced in (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS})
+Our project goal is to have a constitutive rheology code that can capture such complex continuum dynamics. 
 \par
-With a constitutive rheology code, we can capture such complex continuum dynamics. 
 We work on the \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. In particular, I implemented new rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations in complex geometries without subcycling in time.
-\par
-During the internship period in 2022, we focused on granular rheology, implementing a particular viscosity computation. Assuming a steady state and no external pressure changes, we solve an incompressible flow velocity using equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}), it is necessary to evaluate the stress tensor, $\nabla \cdot \bar{\bar{\sigma}}$. Once we have the stress tensor of the form (\ref{eq_CN_tau}), which is non-linear in velocity, it becomes numerically complicated to solve the Navier-Stokes equations. The most convenient choice of time integration would be an explicit method. However, it may not be the best option, considering stability and efficiency. Focusing on its order of convergence, we implemented a two-stage Runge-Kutta method. We explain details in Chapter 4.
+% [{\color{blue}References for each of them}]
+
 
 % In incflo, at the moment I was interning, there were three integrations were available: 1) Explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
 

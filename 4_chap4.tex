@@ -1,26 +1,99 @@
 \par
 In this chapter, I report the summer 2023 internship work at LBNL and additional numerical implementations I continued to finish this thesis.
 
-As we mentioned in Chapter \ref{sec:intro_complex_fluid}, we consider the deviatoric stress tensor of the form as in equation (\ref{eq_CN_tau}), 
-\begin{equation}
-  \boldsymbol{\tau} =
-  \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2 ,
-\nonumber
-\end{equation}
-where each $\nu_i$ for $i = 0,1,2$ is dependent on the materials or flow types. In this project, we explore two examples: 1) granular materials and 2) non-colloidal suspension in a Newtonian fluid. While the big picture of a viscous term is the same as described in equation (\ref{eq_CN_tau}), the way to obtain the coefficients $\nu_i$ are different. We thus address establishing the viscosity terms first for both examples. Then, we examine each flow in geometry by solving the Navier-Stokes equation,
-in which they were introduced in Chapter 1; equations (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS}).
 \par
-In the AMReX-incflo code, we can only use the explicit Euler time integration method due to the stress tensor $\bm{\tau}$ having a quadratic relationship with the strain rate $\bm{D}$, which is a function of the velocity $\vec{u}$. 
-To clarify, we write the tensor $\bm{\tau}$ in terms of $\bm{D}$ explicitly,
+{\color{blue}EY: I may move the following paragraph to Chapter 1.3: please let me know your thoughts!}
+\\
+Among many different types, we particularly study the granular materials for non-Newtonian flow behavior. They are highly ubiquitous and the second most common material on Earth after water. For example, there are grains we can find in the food industry, pharmaceutical powder to make medicine tablets, and geological matters, such as sand or soil.
+One fascinating feature of these matters is that their states between liquid, solid, and gas, can co-exist at the same time. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
+There are still many questions to understand their behaviors due to the complicated dynamics.
+
+
+
+\section{Governing equations}
+We consider a steady simple shear flow of granular materials, that exhibit a non-Newtonian behavior. Although it is typically more suitable to apply a compressible flow for studying granular rheology, we assume a steady state and no pressure-dependant flow, as a first step. 
+We thus solve incompressible Navier-Stokes equations,
 \begin{equation}
-  \boldsymbol{\tau} =
-  2 \nu_0  \bm{D} +  2 \nu_1  \bm{D}^2 
-  + 2\nu_2 \left(
-    \frac{\partial \bm{D}}{\partial t} + 
-     \vec{u} \cdot \nabla \bm{D}
-    +\bm{D} \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \bm{D} 
-   \right)
+  \nabla \cdot \vec{u} = 0 
+  \label{eq_div_free} 
 \end{equation}
+\begin{equation}
+     \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
+= \frac{1}{\rho}
+\left(
+- \nabla P 
+    + \nabla \cdot   \bm{\tau} 
+    +  \rho  \vec{g} 
+    \right),
+  \label{eq_NS_ch4}
+  \end{equation}
+to obtain flow velocity, $\vec{u}$.
+\begin{comment}
+To explain terminology, we write the stress tensor $\bar{\bar{\sigma}}$ explicitly, 
+\begin{equation}
+  \bar{\bar{\sigma}} = 
+  \begin{bmatrix}
+    \sigma_{xx} & \sigma_{xy} & \sigma_{xz} 
+    \\
+    \sigma_{xy} & \sigma_{yy} & \sigma_{zy} 
+    \\
+    \sigma_{xz} & \sigma_{zy} & \sigma_{zz}.
+  \end{bmatrix}
+  \label{eq_cauchy_mx}
+\end{equation} 
+Here, we define the first normal stress difference $N_1$
+\begin{equation}
+  N_1 = \sigma_{xx} - \sigma_{yy}
+\end{equation}
+and the second normal stress difference $N_2$,
+\begin{equation}
+  N_2 = \sigma_{yy} - \sigma_{zz}.
+\end{equation}
+the deviatoric stress tensor requires a higher-order relationship with the strain rate tensor $\bm{D}$. 
+\end{comment}
+We particularly pay attention to the viscous stress tensor of the form,
+\begin{equation}
+   \boldsymbol{\tau} = 
+   % 2 \nu_1  \bm{D} + 2 \nu_2  \bm{D}^2 ,
+    \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2,
+   \label{eq_CN_tau}
+\end{equation}
+where $\nu_0$ is constant in shear flow, and $\nu_1$ and $\nu_2$ are a function of $\dot{\gamma}$.
+The second-order complexity form of the deviatoric stress tensor, equation (\ref{eq_CN_tau}), was introduced by Rivlin-Ericksen tensors~\cite{rivlin_stress-deformation_1955} and
+the term $\bm{A_i}$ is called a Rivlin-Ericksen tensor, defined as
+\begin{equation}
+   {\bm A_1}  = \nabla \vec{u} +  \left( \nabla \vec{u} \right)^T = 2 \bm{D} 
+\end{equation}
+and 
+\begin{equation}
+   \boldsymbol{A}_2
+   % =\frac{D}{D t} \boldsymbol{A}_1+\boldsymbol{A}_1 \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_1
+   =\frac{\partial \boldsymbol{A}_1}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_1+\boldsymbol{A}_1 \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_1.
+\end{equation}
+Note that the general form of the Rivlin-Ericksen tensor can be extended to order $n$,  
+\begin{equation}
+  \boldsymbol{A}_{n+1}
+  =\frac{\partial \boldsymbol{A}_{n}}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_n+\boldsymbol{A}_n \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_n,
+\end{equation}
+yet we decided to explore up to the second order.
+\par
+
+% \begin{align}
+% \bar{\bar{\sigma}}
+%   = -P \bar{\bar{I}}  + \ &\mu_1 {\bm D} 
+%   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]
+% + \kappa_1 \frac{{\bm D}}{|{\bm D}|} 
+%   + \kappa_2  \left[ \frac{{\bm D}^2}{|{\bm D}|^2}  
+%   - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right].
+% \label{eq_sigma_noN}
+% \end{align}
+% The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
+\par
+In general, many researchers do not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ for examining a complex fluid. For polymer solutions, the most studied in the complex fluids field, it is well-known that the effect of  $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. However, for many other materials, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$; such as curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011}. We thus want to implement computational tools to study the second-order strain rate effect.
+
+% via two normal stress differences, $N_1$ and $N_2$. 
+
+
 % Let's look at the last term a little more closely:
 % \begin{equation}
 %   \nu_2 \left(
@@ -37,19 +110,12 @@ To clarify, we write the tensor $\bm{\tau}$ in terms of $\bm{D}$ explicitly,
 %    \left(    \nabla\vec{u}^T \right)^2
 %   \right)
 % \end{equation}
-To achieve second-order convergence, we implement two more time integration methods in AMReX-incflo. As a simpler step, we coded the explicit Runge-Kutta 2 (RK2) scheme. We then attempt to use a predictor-corrector method, which is a fully implicit formula.
-\par
-The order of this chapter is the following. We explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. Then, we discuss the numerical methods,   Then,  We close this chapter by showing some numerical results.
+% To achieve second-order convergence, we implement two more time integration methods in AMReX-incflo. As a simpler step, we coded the explicit Runge-Kutta 2 (RK2) scheme. 
+% We then attempt to use a predictor-corrector method, which is a fully implicit formula.
+% \par
+% The order of this chapter is the following. We explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. Then, we discuss the numerical methods,   Then,  We close this chapter by showing some numerical results.
 
-\section{Granular rheology}
-Depending on the level of stress, viscoplastic fluids either flow or act like rigid solids. The minimum value that makes viscoplastic fluids move is called yield stress. 
-We can easily find viscoplastic materials in our lives; for example, toothpaste, and whipped cream. 
-Among many different types, we particularly study those granular materials. They are also considered viscoplastic fluids, depending on the states. For instance, a medicine tablet (pill) is considered a solid. However, the powder of ingredients acts as a fluid since it flows. 
-There are many factors we need to learn to have a full understanding of granular materials' behavior.
-Since the yield stress is the main value to understand different phases (liquid vs solid) of continuum granular flow, we focus on computing more accurate stress, by taking pressure into account. The source of pressure can be friction between granular matters or external forces.  
-We consider both the shear stress rate and the pressure onto the granular materials as the sources of yield stress. 
-\par
-In Chapter 1, we introduced the stress tensor for the fluid momentum equation in equation (\ref{eq_stress_tensor}). 
+\subsection{Viscosity computation for granular rheology}
 We now express a new stress tensor $\bm \tau$ with a higher-order strain rate that can describe non-isotropic (meaning material properties changes along with direction) flow effects,
 \begin{align}
   \bar{\bar{\sigma}}
@@ -60,7 +126,6 @@ We now express a new stress tensor $\bm \tau$ with a higher-order strain rate th
   \end{align}
 In this section, we focus on the methodology to compute the viscosity $\mu_i ({\dot{\gamma}})$ ($i = 1,2$) under the simple shear flow. 
 % A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found [{\color{blue}REFERENCE}]. 
-
 
 To describe a non-isotropic flow, we consider the deviatoric stress tensor of the form (\ref{eq_2ndOrder_tau}), which is derived under two conditions:
 (1) the flow motion is simple with a constant stretch history by neglecting deformation history, and (2) the flow is isochoric, having uniform properties along streamlines and tr$(D) = 0$. 
@@ -127,13 +192,13 @@ This dimensionless quantity describes the average static force compared to the i
 We bring an hourglass example to describe the granular flow regimes depending on the inertial number. 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.2]{figures/fig_hourglass.pdf}
+    \includegraphics[scale=0.15]{figures/fig_hourglass.pdf}
     \end{center}
   \caption{Schematics of granular flow with an hourglass example.}
   \label{fig_hourglass}
 \end{figure}
 As we can see in Figure~\ref{fig_hourglass}, three different states can co-exist in granular materials. 
-When we look at the top part of the hourglass, filled with sand, it typically seems not to move and resembles a solid. 
+On the top part of the hourglass, filled with sand, they seem not to move and resemble a solid. 
 As we move our sight toward the middle nozzle of the hourglass, we can observe the sands passing through the nozzle, flowing like a liquid.
 Meanwhile, the sand landing on the bottom part of the hourglass is forming a cone shape. When we look very closely at the top of the cone, we can see that the sand is falling and colliding, i.e., it behaves like a gas.
 \par
@@ -196,6 +261,67 @@ We can obtain the flow fitting parameters from particle-based simulations, such 
     0.75 \leq \alpha_3 \leq 0.85.
     \]
      One can find the corresponding $A_i$ values in Srivastava 2021 \cite{srivastava_viscometric_2021}.
+\begin{comment}
+\section{Suspension rheology}
+This section summarizes the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
+\par
+We use the constitutive equation proposed by Reiner \cite{reiner_mathematical_1945} and Rivlin \cite{rivlin_stress-deformation_1955},  
+\begin{equation}
+  \bar{\bar{\sigma}} = -P \bar{\bar{I}}
+  + 2 \nu_1 {\bm{D}} + 2 \nu_2 {\bm{D}}^2.
+\end{equation}
+According to Tanner's review \cite{tanner_review_2018}, the coefficients $\nu_1$ can be constant since the rate of change with $\dot{\gamma}$ is negligible, and $\nu_2 = \beta / \dot{\gamma}$ for a suspension of solid particles in a Newtonian fluid, where a factor $\beta$ is related to the strain rate $\dot{\gamma}$. Dai et, al \cite{dai_viscometric_2013} shows the $\beta = -4.4 \phi^3 \nu_1$ in shear flows, where $\phi$ is a volume fraction. 
+\par
+For numerical validations, we follow the experiments presented in Couturier $\textit{et, al}$~\cite{couturier_suspensions_2011}.
+\begin{itemize}
+  \item We want to observe the relationship between $\alpha_i(\phi) = N_i / |\sigma_{xy}|$, where $i = 1,2$.
+\end{itemize}
+\end{comment}
+\section{Numerical method}
+In this section, we demonstrate the numerical method to solve flow velocity with incompressible Navier-Stokes equations. We particularly focus on the time integration that we wanted to improve as we consider the second-order strain rate stress tensor.
+Rest of the computation, we use the AMReX-incflo code as it was implemented. 
+\subsection{Velocity computation}
+The main AMReX-incflo library provides three integrations: 1) explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
+Since we have the stress tensor ${\bm \tau}$ of the form (\ref{eq_CN_tau}), which is non-linear in velocity, the most convenient choice was the explicit Euler method.
+ However, it would be beneficial to have another scheme, considering stability and efficiency. 
+ \par
+ Focusing on its order of convergence, we consider a two-stage Runge-Kutta (RK2) method to achieve second-order convergence. 
+In particular, we implemented the following scheme,
+\begin{equation}
+	\vec{u}_{j}^{temp} = \vec{u}^{n} + \frac{\Delta t}{2} {\bm F} \left( \vec{u}^{n} \right)
+	\label{eq_RK2_s1} 
+\end{equation}
+\begin{equation}
+	\vec{u}^{*} = \vec{u}^{n} + \Delta t {\bm F} \left( \vec{u}^{temp} \right),
+	\label{eq_RK2_s2}
+\end{equation}
+where 
+\[
+  {\bm F} = 
+    -\vec{u}^n \cdot \nabla \vec{u}^n 
+    +\frac{1}{\rho}
+    \biggl(
+    - \nabla P^n 
+        + \nabla \cdot   \bm{\tau}(\vec{u}^n)
+        +  \rho  \vec{g} 
+        \biggr).
+\]
+where the superscription $n$ represents the current time (known) value; for example, the current time (known) velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
+\par
+For the projection step, we express $\vec{u}^{*}$ as, according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
+\begin{equation}
+  \vec{u}^* = \vec{u}^{n+1} + \nabla \phi,
+  \label{eq_ustar}
+\end{equation}
+where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar function.
+To take advantage of the nature of $\vec{u}^{n+1}$, we find the divergence of the equation (\ref{eq_ustar}), leading to the Poisson equation for $\phi$,
+\[
+  \nabla^2 \phi = \nabla \vec{u}^*.  
+\]
+After we solve for $\phi$, applying given boundary conditions, we find the updated velocity, projecting the velocity $\vec{u}^*$ onto the divergence-free space to get the new time-level solutions.
+\[
+  \vec{u}^{n+1} = \vec{u}^* - \nabla \phi.
+\]
 \subsection{Computation of pressure-dependent apparent viscosity}
 For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate viscosity.
 Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and perturbation, $P'$, such that
@@ -236,96 +362,8 @@ By introducing a small parameter, denoted as $\varepsilon$, we can regularize th
 \]
 for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
 The detailed mathematics and analysis can be found in Sverdrup 2018~\cite{sverdrup_highly_2018}.
-\section{Suspension rheology}
-This section summarizes the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
-\par
-We use the constitutive equation proposed by Reiner \cite{reiner_mathematical_1945} and Rivlin \cite{rivlin_stress-deformation_1955},  
-\begin{equation}
-  \bar{\bar{\sigma}} = -P \bar{\bar{I}}
-  + 2 \nu_1 {\bm{D}} + 2 \nu_2 {\bm{D}}^2.
-\end{equation}
-According to Tanner's review \cite{tanner_review_2018}, the coefficients $\nu_1$ can be constant since the rate of change with $\dot{\gamma}$ is negligible, and $\nu_2 = \beta / \dot{\gamma}$ for a suspension of solid particles in a Newtonian fluid, where a factor $\beta$ is related to the strain rate $\dot{\gamma}$. Dai et, al \cite{dai_viscometric_2013} shows the $\beta = -4.4 \phi^3 \nu_1$ in shear flows, where $\phi$ is a volume fraction. 
-\par
-For numerical validations, we follow the experiments presented in Couturier $\textit{et, al}$~\cite{couturier_suspensions_2011}.
-\begin{itemize}
-  \item We want to observe the relationship between $\alpha_i(\phi) = N_i / |\sigma_{xy}|$, where $i = 1,2$.
-\end{itemize}
 
-\section{Velocity computation}
-Once we decide on a non-Newtonian model, in geometry, we solve flow velocity and pressure by solving the following Navier-Stokes equation,
-\begin{equation}
-  \nabla \cdot \vec{u} = 0 
-  \label{eq_div_free} 
-\end{equation}
-\begin{equation}
-     \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
-= \frac{1}{\rho}
-\left(
-- \nabla P 
-    + \nabla \cdot   \bm{\tau} 
-    +  \rho  \vec{g} 
-    \right),
-  \label{eq_NS_ch4}
-  \end{equation}
-where we find $\tau$ using equation (\ref{eq_2ndOrder_tau}) for a granular flow. 
-Note that there are three integrations available in AMReX-incflo: 1) explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
-Due to the non-linearity of the viscous term, $\bm{\tau}$, we began with the explicit Euler method during the internship. 
-Focusing on the time integration, We first write the momentum equation in a discretized form, 
-\begin{align}
-    \vec{u}^*
-= 
- \vec{u}^n + 
-{\Delta t} 
-\biggl(
--\vec{u}^n \cdot \nabla \vec{u}^n 
-+\frac{1}{\rho}
-\left(
-- \nabla P^n 
-    + \nabla \cdot   \bm{\tau}(\vec{u}^n)
-    +  \rho  \vec{g} 
-    \right)
-    \biggr),
-  \end{align}
-where the superscription $n$ represents the current time (known) value; for example, the current time (known) velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we should project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
-\par
-For the projection step, we express $\vec{u}^{*}$ as, according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
-\begin{equation}
-  \vec{u}^* = \vec{u}^{n+1} + \nabla \phi,
-  \label{eq_ustar}
-\end{equation}
-where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar function.
-To take advantage of the nature of $\vec{u}^{n+1}$, we find the divergence of the equation (\ref{eq_ustar}), leading to the Poisson equation for $\phi$,
-\[
-  \nabla^2 \phi = \nabla \vec{u}^*.  
-\]
-After we solve for $\phi$, applying given boundary conditions, we find the updated velocity, projecting the velocity $\vec{u}^*$ onto the divergence-free space to get the new time-level solutions.
-\[
-  \vec{u}^{n+1} = \vec{u}^* - \nabla \phi.
-\]
-
-In this thesis, we focus on the time integration. 
-Since an explicit scheme tends to show lower-order convergence and more stability issues, having an implicit method performing a higher-order convergence would be beneficial.  
-\subsection{Explicit Runge-Kutta 2 (RK2)}
-As an easier step, we first try out the second-order Runge-Kutta method. We already introduced this scheme for solving the advection-diffusion equation in Chapter \ref{sec:AD_times}. We recall here, 
-\begin{align}
-	\vec{u}_{j}^{temp} = \vec{u}^{n} + \frac{\Delta t}{2} {\bm F} \left( \vec{u}^{n} \right)
-	\label{eq_RK2_s1} \\ 
-	\vec{u}^{n+1} = \vec{u}^{n} + \Delta t {\bm F} \left( \vec{u}^{temp} \right),
-	\label{eq_RK2_s2}
-\end{align}
-where 
-\[
-  {\bm F} = 
-    -\vec{u}^n \cdot \nabla \vec{u}^n 
-    +\frac{1}{\rho}
-    \left(
-    - \nabla P^n 
-        + \nabla \cdot   \bm{\tau}(\vec{u}^n)
-        +  \rho  \vec{g} 
-        \right).
-\]
-
-
+\begin{comment}
 \subsection{Predictor-Corrector method}
 To enlarge the numerical stability region, we implement a semi-implicit method. To do so, we first re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
 \[
@@ -401,13 +439,9 @@ Now, we need to solve for red - next time step values:
 \biggr)
 \]
 Note that ${\bm \tau}_i^* = {\bm \tau}(\vec{u}^*, \eta_i)$.
-
-
-
-
-
-
-\section{Numerical results}
+\end{comment}
+\clearpage
+\section{Numerical validation}
 \begin{itemize}
   \item We follow the experiment setup found in \cite{couturier_suspensions_2011}
   \item We want to present the N1 and N2 values with various volume fractions: from 0.1 to 0.5.
