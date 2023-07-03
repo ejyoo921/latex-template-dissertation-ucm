@@ -1,33 +1,31 @@
 \par
-In this chapter, I report the internship work at LBNL in the summer of 2022 with additional numerical implementations I continued to finish this thesis.
-
+In this chapter, I report the internship research I began at LBNL in the summer of 2022 that I have continued to work on as part of my doctoral studies.
 \par
-{\color{blue}EY: Shilpa, I may move the following paragraph to Chapter 1.3: please let me know your thoughts!}
-\\
-Among many different types, we particularly study the granular materials for non-Newtonian flow behavior. They are highly ubiquitous and the second most common material on Earth after water. For example, there are grains we can find in the food industry, pharmaceutical powder to make medicine tablets, and geological matters, such as sand or soil.
-One fascinating feature of these matters is that their states between liquid, solid, and gas, can co-exist at the same time. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
-There are still many questions we need an answer to understand these granular material behaviors due to the complicated dynamics.
+We particularly study the granular materials for non-Newtonian flow behavior. They are highly ubiquitous and the second most common material on Earth after water. 
+For example, we can find grains in the food industry, pharmaceutical powder to make medicine tablets, and geological materials, such as sand or soil.
+One fascinating feature of these materials is that they can behave like a liquid, solid, and gas, co-existing at the same time. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
+There are still many open questions we to study to understand the behaviors of granular materials due to the complicated dynamics.
 
 
 
 \section{Governing equations}
-We consider a steady simple shear flow of granular materials, that exhibit a non-Newtonian behavior. Although it is typically more suitable to apply a compressible flow for studying granular rheology, we assume a steady state and pressure-independent flow, as a first step. 
-We thus solve incompressible Navier-Stokes equations,
-\begin{equation}
+We consider a steady simple shear flow of granular material, that exhibits a non-Newtonian behavior. Although it is typically more suitable to apply a compressible flow for studying granular rheology, we assume a pressure-independent flow, as a first step. 
+We thus solve the incompressible Navier-Stokes equations,
+\begin{align}
   \nabla \cdot \vec{u} = 0 
   \label{eq_div_free} 
-\end{equation}
-\begin{equation}
-     \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
-= \frac{1}{\rho}
-\left(
-- \nabla P 
-    + \nabla \cdot   \bm{\tau} 
-    +  \rho  \vec{g} 
-    \right),
-  \label{eq_NS_ch4}
-  \end{equation}
-to obtain flow velocity, $\vec{u}$.
+  \\
+  \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
+  = \frac{1}{\rho}
+  \left(
+  - \nabla P 
+      + \nabla \cdot   \bm{\tau} 
+      +  \rho  \vec{g} 
+      \right),
+    \label{eq_NS_ch4}
+\end{align}
+
+to obtain the flow velocity, $\vec{u}$.
 \begin{comment}
 To explain terminology, we write the stress tensor $\bar{\bar{\sigma}}$ explicitly, 
 \begin{equation}
@@ -51,16 +49,16 @@ and the second normal stress difference $N_2$,
 \end{equation}
 the deviatoric stress tensor requires a higher-order relationship with the strain rate tensor $\bm{D}$. 
 \end{comment}
-We particularly pay attention to the viscous stress tensor of the form,
+We include a viscous stress tensor of the form,
 \begin{equation}
    \boldsymbol{\tau} = 
    % 2 \nu_1  \bm{D} + 2 \nu_2  \bm{D}^2 ,
     \nu_0  \bm{A}_1 +  \nu_1  \bm{A}_1^2 + \nu_2 \bm{A}_2,
    \label{eq_CN_tau}
 \end{equation}
-where $\nu_0$ is constant in shear flow, and $\nu_1$ and $\nu_2$ are a function of $\dot{\gamma}$.
-The second-order complexity form of the deviatoric stress tensor, equation (\ref{eq_CN_tau}), was introduced by Colemann and Noll~\cite{coleman_approximation_1960} and
-the term $\bm{A_i}$ is the Rivlin-Ericksen tensor, defined as
+where $\nu_0$ is constant in shear flow, and $\nu_1$ and $\nu_2$ are a function of the shear rate $\dot{\gamma}$.
+The second-order form of the deviatoric stress tensor, equation~(\ref{eq_CN_tau}), was introduced by Colemann and Noll~\cite{coleman_approximation_1960}.
+The term $\bm{A_i}$ is the Rivlin-Ericksen tensor, defined as
 \begin{equation}
    {\bm A_1}  = \nabla \vec{u} +  \left( \nabla \vec{u} \right)^T = 2 \bm{D} 
 \end{equation}
@@ -75,7 +73,7 @@ Note that the general form of the Rivlin-Ericksen tensor can be extended to orde
   \boldsymbol{A}_{n+1}
   =\frac{\partial \boldsymbol{A}_{n}}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_n+\boldsymbol{A}_n \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_n.
 \end{equation}
-We have yet to decide to use up to the second order.
+We have decided to first use up to the second order.
 \par
 
 % \begin{align}
@@ -89,7 +87,7 @@ We have yet to decide to use up to the second order.
 % \end{align}
 % The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
 \par
-In general, many researchers do not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ for examining a complex fluid. For polymer solutions, the most studied in non-Newtonian fluids area, it is well-known that the effect of  $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. However, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$ for  other materials, including granular matters. For example, we find a curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011}. We thus want to implement computational tools to study the second-order strain rate effect.
+In general, many researchers do not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ for examining a complex fluid. For polymer solutions, the most studied in non-Newtonian fluids, it is well-known that the effect of the $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. However, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$ for other materials, including granular material. For example, a curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011} are found for a non-linear strain rate effect. We thus want to implement computational tools to study the second-order strain rate effect.
 
 % via two normal stress differences, $N_1$ and $N_2$. 
 
@@ -116,7 +114,7 @@ In general, many researchers do not include the effect of $\mathcal{O}\left( \bm
 % The order of this chapter is the following. We explain the computation of viscosities for granular materials and non-colloidal suspension in a Newtonian fluid. Then, we discuss the numerical methods,   Then,  We close this chapter by showing some numerical results.
 
 \subsection{Viscosity computation for granular rheology}
-We now express a new stress tensor $\bm \tau$ with a higher-order strain rate that can describe non-isotropic (meaning material properties changes along with direction) flow effects,
+We now model a new stress tensor $\bm \tau$ with a higher-order strain rate that can describe non-isotropic material flow properties,
 \begin{align}
   \bar{\bar{\sigma}}
     = -P \bar{\bar{I}}  + \bm{\tau}
@@ -127,9 +125,7 @@ We now express a new stress tensor $\bm \tau$ with a higher-order strain rate th
 In this section, we focus on the methodology to compute the viscosity $\mu_i ({\dot{\gamma}})$ ($i = 1,2$) under a simple shear flow. 
 % A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found [{\color{blue}REFERENCE}]. 
 
-To describe a non-isotropic flow, we consider the deviatoric stress tensor of the form (\ref{eq_2ndOrder_tau}), which is derived under two conditions:
-(1) the flow motion is simple with a constant stretch history by neglecting deformation history, and (2) the flow is isochoric, having uniform properties along streamlines and tr$(D) = 0$. 
-In particular, we see \cite{srivastava_viscometric_2021}
+To describe a non-isotropic material, we consider a deviatoric stress tensor of the form~(\ref{eq_2ndOrder_tau}), 
 % \begin{align*}
 % \bar{\bar{\sigma}} - P {\bm I} \equiv
 %   {\bm {\bm \tau}}
@@ -164,32 +160,37 @@ and
   \mu_2 (\dot{\gamma}) = 
   \left( \eta_2  \dot{\gamma}^2
   +  \kappa_2 
-  \right) \frac{1}{\dot{\gamma}^2}.
+  \right) \frac{1}{\dot{\gamma}^2},
   \label{eq_mu2_main}
 \end{equation}
+which is derived under two conditions:
+(1) the flow motion is simple with a constant stretch history by neglecting deformation history, and (2) the flow is isochoric, having uniform properties along streamlines and tr$(D) = 0$. 
+% In particular, we see \cite{srivastava_viscometric_2021}
+
 Note that the magnitude of strain rate, $\dot{\gamma}$, can be computed by applying the scaled Frobenius norm for a second-order tensor, 
 \[
   \dot{\gamma}  = |\bm{D}| = \sqrt{\frac{1}{2}
     \text{tr}\left(\bm{D} \bm{D}^{T} \right)}.
 \]
-In general, the Frobenius norm states $\bm{D}^H$ instead of $\bm{D}^T$. Since we consider real-valued tensors, it is valid to have $\bm{D}^H = \bm{D}^T$.
+In general, the Frobenius norm states $\bm{D}^H$ instead of $\bm{D}^T$. Since we consider real-valued tensors.
+% it is valid to have $\bm{D}^H = \bm{D}^T$.
 \par
-The flow functions, $\eta_i$ and $\kappa_i$ for $i = 1,2$, have the following dependency to the total stress: each $\eta_i(\dot{\gamma}, p)$ is (shear) rate-dependent and $\kappa_i (p)$ is (shear) rate-independent. 
-Along with the shear effect from $\eta_1$, we can observe the second normal-stress difference in shear flows from $\eta_2$.
-The rate-independent terms, $\kappa_1$ and $\kappa_2$, allow us to find yield stress. 
+The flow functions, $\eta_i$ and $\kappa_i$ for $i = 1,2$, have the following depending on total stress: each $\eta_i(\dot{\gamma}, p)$ is (shear) rate-dependent and $\kappa_i (p)$ is (shear) rate-independent. 
+% Along with the shear effect from $\eta_1$, we can observe the second normal-stress difference in shear flows from $\eta_2$.
+% The rate-independent terms, $\kappa_1$ and $\kappa_2$, allow us to find yield stress. 
 We explain the details of these two types of functions in the following sub-section.
 
 \subsection{$\mu (I)$ rheology}
-The key to getting $\eta_i$ and $\kappa_i$ terms is the well-known $\mu(I)$ relationship developed by \textit{Jop, 2006}~\cite{jop_constitutive_2006}.
-Here, $I$ is called the \textit{inertial number} defined as 
+The key to modeling the $\eta_i$ and $\kappa_i$ terms is the well-known $\mu(I)$ relationship developed by~\cite{jop_constitutive_2006}.
+Here, $I$ is the \textit{inertial number},
 \begin{equation}
   I =  \frac{\dot{\gamma} d }{\sqrt{P/\rho_p}},
   \label{eq_inertialI}
 \end{equation}
-where $d$ and $\rho_p$ are the average particle diameter and density of given granular material.
-This dimensionless quantity describes the average static force compared to the inertial force between granular particles. Jop, in~\cite{jop_constitutive_2006}, interpreted the inertial number as the ratio between a macroscopic deformation and an inertial timescale. 
+where $d$ and $\rho_p$ are the average particle diameter and density of a given granular material.
+This dimensionless quantity describes the ratio of the average static force to the inertial force between granular particles~\cite{jop_constitutive_2006}, interpreted the inertial number as the ratio between a macroscopic deformation and an inertial timescale. 
 \par
-We bring an hourglass example to describe the granular flow regimes depending on the inertial number. 
+To understand the granular flow regimes depending on the inertial number. We consider an hourglass example. 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.15]{figures/fig_hourglass.pdf}
@@ -198,21 +199,22 @@ We bring an hourglass example to describe the granular flow regimes depending on
   \label{fig_hourglass}
 \end{figure}
 As we can see in Figure~\ref{fig_hourglass}, three different states can co-exist in granular materials. 
-On the top part of the hourglass, filled with sand, they seem not to move and resemble a solid. 
-As we move our sight toward the middle nozzle of the hourglass, we can observe the sands passing through the nozzle, flowing like a liquid.
-Meanwhile, the sand landing on the bottom part of the hourglass is forming a cone shape. When we look very closely at the top of the cone, we can see that the sand is falling and colliding, i.e., it behaves like a gas.
+In the top part of the hourglass, filled with sand, the particles seem not to move and resemble a solid. 
+In the middle nozzle of the hourglass, we can observe the sands passing through the nozzle, flowing like a liquid.
+Meanwhile, the sand landing on the bottom part of the hourglass is forming a cone shape. When we look very closely at the top of the cone, we can see that the sand is falling and colliding; behaving like a gas.
 \par
-In general, these three regimes can be categorized by the inertial number $I$. The solid-like status appears when $I$ is small. As the number $I$ increases, the flow deformation occurs rapidly, as we see in the middle of the hourglass. Naturally, the collisional flow can be observed for a large $I$ number. 
+In general, these three regimes can be categorized by the inertial number $I$. The solid-like state appears when $I$ is small. As $I$ increases, the granular material deformation occurs rapidly, following as we see in the middle of the hourglass. The collisional flow, acting like a gas, can be observed for a large $I$ number. 
 \par
 By applying this $\mu(I)$ rheology, Srivastava~\cite{srivastava_viscometric_2021} devleoped a callibration to obtain the coefficients $\eta_i$ and $\kappa_i$.
-For the first-order strain rate viscosity term, equation (\ref{eq_mu1_main}), we have 
+For the first-order strain rate viscosity term, equation~(\ref{eq_mu1_main}), we have 
 \begin{equation}
   \mu_1(I) = \mu_1^0 + A_1{ I}^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{P},\
 \label{eq_muI1}
 \end{equation}
-where $\mu_1^0, A_1,$ and $\alpha_1$ are fitting parameters, depending on matrials. 
-By substituting the inertial number $I$, equation (\ref{eq_inertialI}), into equation (\ref{eq_muI1}), we get
+where $\mu_1^0, A_1,$ and $\alpha_1$ are fitting parameters, depending on the matrials. 
+By substituting the inertial number $I$, equation~(\ref{eq_inertialI}), into equation~(\ref{eq_muI1}), we get
 \begin{equation}
+  \mu_1(I) =
      \mu_1^0 + A_1 {\left(  \frac{\dot{\gamma} a }{\sqrt{P/\rho}}\right) }^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{P}.
 \end{equation}
 We then find $\mu_1 (\dot{\gamma}, P)$ and $\kappa_1(p)$ as
@@ -245,7 +247,7 @@ Then, we obtain $\mu_2 (\dot{\gamma}, P)$ and $\kappa_2(P)$
 \end{equation}
 
 %--------------------------------------------------
-We can obtain the flow fitting parameters from particle-based simulations, such as the discrete element method (DEM). The following numbers are introduced in, Jop 2006 \cite{jop_constitutive_2006}; Srivastava 2021 \cite{srivastava_viscometric_2021}:
+We can obtain the flow fitting parameters from particle-based simulations, such as the discrete element method (DEM). The following parameter values are introduced in~\cite{jop_constitutive_2006} and~\cite{srivastava_viscometric_2021}:
     \[
     0.09 \leq \mu_1^0 \leq 0.33, 
     \ \ \ \ \ \ \ 
@@ -260,7 +262,7 @@ We can obtain the flow fitting parameters from particle-based simulations, such 
     \ \ \ \ \ \ \ 
     0.75 \leq \alpha_3 \leq 0.85.
     \]
-     One can find the corresponding $A_i$ values in Srivastava 2021 \cite{srivastava_viscometric_2021}.
+     One can find the corresponding $A_i$ values in~\cite{srivastava_viscometric_2021}.
 \begin{comment}
 \section{Suspension rheology}
 This section summarizes the rheological model of suspensions in a Newtonian fluid. Solid particles suspended in a Newtonian fluid can exhibit highly non-Newtonian behaviors.  
@@ -278,14 +280,14 @@ For numerical validations, we follow the experiments presented in Couturier $\te
 \end{itemize}
 \end{comment}
 \section{Numerical method}
-In this section, we demonstrate the numerical method to solve flow velocity with incompressible Navier-Stokes equations. We particularly focus on the time integration that we wanted to improve as we consider the second-order strain rate stress tensor.
-Rest of the computation, we use the AMReX-incflo code as it was implemented. 
+In this section, we demonstrate the numerical method to solve the flow velocity with incompressible Navier-Stokes equations incorporating the granular material model. We particularly focus on the time integration that we wanted to improve as we consider the second-order strain rate stress tensor.
+For the rest of the computation, we use the AMReX-incflo library as it is.
 \subsection{Velocity computation}
 The main AMReX-incflo library provides three integrations: 1) explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
-Since we have the stress tensor ${\bm \tau}$ of the form (\ref{eq_CN_tau}), which is non-linear in velocity, the most convenient choice was the explicit Euler method.
- However, it would be beneficial to have another scheme, considering stability and efficiency. 
+Since we have the stress tensor ${\bm \tau}$ of the form~(\ref{eq_CN_tau}), which is non-linear in the velocity, the most convenient choice was the explicit Euler method.
+ However, it would be beneficial to have another scheme, for more stability. efficiency, and accuracy. 
  \par
- Focusing on its order of convergence, we consider a two-stage Runge-Kutta (RK2) method to achieve second-order convergence. 
+ We consider a two-stage Runge-Kutta (RK2) method to achieve second-order convergence. 
 In particular, we implemented the following scheme,
 \begin{equation}
 	\vec{u}_{j}^{temp} = \vec{u}^{n} + \frac{\Delta t}{2} {\bm F} \left( \vec{u}^{n} \right)
@@ -306,15 +308,15 @@ where
         +  \rho  \vec{g} 
         \biggr).
 \]
-where the superscription $n$ represents the current time (known) value; for example, the current time (known) velocity is $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, i.e., $\vec{u}^* (\vec{x}, t_{n+1})$. However, it does not necessarily satisfy the continuity equation (\ref{eq_div_free}). Thus, we project the intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
+where the superscription $n$ represents the current time (known) value; $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, $\vec{u}^*  = \vec{u}^* (\vec{x}, t_{n+1})$. However, $\vec{u}^*$ does not necessarily satisfy the continuity equation~(\ref{eq_div_free}). Thus, we project this intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
 \par
-For the projection step, we express $\vec{u}^{*}$ as, according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
+For the projection step, we express $\vec{u}^{*}$ according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
 \begin{equation}
   \vec{u}^* = \vec{u}^{n+1} + \nabla \phi,
   \label{eq_ustar}
 \end{equation}
 where $\vec{u}^{n+1}$ is the new velocity at time $t_n + \Delta t$ that satisfies the divergence-free condition and $\phi$ is a scalar function.
-To take advantage of the nature of $\vec{u}^{n+1}$, we find the divergence of the equation (\ref{eq_ustar}), leading to the Poisson equation for $\phi$,
+To take advantage of the incompressibility of $\vec{u}^{n+1}$, we find the divergence of equation~(\ref{eq_ustar}), leading to the Poisson equation for $\phi$,
 \[
   \nabla^2 \phi = \nabla \vec{u}^*.  
 \]
@@ -322,38 +324,12 @@ After we solve for $\phi$, applying given boundary conditions, we find the updat
 \[
   \vec{u}^{n+1} = \vec{u}^* - \nabla \phi.
 \]
-\subsection{Computation of pressure-dependent apparent viscosity}
-For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate viscosity.
-Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and perturbation, $P'$, such that
-\[
-P = P_0(z) + P'(x,y,z).\]
-Note that we can have the perturbations under gravity. Without gravitational force, we may simply input the constant pressure, $P_0$, and keep it over time.
-\par
-In case gravity is involved, we consider the density term in order to approximate the perturbation, as 
-\[
-\rho  = \rho_0  + \rho'(x,y,z), 
-\]
-where $\rho_0$ is constant and $\rho'$ is spacial-dependant density perturbation of the flow. 
-Here, we assume that 
-\begin{equation}
-    \nabla P_0  = \frac{d P_0}{d z} \approx \rho_0  g.  
-\label{eq_p0_rho0}
-\end{equation}
-This recovers our momentum equation. As we would like to construct a background pressure that stays over time for our granular rheology, we may use this hidden assumption.
-By taking integral both sides of Equation (\ref{eq_p0_rho0}), we obtain
-\begin{equation}
-    P_0 \approx p_{bg} + \nabla P_0 z.
-\end{equation}
-We would like to use this form since we already have the $p_{bg}$ term computed in the AMReX-incflo code.
-%
-When we have a periodic boundary in the gravity direction, we might need to prescribe a pressure gradient to have an additional pressure effect. 
-\par
-The challenge we faced in implementing the pressure-dependent viscosity was connecting the pressure in addition to the strain rate into the rheology code. We need to solve for a compressible flow model to have physical consistency using a different numerical solver rather than AMReX-incflo. We thus leave the pressure-dependent granular flow as a future work.
+
 % {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
 
 % a little more details
 \subsection{Viscosity regularization}
-When we evaluate the viscosities, equations (\ref{eq_mu1_main}) and (\ref{eq_mu2_main}), we may encounter a (nearly) singularity as $\dot{\gamma}$ approaches zero.
+When we evaluate the viscosities, equations~(\ref{eq_mu1_main}) and~(\ref{eq_mu2_main}), we may encounter a (nearly) singularity as $\dot{\gamma}$ approaches zero.
 As AMReX-incflo has the Papanastasiou regularization method implemented, we simply apply the same method for the new granular flow viscosity computations.
 \par
 By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
@@ -361,8 +337,38 @@ By introducing a small parameter, denoted as $\varepsilon$, we can regularize th
   \frac{1}{\dot{\gamma}} \rightarrow \frac{1-e^{-\dot{\gamma} / \varepsilon}}{\dot{\gamma}}  
 \]
 for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
-The detailed mathematics and analysis can be found in Sverdrup 2018~\cite{sverdrup_highly_2018}.
-
+The detailed mathematics and analysis can be found in~\cite{sverdrup_highly_2018}.
+%---subsection---what I did not do-------
+\subsection{Computation of pressure-dependent apparent viscosity}
+For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate the viscosity.
+Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and perturbation, $P'$, such that
+\[
+P = P_0(z) + P'(x,y,z).\]
+Note that the perturbations are due to gravity. Without a gravitational force, we may simply input the constant pressure, $P_0$, and keep it over time.
+\par
+In case gravity is involved, we consider the density term in order to approximate the perturbation, as 
+\[
+\rho  = \rho_0  + \rho'(x,y,z), 
+\]
+where $\rho_0$ is constant and $\rho'$ is a spacial-dependant density perturbation of the flow. 
+Here, we assume that 
+\begin{equation}
+    \nabla P_0  = \frac{d P_0}{d z} \approx \rho_0  g.  
+\label{eq_p0_rho0}
+\end{equation}
+This recovers our momentum equation. As we would like to construct a background pressure that stays constant over time for our granular rheology, we may use this assumption.
+By integrating both sides of equation~(\ref{eq_p0_rho0}), we obtain
+\begin{equation}
+    P_0 \approx p_{bg} + \nabla P_0 z.
+\end{equation}
+We would like to use this form since we already have the $p_{bg}$ term implemented in the AMReX-incflo code.
+%
+When we have periodic boundary conditions in the gravity direction, we might need to prescribe a pressure gradient to have an additional pressure effect. 
+\par
+The challenge we faced in implementing the pressure-dependent viscosity was connecting the pressure in addition to the strain rate into the rheology code. 
+We also need to use a different module than the AMReX-incflo for a compressible flow.
+% We need to solve for a compressible flow model to have physical consistency using a different numerical solver rather than AMReX-incflo.
+ We thus leave the pressure-dependent granular flow as a future work.
 \begin{comment}
 \subsection{Predictor-Corrector method}
 To enlarge the numerical stability region, we implement a semi-implicit method. To do so, we first re-write the momentum equation by splitting the deviatoric stress tensor, ${\bm \tau}$, into two parts, 
@@ -458,12 +464,12 @@ We may add the time-dependent flow presented in the last term in the following e
     - \frac{\text{tr}\left({\bm D}^2\right)}{3|{\bm D}|^2}{\bm I} \right]
     + \mu_3  \left[ {\bm D}{\bm W} - {\bm W}{\bm D} \right]
   \end{equation}
-  For the last coefficient in equation (\ref{eq_2ndOrder_tau}), we follow the power law, 
+  For the last coefficient in equation~(\ref{eq_2ndOrder_tau}), we follow the power law, 
 \begin{equation}
     \mu_3(I) = -A_3 \left( I^2 \right)^{\alpha_3} = \frac{\eta_3 \dot{\gamma}^2}{p}.
 \label{eq_muI3}
 \end{equation}
-Specifically, we can find the coefficients of each shear rate term in Equation (\ref{eq_2ndOrder_tau}) as
+Specifically, we can find the coefficients of each shear rate term in equation~(\ref{eq_2ndOrder_tau}) as
 \begin{equation}
      \eta_3 (\dot{\gamma}, p) = 
     -p A_3 

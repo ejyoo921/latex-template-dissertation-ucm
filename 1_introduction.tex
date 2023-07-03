@@ -42,7 +42,7 @@ To describe the incompressible fluid motion that takes place around marine aggre
 \label{eq_momentum_NS}
 \end{align}
 where $ \rho$ is fluid density (constant) and $\vec{u}, \ \vec{g}$ are fluid velocity and gravity vectors, respectively.
-The first equation (\ref{eq_conserv_mass}) shows the conservation of mass and the equation (\ref{eq_momentum_NS}) describes the momentum conservation. 
+The first equation~(\ref{eq_conserv_mass}) shows the conservation of mass and the equation~(\ref{eq_momentum_NS}) describes the momentum conservation. 
 We also introduce the stress tensor, $\bar{\bar{\sigma}}$ as sum of the fluid pressure $P$ and deviatoric stress tensor $\bm{\tau}$,
 \begin{equation}
    \bar{\bar{\sigma}} =-P \bar{\bar{I}} + {\bm \tau} = -P \bar{\bar{I}} + {\tilde{\mu}} {\bm D},
@@ -53,7 +53,7 @@ where ${\tilde{\mu}}$ is constant fluid viscosity and ${\bm D}$ is the symmetric
    \boldsymbol{D} = \frac{1}{2} \left( \nabla \vec{u} + {(\nabla  \vec{u} )}^T \right).
    \label{eq_strain_rate}
    \end{equation}
-Since seawater is a Newtonian fluid, following Newton's law of viscosity, the strain rate (\ref{eq_strain_rate}) becomes $\nabla \vec{u}$. This implies that we can re-write the momentum equation (\ref{eq_momentum_NS}) as
+Since seawater is a Newtonian fluid, following Newton's law of viscosity, the strain rate~(\ref{eq_strain_rate}) becomes $\nabla \vec{u}$. This implies that we can re-write the momentum equation~(\ref{eq_momentum_NS}) as
 \begin{equation}
   \rho \left( 
    \frac{\partial \vec{u}}{\partial t} + \vec{u}\cdot \nabla \vec{u}
@@ -64,7 +64,7 @@ Since seawater is a Newtonian fluid, following Newton's law of viscosity, the st
 For a typical seawater, it is reasonable to say $\rho \approx 1025 \text{kg/m}^3$ and ${\tilde{\mu}} = 1.2 \times 10^{-3}\text{kg}/\text{ms}$.
 Also, the gravitaty vector is $\vec{g} = - g\hat{k} \approx -9.8$m/$s^2 \times (0,0,1)$ where $\hat{k}$ points in the vertical direction (upward). 
 \par
- The momentum equation (\ref{eq_momentum_NS}) can be linearized for flows where inertial effects are small. 
+ The momentum equation~(\ref{eq_momentum_NS}) can be linearized for flows where inertial effects are small. 
 To estimate the size of the main forces at play, we consider a radius of marine aggregate, $R_a \approx 5 \times 10^{-5} (\text{m})$ and the reference Stokes settling speed of an aggregate,
 \begin{equation}
     U_s =  \frac{gR_a^2}{{\tilde{\mu}}} (\rho_a-\rho) \approx 3.8 \times 10^{-4} ({\text{m/s}}),
@@ -87,11 +87,11 @@ where we find and compute the Reynolds number (Re),
    \label{eq_Re}
 \end{equation}
 Note that we use the prime symbol to represent a dimensionless value.
-Since we have a fairly small Reynolds number, we may neglect the inertial effects, limiting the left-hand side of the equation (\ref{eq_NS_moment_noD}) to zero,
+Since we have a fairly small Reynolds number, we may neglect the inertial effects, limiting the left-hand side of the equation~(\ref{eq_NS_moment_noD}) to zero,
 \begin{equation}
    {\nabla'}^2 \vec{u}' - \nabla' P' +  \vec{g}' = 0.
 \end{equation}
-In this thesis, we, therefore, consider the following Stokes equations, writing back with dimensions, to describe the fluid flow around the settling aggregates,
+In the settling marine aggregate project part of this thesis, we, therefore, consider the following Stokes equations, writing back with dimensions, to describe the fluid flow around the settling aggregates,
  \begin{align}
 	\nabla \cdot \vec{u}  = 0  
 	% \label{eq_conti2}
@@ -104,7 +104,7 @@ The solutions of the system of equations are the fluid velocity, $\vec{u}$, and 
    P_d(\vec{y}) = P(\vec{y}) - P_s(\vec{y}) = P(\vec{y}) - \rho \vec{g} \cdot \vec{y}.
    \label{eq_def_Pd}
 \end{equation}
-By substituting the expression (\ref{eq_def_Pd}), we obtain
+By substituting the expression~(\ref{eq_def_Pd}), we obtain
 \begin{align}
 	\nabla \cdot \vec{u}  = 0  
 	% \label{eq_conti2}
@@ -112,7 +112,7 @@ By substituting the expression (\ref{eq_def_Pd}), we obtain
 	{\tilde{\mu}} \nabla^2 \vec{u}    - \nabla P_d = 0.
 	\label{eq_stokes3}
 \end{align}
-In our simulation, we focus on the velocity field and hydrodynamic forces around the marine aggregate model. 
+While an aggregate model settles, we focus on the velocity field and hydrodynamic forces around the marine aggregate model. 
 %===SECTION 2.2=========================================
 \section{Boundary integral equation (BIE) formulations} 
 For our simulations, we consider a large fluid domain compared to the size of an aggregate, having zero fluid velocity at infinity. We also treat our aggregate surface as a solid. Although marine aggregates are porous, the solid boundary condition is reasonable to apply due to their low permeability. 
@@ -145,7 +145,7 @@ The kernel $\bar{\bar{G}}(\vec{x},\vec{x}_0)$ is the Green's function of the Sto
   \label{eq_stresslet}
   \end{align}
 where $\| \cdot \|$ is the $L^2$ norm. 
-The first integral distribution on the right-hand side of the equation (\ref{eq_BIE}) is called the \textit{single-layer potential} and the second one is called the \textit{double-layer potential}. 
+The first integral distribution on the right-hand side of the equation~(\ref{eq_BIE}) is called the \textit{single-layer potential} and the second one is called the \textit{double-layer potential}. 
 To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$, we use 
 \begin{equation}
    \vec{u}(\vec{x}_s) = - \frac{1}{4 \pi {\tilde{\mu}}} \int_S  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{x}_s) \ \text{d}S(\vec{x}) 
@@ -156,19 +156,19 @@ To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$,
 \ \text{d}S(\vec{x}).
 \label{eq_BIE_onS}
 \end{equation}
-Also, $\vec{f}(\vec{x})$ is the generally unknown stress vector, or traction, on the surface, and $\vec{u}(\vec{x})$ is the, generally unknown, velocity on the surface $S$. 
+In general, $\vec{f}(\vec{x})$ is the unknown stress vector, or traction, on the surface, and $\vec{u}(\vec{x})$ is the, typically unknown, velocity on the surface $S$. 
 When $S$ is the boundary of a solid object, in our case an aggregate, the general representation formula may be simplified in two different ways, depending on the fluid domain characteristics and/or type of the object's surface. We will introduce those two formulae in Chapter 2. 
 
 
 \section{Non-Newtonian fluids}
 \label{sec:intro_complex_fluid}
-In the last part of this thesis, we will turn our attention to non-Newtonian fluids. This topic is added to my thesis as an extension of one summer internship at the Lawrence Berkeley National Lab in 2022, under the guidance of Dr.Ishan Srivastava. 
+In the last part of this thesis, we will turn our attention to non-Newtonian fluids. This topic is added to my thesis as an extension of a summer internship at the Lawrence Berkeley National Lab in 2022, under the guidance of Dr. Ishan Srivastava. 
 \par
 \vphantom{text}
 \par
-A non-Newtonian fluid shows many interesting behaviors quite different than Newtonian fluids. To understand those phenomena, we may focus on the viscous stress tensor, $\bar{\bar{\sigma}}$ introduced in equation (\ref{eq_stress_tensor}). The major difference for non-Newtonian fluids is that the viscosity (we called $\tilde{\mu}$ for the Newtonian fluid case) is not constant anymore; rather it is a function of the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$~\cite{kundu_chapter_2016}.
+A non-Newtonian fluid shows many interesting behaviors quite different than Newtonian fluids. To understand those phenomena, we focus on the viscous stress tensor, $\bar{\bar{\sigma}}$ introduced in equation~(\ref{eq_stress_tensor}). The major difference for non-Newtonian fluids is that the viscosity (denoted $\tilde{\mu}$ in the Newtonian fluid case) is not constant anymore; rather it is a function of the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$~\cite{kundu_chapter_2016}.
 Due to this varying viscosity, the constitutive behavior of non-Newtonian fluids is highly complex. 
-They show intriguing phenomena such as shear thickening, shear thinning, and jamming. Figure \ref{fig_rheology} demonstrates an idea of shear stress $|\bm{\tau}|$ variation depending on the shear rate $\dot{\gamma}$, with an example.
+They show intriguing phenomena such as shear thickening, shear thinning, and jamming. Figure \ref{fig_rheology} demonstrates how the shear stress, $|\bm{\tau}|$, varies on the shear rate $\dot{\gamma}$, with an example.
 One defining feature of many complex fluids is the presence of a yield stress, which is shown as the red star in Figure \ref{fig_rheology} for a Bingham fluid. A simple example of a material with a yield stress is toothpaste. For an insufficiently stressed state, they behave like an elastic solid; once the yield stress is exceeded, they flow like a fluid. Note that the study of complex fluids, including those that exhibit two phases as responses to applied stress, is called {\textit{rheology}}. 
 \begin{figure}[h]
 	\begin{center}
@@ -178,17 +178,12 @@ One defining feature of many complex fluids is the presence of a yield stress, w
 \label{fig_rheology}
 \end{figure}
 \par
-This broad class of fluids encompasses various materials of industrial and natural importance,
+This broad class of non-Newtonian fluids encompasses various materials of industrial and natural importance,
 such as granular fluids, polymeric fluids, and suspensions. 
-In this project, we focus on the granular materials and their flow in a long cube-shaped channel. Assuming a steady state, we incorporate the flow with the incompressible Navier-Stokes equations, which are introduced in (\ref{eq_conserv_mass}) and (\ref{eq_momentum_NS})
+In this project, we focus on the granular materials and their flow in a long cube-shaped channel. Assuming pressure-independent, we incorporate the varying viscosity into the incompressible Navier-Stokes equations, which are introduced in~(\ref{eq_conserv_mass}) and~(\ref{eq_momentum_NS}).
 Our project goal is to have a constitutive rheology code that can capture such complex continuum dynamics. 
 \par
-We work on the \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. In particular, I implemented new rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations in complex geometries without subcycling in time.
-% [{\color{blue}References for each of them}]
-
-
-% In incflo, at the moment I was interning, there were three integrations were available: 1) Explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
-
+We use the exascale computing package \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. In particular, I implemented the granular rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations with the viscosity of granular flow in complex geometries without subcycling in time. We describe the details in Chapter 4.
 
 
 

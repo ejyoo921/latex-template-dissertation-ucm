@@ -24,12 +24,12 @@ From this, we can establish the fluid density variation over time,
 where the non-zero constant $\alpha$ depends on the type of solute. We provide the schematic of the perturbation effect on the top of the background fluid density in Figure~\ref{fig_stratification_schematics}.
 \begin{figure}[ht]
 	\begin{center}
-	\includegraphics[scale=0.4]{./figures/fig_stratification_schematics}
+	\includegraphics[scale=0.38]{./figures/fig_stratification_schematics}
 	\caption{Description of fluid density stratification.}
 	\label{fig_stratification_schematics}
 	\end{center}
 \end{figure}
-The non-constant density $\rho(\vec{y},t)$ changes the momentum equation from (\ref{eq_stokes3}) to 
+The non-constant density $\rho(\vec{y},t)$ changes the momentum equation from~(\ref{eq_stokes3}) to 
 		 \begin{equation}
 		\ \tilde{\mu}\nabla^2 \vec{u}(\vec{y})
 		- \nabla P_d (\vec{y}) \ + \  
@@ -42,7 +42,7 @@ The non-constant density $\rho(\vec{y},t)$ changes the momentum equation from (\
 	 = P (\vec{y}) \ - \int \rho_{bg}(z) g   \textrm{d}z.
 	\label{eq_Pd}
 \end{equation}
-To take the density perturbation of the ambient fluid into account, we find a particular solution to the momentum equation (\ref{eq_extra_C}). Once we have it, simple addition to the homogenous solution gives the entire solution due to the linearity of the system. 
+To take the density perturbation of the ambient fluid into account, we find a particular solution to the momentum equation~(\ref{eq_extra_C}). Once we have it, simple addition to the homogenous solution gives the entire solution due to the linearity of the system. 
 \par
 % \subsection{Particular solution to Stokes equations with the stratification}
 %----------------------------------------------------------------------
@@ -54,9 +54,9 @@ To derive a particular solution, we consider the singularly forced Stokes proble
 \label{eq_single_stokes}
 \end{equation}
 where $\vec{q}$ is an arbitrary constant vector, $\vec{x}$ is an arbitrary point in fluid domain, and $\delta$ is the three-dimensional delta function.
-The problem (\ref{eq_single_stokes}) 
+The problem~(\ref{eq_single_stokes}) 
 describes the effect coming from a singular force applied at $\vec{y} = \vec{x}.$
-The fundamental solution to equation (\ref{eq_single_stokes}) coupled with the continuity equation (\ref{eq_conserv_mass}) are
+The fundamental solution to equation~(\ref{eq_single_stokes}) coupled with the continuity equation~(\ref{eq_conserv_mass}) are
 \begin{equation}
 	\vec{u} (\vec{y}) = \ \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q}
@@ -68,8 +68,8 @@ The fundamental solution to equation (\ref{eq_single_stokes}) coupled with the c
 	\cdot  \vec{q},
 \label{eq_fund_p}
 \end{equation}
-where the kernel $\bar{\bar{G \ }}$ is the \textit{Stokeslet}, introduced in Chapter 1, equation (\ref{eq_stokeslet}).
-This implies that the solutions (\ref{eq_fund_u}) and (\ref{eq_fund_p}) satisfy equation (\ref{eq_single_stokes}) as
+where the kernel $\bar{\bar{G \ }}$ is the \textit{Stokeslet}, introduced in Chapter 1, equation~(\ref{eq_stokeslet}).
+This implies that the solutions~(\ref{eq_fund_u}) and~(\ref{eq_fund_p}) satisfy equation~(\ref{eq_single_stokes}) as
 \begin{equation}
 	\ \tilde{\mu} \nabla^2 
 	\biggl( \frac{1}{8\pi \tilde{\mu}}  \bar{\bar{G \ }}(\vec{x}, \vec{y})
@@ -117,7 +117,7 @@ Note that the operator $\nabla$ is linear and describes derivatives in $\vec{y}$
 	+\vec{q} C(\vec{x}, t) = 0 .
 \label{eq_single_stokes_sub3}
 \end{equation}
-By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find a particular solution to our modified Stokes momentum equation, (\ref{eq_extra_C}),
+By choosing $\vec{q} = \rho_0 \alpha \vec{g}$, we can find a particular solution to our modified Stokes momentum equation,~(\ref{eq_extra_C}),
 \begin{equation}
 	\vec{u} (\vec{y}) =
 	 \frac{\rho_0 \alpha }{8\pi \tilde{\mu}}
@@ -148,13 +148,13 @@ The entire velocity solution, thus, becomes
 	\ \text{d}V(\vec{x}).
 \label{eq_vel_HP}
 \end{equation}
-As we see, the velocity at a point $\vec{u}(\vec{y},t)$ is now dependent on space and time compared to the homogeneous fluid case. We can update the velocity field in time by coupling the solution (\ref{eq_vel_HP}) with the advection-diffusion equation (\ref{eq_ad_diff_nonD}) to model the solute perturbation, $C$.
+As we see, the velocity at a point $\vec{u}(\vec{y},t)$ is now dependent on space and time compared to the homogeneous fluid case. We can update the velocity field in time by coupling the solution~(\ref{eq_vel_HP}) with the advection-diffusion equation~(\ref{eq_ad_diff_nonD}) to model the solute perturbation, $C$.
  
 %------------------------------------------------------------------
 \subsection{Force balance}
 \label{sec:force_balance}
 \par
-Since the velocity of the aggregate is no longer constant in time, we need to solve for it.
+Since the velocity of the aggregate is no longer constant in time, we now need to solve for it.
 Specifically, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, by prescribing the total body force and total torque from the fluid on the aggregate.
 To close the system of equations, we prescribe the total drag force, $\vec{F}_o$, and total torque, $\vec{Q}_o$. 
 
@@ -167,7 +167,7 @@ First, we know that the total drag is the sum of the stress, $\vec{f}$,
 	 \right] \cdot \hat{n} \ \textrm{d}S (\vec{y}).
 \label{eq_Fo}
 \end{equation}
-To impose the total drag (\ref{eq_Fo}), we observe the right-hand side of equation (\ref{eq_Fo}) includes the buoyancy force, $\vec{F}_{b}$. 
+To impose the total drag~(\ref{eq_Fo}), we observe the right-hand side of equation~(\ref{eq_Fo}) includes the buoyancy force, $\vec{F}_{b}$. 
 As we work in the Stokes regime, the net force on the aggregate must be zero, so we have
 \begin{equation}
 	\vec{F}_o (t)+\vec{F}_g(t) + \vec{F}_b = \vec{0},
@@ -191,7 +191,7 @@ where $\rho_{f}$ and $\rho_s$ are the density of the fluid and solid portion of 
 \end{equation}
 We here consider the solid part of the aggregate density as $\rho_s \approx 1400 $kg$/$m$^3.$ 
 We also set the porosity to $\phi = 0.95$.
-Meanwhile, we find the buoyancy force, $\vec{F}_b$, from equation (\ref{eq_Fo}),
+Meanwhile, we find the buoyancy force, $\vec{F}_b$, from equation~(\ref{eq_Fo}),
 \begin{equation}
  \vec{F}_b =	  -  \int_S \left( 
 	   \int \rho_{bg}(z) g \ \textrm{d}z 
@@ -200,7 +200,7 @@ Meanwhile, we find the buoyancy force, $\vec{F}_b$, from equation (\ref{eq_Fo}),
 \label{eq_F_buoyancy}
 \end{equation}
 
-For the total torque, we use the form (\ref{eq_torquebal}), and set the value to zero,
+For the total torque, we use the form~(\ref{eq_torquebal}), and set the value to zero,
 \begin{equation}
 	\vec{Q}_o =\int_S \vec{f}\times (\vec{x} - \vec{x}_{cm}) \ \textrm{d}S =  \vec{0}.
 \label{eq_Qo}
@@ -216,7 +216,7 @@ As the aggregate settles, the concentration, and therefore the fluid density, ch
 \label{eq_AD_rho}
 \end{equation}
 where $D$ is the diffusion coefficient.
-By applying the relationship between fluid density $\rho$ and the concentration perturbation $C$ from equation (\ref{eq_density}), we can re-write the equation (\ref{eq_AD_rho}) in terms of $C$, 
+By applying the relationship between fluid density $\rho$ and the concentration perturbation $C$ from equation~(\ref{eq_density}), we can re-write the equation~(\ref{eq_AD_rho}) in terms of $C$, 
 \begin{equation}
 	\frac{\partial C(\vec{y},t)}{\partial t}
 	+ \vec{u}(\vec{y}) \cdot \nabla C(\vec{y},t)
@@ -229,17 +229,17 @@ depends on the vertical component of the fluid velocity.
 
 %------------------------------------------------------------------
 \section{Dimensional analysis}
-To facilitate further analysis, we non-dimensionalize our new equations. We mainly use the same parameters we introduced in section~\ref{section3}, equations (\ref{eq_nonD}), in addition to the following dimensionless parameters:
+To facilitate further analysis, we non-dimensionalize our new equations. We mainly use the same parameters we introduced in section~\ref{section3}, equations~(\ref{eq_nonD}), in addition to the following dimensionless parameters:
 \begin{equation}
 	C= C_{max} C'
 \hspace{7mm}
 \rho = \frac{\tilde{\mu}  }{{U_s} R_a}  \rho', 
 \end{equation}
-In this chapter, the Stokes settling speed $U_s$, defined in equation (\ref{eq_U_s}), becomes
+In this chapter, the Stokes settling speed $U_s$, defined in equation~(\ref{eq_U_s}), becomes
 \[
 U_s = \frac{g  R_a^2}{\tilde{\mu}}(\rho_s - \rho_0)(1-\phi),
 \] 
-since we consider the porosity of an aggregate as (\ref{eq_rho_a}).
+since we consider the porosity of an aggregate as~(\ref{eq_rho_a}).
 % Note that the Reynolds number is approximately 0.03.
  % Here $\rho_a$ is the density of aggregate.
 For the scale of the perturbation, $C$, we introduce the maximum density difference of the background density profile in the fluid domain at the initial time, i.e., 
@@ -273,7 +273,7 @@ which is then solved for the velocity,
   \label{eq_vel_all_onS_nonD}
  \end{align}
 where $S'$ is the aggregate surface. 
-Moreover, the force balance equation (\ref{eq_Full_Force}) becomes
+Moreover, the force balance equation~(\ref{eq_Full_Force}) becomes
 \begin{align}
 	 \vec{F'}_o(t)
 	 & =
@@ -300,8 +300,8 @@ Lastly, the advection-diffusion equation becomes,
 	 +\frac{\gamma R_a}{ \alpha C_{max}} \vec{u}' \cdot \hat{k},
 	\label{eq_AD_nonD}
 	\end{equation}
-using the velocity field from equation (\ref{eq_vel_all_onS_nonD}), for the advection term.
-Note that we discussed the Péclet number with CO$_2$ diffusivity in Chapter (\ref{sec:concentration}) while introducing its definition in equation (\ref{eq_def_Pe}).
+using the velocity field from equation~(\ref{eq_vel_all_onS_nonD}), for the advection term.
+Note that we discussed the Péclet number with CO$_2$ diffusivity in Chapter~(\ref{sec:concentration}) while introducing its definition in equation~(\ref{eq_def_Pe}).
 In addition, using the thermal diffusivity of the ocean, $D_{heat}$~\cite{nayar_thermophysical_2016,sharqawy_thermophysical_2010}: we get a Péclet number of
 
 \begin{align}
@@ -326,7 +326,7 @@ In this section, we first consider drag computation on an aggregate. We derive t
 %subsection--------------------------------------------------------------------
 
 \subsection{Aggregate force balance}
-We first recall the force balance equation (\ref{eq_Full_Force}), introduced in section~\ref{sec:force_balance}. To obtain the total drag, there are two types of forces we consider: 1) aggregate body force, $\vec{F}_g$, and 2) fluid buoyancy force, $\vec{F}_b$. 
+We first recall the force balance equation~(\ref{eq_Full_Force}), introduced in section~\ref{sec:force_balance}. To obtain the total drag, there are two types of forces we consider: 1) aggregate body force, $\vec{F}_g$, and 2) fluid buoyancy force, $\vec{F}_b$. 
 The aggregate density, $\rho_a$, of the fluid portion changes over time, which affects its (dimensionless) gravitational body force,
 \begin{equation}
 	\vec{F}_g = 
@@ -353,10 +353,10 @@ For further simplicity, we find an antiderivative of the background density,
 	 = \rho_0 \left( z - \frac{1}{2}\gamma z^2 \right) g,
 \end{equation}
 by choosing the lower bound of the integral as zero without loss of generality.
-In practice, we can easily evaluate the gravitational force (\ref{eq_agg_force_G}). While settling, we compute the fluid density where the aggregate is located. Once we know which grid points are inside the aggregate, simply adding the densities at those points gives us the fluid density portion of the aggregate, which eventually plays a role in updating $\rho_a$. 
+In practice, we can easily evaluate the gravitational force~(\ref{eq_agg_force_G}). While settling, we compute the fluid density where the aggregate is located. Once we know which grid points are inside the aggregate, simply adding the densities at those points gives us the fluid density portion of the aggregate, which eventually plays a role in updating $\rho_a$. 
 \par
-Next, we investigate the buoyancy force (\ref{eq_buoyancy_nonD}) with a single cube case for simplicity. 
-We can extend this case to multiple cubes in the same manner by addition. We consider the discretized version of integral (\ref{eq_buoyancy_nonD}), 
+Next, we investigate the buoyancy force~(\ref{eq_buoyancy_nonD}) with a single cube case for simplicity. 
+We can extend this case to multiple cubes in the same manner by addition. We consider the discretized version of integral~(\ref{eq_buoyancy_nonD}), 
 \begin{equation}
 	\vec{F}_b \approx
 	\frac{1}{\tilde{\mu} U_s R_a} 
@@ -392,7 +392,7 @@ See Figure~\ref{fig_rho_bg_on_S1} for notation.
 	\label{fig_rho_bg_on_S1}
 \end{center}
 \end{figure}
-Since the background density $\rho_{bg}$ is a function of $z$, we can intuitively see that the value (\ref{eq_buoyancy_S1_2}) and the one with the normal $\hat{n}_6 = -\hat{n}_1 = (-1,0,0)$ has the same magnitude but in the opposite direction, and thus, we have $\mathcal{L}_6 = -\mathcal{L}_1$. 
+Since the background density $\rho_{bg}$ is a function of $z$, we can intuitively see that the value~(\ref{eq_buoyancy_S1_2}) and the one with the normal $\hat{n}_6 = -\hat{n}_1 = (-1,0,0)$ has the same magnitude but in the opposite direction, and thus, we have $\mathcal{L}_6 = -\mathcal{L}_1$. 
 This implies the following,
 \begin{equation}
 	\sum_{i=1,2,5,6}
@@ -403,7 +403,7 @@ This implies the following,
 	 = 0
 \label{eq_buoyancy_zero_oneCube}
 \end{equation}
-for the one cube case of discretized buoyancy equation (\ref{eq_buoyancy_discrete2}).
+for the one cube case of discretized buoyancy equation~(\ref{eq_buoyancy_discrete2}).
 \par
 The integrals on $S^3$ and $S^4$ are slightly different since the square faces are perpendicular to the $z-$axis. On the face $S^3$, which has normal $\hat{n}_3 = (0,0,1)$, we get
 \begin{equation}
@@ -417,7 +417,7 @@ The integrals on $S^3$ and $S^4$ are slightly different since the square faces a
 	= 4 R_a^3 \rho_0 \left( z_T - \frac{\gamma}{2} {z_T}^{2} \right) g \hat{n}_3,
 	\label{eq_F_by_S3}
 \end{equation} 
-where $z_T$ is the constant $z-$level value on the face $S^3$. The integral value on the face $S^4$ would be the same as (\ref{eq_F_by_S3}), having $\hat{n}_4 = (0,0,-1)$ instead of $\hat{n}_3$. We then can have a more explicit expression for the discretized buoyancy equation (\ref{eq_buoyancy_discrete2}),
+where $z_T$ is the constant $z-$level value on the face $S^3$. The integral value on the face $S^4$ would be the same as~(\ref{eq_F_by_S3}), having $\hat{n}_4 = (0,0,-1)$ instead of $\hat{n}_3$. We then can have a more explicit expression for the discretized buoyancy equation~(\ref{eq_buoyancy_discrete2}),
 \begin{align}
 	& \sum_{i=1}^{6} R_a^3
 	 \int_{S^i}
@@ -430,7 +430,7 @@ where $z_T$ is the constant $z-$level value on the face $S^3$. The integral valu
 	+ 4R_a^3 \rho_0 \left( z_B - \frac{\gamma}{2} {z_B}^{2}  \right) g \hat{n}_4,
 \label{eq_buoyancy_discrete_eval2}
 \end{align}
-where $z_B$ is the constant $z-$value on the surface $S^4$ (bottom face). By substituting the normals $\hat{n}_3$ and $\hat{n}_4$, we can simplify the right-hand side of equation (\ref{eq_buoyancy_discrete_eval2}), knowing that $z_T - z_B = 2$, equation (\ref{eq_buoyancy_discrete_eval2}) becomes 
+where $z_B$ is the constant $z-$value on the surface $S^4$ (bottom face). By substituting the normals $\hat{n}_3$ and $\hat{n}_4$, we can simplify the right-hand side of equation~(\ref{eq_buoyancy_discrete_eval2}), knowing that $z_T - z_B = 2$, equation~(\ref{eq_buoyancy_discrete_eval2}) becomes 
 \begin{equation}
 	\sum_{i=1}^{6} R_a^3
 	\int_{S^i} 
@@ -446,8 +446,8 @@ We thus have shown that the only information we need to keep track of is the loc
  \subsection{Linear system for velocity and stress on aggregates}
 As mentioned in section~\ref{sec:force_balance}, we do not prescribe the settling velocity of an aggregate, and it becomes one of our unknowns.
 We thus need to solve for 1) translational velocity ($\vec{U}_a$), 2) rotational velocity ($\vec{\Omega}$), and 3) stress vector ($\vec{f}_k$) on each square face $k$.
-% To do so, we build a linear system using equations (\ref{eq_Fo}), (\ref{eq_Qo}). 
-To do so, for any point $\vec{y}$ on the surface of the aggregate, we consider the surface velocity equations (\ref{eq_vel_all_onS_nonD}) with the solid body motion, (\ref{eq_solidbody}), 
+% To do so, we build a linear system using equations~(\ref{eq_Fo}),~(\ref{eq_Qo}). 
+To do so, for any point $\vec{y}$ on the surface of the aggregate, we consider the surface velocity equations~(\ref{eq_vel_all_onS_nonD}) with the solid body motion,~(\ref{eq_solidbody}), 
  \begin{align}
 	\vec{U}_a + \vec{\Omega} \times (\vec{y} - \vec{x}_{cm})
 + \frac{1}{8 \pi} \int_{S}  
@@ -462,7 +462,7 @@ To do so, for any point $\vec{y}$ on the surface of the aggregate, we consider t
  \label{eq_slp_lin_eq}
  \end{align}
 where the volume integral value on the right-hand side is known. 
-To set up the linear system accordingly, We discretize the boundary integral as described in equation (\ref{eq_discretized}), choosing $\vec{f}_k$ for $\vec{q}_k$, and $ \bar{\bar{G}}$ for $\bar{\bar{J}}$, 
+To set up the linear system accordingly, We discretize the boundary integral as described in equation~(\ref{eq_discretized}), choosing $\vec{f}_k$ for $\vec{q}_k$, and $ \bar{\bar{G}}$ for $\bar{\bar{J}}$, 
 \begin{equation}
 	\vec{I}(\vec{x}_{sq,i})  =   \sum_{k=1}^{N_f}  \vec{f}_k   \int_{S_{k}} \bar{\bar{G}}(\vec{x},\vec{x}_{sq,i}) \ \text{d}S(\vec{x}) 
 	= \sum_{k=1}^{N_f} \vec{f}_k   \ \bar{\bar{\Pi}}_{i,k}
@@ -472,7 +472,7 @@ To set up the linear system accordingly, We discretize the boundary integral as 
 	\ \textrm{d}S(\vec{x}),
 \end{equation}
 where $\vec{x}_{sq, i}$ is the center of each square on the surface for $i = 1, \  2, \cdots, \  N_f$.
-With equations (\ref{eq_Fo}), (\ref{eq_Qo}), the exact linear system of the equations we implement is as follows.
+With equations~(\ref{eq_Fo}),~(\ref{eq_Qo}), the exact linear system of the equations we implement is as follows.
  \begin{align}
 	\tiny
 		%---A------------------------------------------------------------
@@ -601,7 +601,7 @@ We use this operator for the rotation term,
   = - \vec{\Omega} \times  (\vec{x} - \vec{x}_{cm}),
   \]
 in the total torque equation.
-In addition, the top part of the right-hand side of the equation (\ref{eq_slp_lin_eq}) is the discretization of the volume integral,
+In addition, the top part of the right-hand side of the equation~(\ref{eq_slp_lin_eq}) is the discretization of the volume integral,
 \begin{equation}
 	{\vec{\mathcal{F}}} (\vec{x}_{sq,i}) = 
 	-\frac{ \alpha C_{max}}{8\pi } \frac{\rho_0}{(\rho_s - \rho_0)(1-\phi)} 
@@ -611,18 +611,18 @@ In addition, the top part of the right-hand side of the equation (\ref{eq_slp_li
 \end{equation}
    where $N_s$ is the total number of grid or source points in the fluid domain. We discuss more details of the volume integral computation in the next section. 
 %   ~\ref{section_volume_int}.
-  One can find factor 4 multiplied by the second and third blocks on the right-hand side of the system (\ref{eq_slp_linear_system}). 
+  One can find factor 4 multiplied by the second and third blocks on the right-hand side of the system~(\ref{eq_slp_linear_system}). 
  Since we set the side length of a cube as 2, factor 4 represents the area of a square face, which is the integral domain of the total force and torque equations. 
  \par
- Once we solve the linear system and obtain the unknowns, we use equation (\ref{eq_vel_all_onS_nonD}) to calculate the velocity field at all points in the fluid domain. We want to point out that the fluid velocity computation, especially including the volume integral (\ref{eq_volume_rhs}), is a very numerically expensive calculation. To accelerate it, we apply the fast multipole method (FMM) to our simulations. In the following section, we explain how we use the FMM. 
+ Once we solve the linear system and obtain the unknowns, we use equation~(\ref{eq_vel_all_onS_nonD}) to calculate the velocity field at all points in the fluid domain. We want to point out that the fluid velocity computation, especially including the volume integral~(\ref{eq_volume_rhs}), is a very numerically expensive calculation. To accelerate it, we apply the fast multipole method (FMM) to our simulations. In the following section, we explain how we use the FMM. 
  %
  %
  %----FMM--------------------------------------------------------------------------
 \subsection{Fast Multipole Method (FMM)}
 \label{subsec:FMM}
 Knowing that we simulate our problem in a three-dimensional fluid domain, it is necessary to implement an efficient and fast method for each part of the code while we keep the stability and desired accuracy. 
-The FMM is a numerical scheme for rapid computation of $N$-body problems governed by a Green's function using a multipole expansion. It was first introduced by Greengard and Rokhlin~\cite{greengard_fast_1987}. Since then, the researchers at Flatiron Institute - Simons Foundation,  including the original authors of the FMM, have developed the methods and shared the source code.~\cite{cheng_fast_1999,greengard_new_1997,greengard_new_2002} We choose to use their library, called \href{https://github.com/flatironinstitute/FMM3D}{{\color{blue}FMM3D}}. It provides the code of the $N-$body interactions governed by Laplace and Helmholtz equations in three-dimensions.
-For our problem, we can modify the Laplace kernel, as shown in~\cite{tornberg_fast_2008}, to compute the integrals of the Stokeslet (\ref{eq_stokeslet}).
+The FMM is a numerical scheme for rapid computation of $N$-body problems governed by a Green's function using a multipole expansion. It was first introduced by Greengard and Rokhlin~\cite{greengard_fast_1987}. Since then, the researchers at Flatiron Institute - Simons Foundation,  including the original authors of the FMM, have developed the methods and shared the source code.~\cite{cheng_fast_1999,greengard_new_1997,greengard_new_2002} We choose to use their library, called \href{https://github.com/flatironinstitute/FMM3D}{{\color{blue}FMM3D}}. It provides the code of the $N-$body interactions governed by Laplace and Helmholtz equations in three dimensions.
+For our problem, we can modify the Laplace kernel, as shown in~\cite{tornberg_fast_2008}, to compute the integrals of the Stokeslet~(\ref{eq_stokeslet}).
 The definition of the Laplace FMM in the FMM3D library is the following:
 \begin{definition} (\textit{Laplace FMM})
 	\label{eq_def_FMM}
@@ -646,7 +646,7 @@ The definition of the Laplace FMM in the FMM3D library is the following:
 Note that we use the letters $m$ and $n$ to index the targets and sources, respectively. For our problem, the points where we want to obtain velocity would be the targets; all points in the integral domain are sources.
 In addition to the target and source points, we can input the constant $c^n$ and vector $\vec{v}^{n}$. One needs to be careful with these terms; both values could depend on the sources but are independent of the targets. 
 \subsubsection{Volume integral of the Stokeslet}
-We first investigate how to incorporate the volume integral (\ref{eq_volume_rhs}) (without the prefactor) in the form of (\ref{eq_fmm3d_package}). For a fixed $j$, we can rewrite the equation using the index notation ($i, j = 1,2,3$), 
+We first investigate how to incorporate the volume integral~(\ref{eq_volume_rhs}) (without the prefactor) in the form of~(\ref{eq_fmm3d_package}). For a fixed $j$, we can rewrite the equation using the index notation ($i, j = 1,2,3$), 
 \begin{equation}
 	\tilde{V}(y_j^m)
 	\equiv
@@ -664,7 +664,7 @@ The Stokeslet can be expressed in terms of the Laplace kernel, $\Phi(\vec{x},\ve
 	\Phi \left(  x_i^n - y_j^m\right)
 	\label{eq_Gij}
 \end{equation}
-% Then the inner summation of equation (\ref{eq_Vn}) becomes
+% Then the inner summation of equation~(\ref{eq_Vn}) becomes
 % \begin{align*}
 %  \sum_{i = 1}^{3}
 %  C(x^n_i,  t)\hat{k} G_{ij}(x_i^n,\vec{y}^m)
@@ -676,7 +676,7 @@ The Stokeslet can be expressed in terms of the Laplace kernel, $\Phi(\vec{x},\ve
 % 	\frac{1}{\|x_i^n - y_j^m \|}
 % 	\right)
 % \end{align*}
-By substituting the Stokeslet (\ref{eq_Gij}) into the discretized volume integral (\ref{eq_Vn}), we then get
+By substituting the Stokeslet~(\ref{eq_Gij}) into the discretized volume integral~(\ref{eq_Vn}), we then get
 \begin{equation}
 	\tilde{V}_j (\vec{y}^m)=
 	\sum_{n=1}^{Ns}
@@ -722,15 +722,15 @@ At a singularity, i.e.,  $\vec{y}^m = \vec{x}^n $, we use MATLAB built-in functi
 		\ \text{d}V(\vec{x}).
 		\label{eq_vol_int_singular}
 	\end{equation}
-We then compute $\tilde{V}$ as in equation (\ref{eq_Vn}).
-We also split the last (gradient) term having $\left( x_i^n - y_j^m \right)$ in equation (\ref{eq_frm_lplc_stokes}), and write it as two summations in equation (\ref{eq_vol_source}) to point out that these two points, $x_i^n$ and $y_j^m$, represent different arguments. The point $x_i^n$ represents all points in the volume integral domain $V$, i.e., \textit{source} and $y_j^m$ is a particular point, or \textit{target}, in which we evaluate the velocity. This is important to acknowledge since the FMM3D code treats these source and target points separately, and this is the key to accelerating the computation.
+We then compute $\tilde{V}$ as in equation~(\ref{eq_Vn}).
+We also split the last (gradient) term having $\left( x_i^n - y_j^m \right)$ in equation~(\ref{eq_frm_lplc_stokes}), and write it as two summations in equation~(\ref{eq_vol_source}) to point out that these two points, $x_i^n$ and $y_j^m$, represent different arguments. The point $x_i^n$ represents all points in the volume integral domain $V$, i.e., \textit{source} and $y_j^m$ is a particular point, or \textit{target}, in which we evaluate the velocity. This is important to acknowledge since the FMM3D code treats these source and target points separately, and this is the key to accelerating the computation.
 % We split the gradient term into two parts since the nature of $x_3^n$ and $y_j^m$ differs. We see that $x_3^n$ relates to the source point as the FMM3D package does. However, $y_j^m$ is the target. 
 % We thus need to use the library twice to compute $\tilde{V}_j (\vec{y}^m) $.
 The main advantage of using FMM is that we call this FMM code only once for multiple targets with $N_s$ number of source points. 
 \par
-Moreover, since our summation has a vector form, while the FMM3D package returns a scalar value, we need to run this FMM3D package three times at least for each part, (\ref{eq_vol_target}) and (\ref{eq_vol_source}). 
-For more details, we break down the equations to determine what are $c^n$ and $\vec{v}^n$ would be in (\ref{eq_fmm3d_package}).
-First, we consider the first term in summation (\ref{eq_vol_target}),
+Moreover, since our summation has a vector form, while the FMM3D package returns a scalar value, we need to run this FMM3D package three times at least for each part,~(\ref{eq_vol_target}) and~(\ref{eq_vol_source}). 
+For more details, we break down the equations to determine what are $c^n$ and $\vec{v}^n$ would be in~(\ref{eq_fmm3d_package}).
+First, we consider the first term in summation~(\ref{eq_vol_target}),
 \begin{align}
 	\sum_{\substack{n=1 \\ n \neq m}}^{Ns} 
 		d \ {C}(x_3^n, t)
@@ -739,7 +739,7 @@ First, we consider the first term in summation (\ref{eq_vol_target}),
 \label{eq_vol_part1}
 \end{align}
 Since ${C}(x_3^n, t)\in \mathbb{R}$ for each $n$ and a fixed time $t$, we simply choose  $c^n =  {C}(x_3^n, t)$. 
-The second term in the sum (\ref{eq_vol_target}) can be computed by letting $\vec{v}^n$ in equation (\ref{eq_fmm3d_package}) be the product of the standard basis vector, $\hat{e}_j$, and the constant $x_3^n  \ {C}(x_3^n, t) $, that is
+The second term in the sum~(\ref{eq_vol_target}) can be computed by letting $\vec{v}^n$ in equation~(\ref{eq_fmm3d_package}) be the product of the standard basis vector, $\hat{e}_j$, and the constant $x_3^n  \ {C}(x_3^n, t) $, that is
 \begin{align}
 	\sum_{\substack{n=1 \\ n \neq m}}^{Ns} 
 		d \ {C}(x_3^n, t)
@@ -757,8 +757,8 @@ The second term in the sum (\ref{eq_vol_target}) can be computed by letting $\ve
 \end{align}
 We simply repeat the FMM3D for each component. 
 \par
-As we mentioned, the second summation (\ref{eq_vol_source}) is slightly different since the target point is multiplied by the gradient term that can be only related to the sources. One of the critical rules in the FMM is separating the target and source terms to compute integrals rapidly. Thus, the computation of this sum requires another three uses of the FMM package and a dot product with the target point vector.
-We compute the sum in the same manner as in (\ref{eq_vol_part2})
+As we mentioned, the second summation~(\ref{eq_vol_source}) is slightly different since the target point is multiplied by the gradient term that can be only related to the sources. One of the critical rules in the FMM is separating the target and source terms to compute integrals rapidly. Thus, the computation of this sum requires another three uses of the FMM package and a dot product with the target point vector.
+We compute the sum in the same manner as in~(\ref{eq_vol_part2})
 \begin{equation}
 	y_j^m  
 	\sum_{\substack{n=1 \\ n \neq m}}^{Ns} 
@@ -774,7 +774,7 @@ We compute the sum in the same manner as in (\ref{eq_vol_part2})
 as we have shown in the previous summation term with the gradient. 
 %---------Homogeneous velocity computation---------------------------------------
 \subsubsection{Surface integral of the Stokeslet}
-To obtain the fluid velocity, we use equation (\ref{eq_vel_all_onS_nonD}) for all $\vec{y} \in V$. In this computation, the evaluation of
+To obtain the fluid velocity, we use equation~(\ref{eq_vel_all_onS_nonD}) for all $\vec{y} \in V$. In this computation, the evaluation of
 \begin{equation}
 	u_H(\vec{y})  
 	= \int_S \vec{f}(\vec{x}) \cdot \bar{\bar{G \ }}( \vec{x}, \vec{y}) \ \text{d} S(\vec{x}),
@@ -785,9 +785,9 @@ We measured CPU time while varying the total number of fluid grid points.
 In Figure~\ref{fig_time_fmm_sum}, each line represents CPU time to compute, in seconds: 1) volume integral on the aggregate surface $S$, 2) volume integral in the fluid domain $V$, 3) solving the linear system~(\ref{eq_slp_linear_system}), 4) solving the advection-diffusion equation to update the perturbation, 5) velocity evaluation in the fluid domain, and 6) sum of all above (1 - 5).
 \begin{figure}[ht]
 	\begin{center}
-		\includegraphics[scale=0.45]{./figures/fig_time_varNx5}
+		\includegraphics[scale=0.35]{./figures/fig_time_varNx5}
 		% \includegraphics[scale=0.45]{./figures/fig_time_fmm_sum}
-	\caption{CPU time in second with an aggregate of 125 cubes for ten time-steps.}
+	\caption{CPU time in second with an aggregate of 125 cubes for ten time steps.}
 	\label{fig_time_fmm_sum}
 \end{center}
 \end{figure}
@@ -797,7 +797,7 @@ Here, the points $\vec{x}$ are the sources, and $\vec{y}$ are the targets.
 For the velocity inside and on the aggregate boundary, we use the rigid boundary velocity $u(\vec{x}) = \vec{U}_a + \vec{\Omega} \times \left(\vec{x} - \vec{x}_{cm} \right)$. This implies that we only use targets located outside the aggregate, and we do not expect any singularity in this computation ($\vec{x} \neq \vec{y}$). However, we may have close evaluation problems. We will discuss the size of errors in the next section. 
 \par
 We handle the integration of the Stokeslet in a manner similar to what was done for the volume integral. 
-Using the Laplace kernel, we can re-write the surface integral (\ref{eq_uH}) as
+Using the Laplace kernel, we can re-write the surface integral~(\ref{eq_uH}) as
 \begin{equation}
 	u_H(\vec{y}) =
 	\int_S 
@@ -811,7 +811,7 @@ Using the Laplace kernel, we can re-write the surface integral (\ref{eq_uH}) as
 	  \ \text{d} S(\vec{x}).
  \label{eq_surf_laplace}
 \end{equation}
-We first discretize the entire aggregate surface into $N_f$ square faces located at $[cx_j^n-1, cx^n_j+1]$, where $(cx^n_1, cx^n_2)$ is the center of $n$ square face. The discretized version of the velocity equation (\ref{eq_surf_laplace}) is denoted by $H(\vec{y})$,
+We first discretize the entire aggregate surface into $N_f$ square faces located at $[cx_j^n-1, cx^n_j+1]$, where $(cx^n_1, cx^n_2)$ is the center of $n$ square face. The discretized version of the velocity equation~(\ref{eq_surf_laplace}) is denoted by $H(\vec{y})$,
 \begin{align}
 	H(\vec{y}^m) & = u_H(\vec{y}) - E_f
 	 = \sum_{n = 1}^{N_f} H^n(\vec{y}^m) 
@@ -833,7 +833,7 @@ where the error coming from this approximation is denoted as $E_f$. A more detai
  Note that the stress $\vec{f}(\vec{x}^n)$ is assumed to be constant over each square face.  One can find that we have a significant error in the cube's corners. We want to ensure that we do not introduce larger errors as we make further approximations. 
 
 \par
-Next, we need to approximate the surface integral in equation (\ref{eq_surf_fmm_N_f}) using a Riemann sum,
+Next, we need to approximate the surface integral in equation~(\ref{eq_surf_fmm_N_f}) using a Riemann sum,
 \begin{align}
 	\tilde{H}(\vec{y}^m) 
 	& = H^n(\vec{y}^m) - E_{G} 
@@ -857,7 +857,7 @@ We take the same number of points, $N_s$, evenly distributed in one direction.
 In the schematic, Figure~\ref{fig_face_grid}, the red cross represents the center of the $n-$th square face, $(cx^n_1, cx^n_2)$.
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[scale=0.17]{./figures/fig_face_grid}
+		\includegraphics[scale=0.2]{./figures/fig_face_grid}
 	\caption{Schematic of points we use to approximate the integral of the single-layer potential kernel over one square face.}
 	\label{fig_face_grid}
 \end{center}
@@ -919,7 +919,7 @@ where $\vec{x}_a $ is the position of a point of the aggregate surface relative 
 where $\mathcal{R}$ is a rotation matrix. 
 \par
 We implement updates to the orientation matrix as follows~\cite{polimeno_toward_2022}.
-Assume we obtain the angular velocity, $\vec{\Omega}$, from solving equation (\ref{eq_slp_linear_system}) at every time step. (Initially, it is the zero vector). With this, we can find the three-dimensional change of the angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
+Assume we obtain the angular velocity, $\vec{\Omega}$, from solving equation~(\ref{eq_slp_linear_system}) at every time step. (Initially, it is the zero vector). With this, we can find the three-dimensional change of the angular position vector, $ \vec{\Omega} \Delta t = \left( \Delta \theta_1, \ \Delta \theta_2, \ \Delta \theta_3 \right) \equiv \Delta \vec{\theta}$.
 The matrix $\mathcal{A}$ is then defined such that $\mathcal{A} \vec{x} = \Delta \theta \times \vec{x}$,
 \begin{equation}
 	\mathcal{A}
@@ -947,7 +947,7 @@ With this $\mathcal{R}$ and orientation matrix $\mathcal{Q}$, we are ready to up
 	
 \subsubsection{Linear system in a rotated coordinate}
 We first solve for the stress at the center of each square face of an aggregate, $\vec{y} = \vec{x}_i$, 
-using the same formula as equation (\ref{eq_vel_all_onS_nonD}),
+using the same formula as equation~(\ref{eq_vel_all_onS_nonD}),
 \begin{equation}
 	\vec{u} \left(\vec{x}_i \right) 
 		  = -\int_{S}  
@@ -1022,7 +1022,7 @@ Once we solve the linear system, we may return the values on the fluid grid to t
 
 \subsubsection{Velocity computation}
 Once we solve the stress, we are supposed to use the same 
-equation (\ref{eq_vel_all_onS_nonD}) 
+equation~(\ref{eq_vel_all_onS_nonD}) 
 to solve for velocity in the fluid grid, which stays in the Cartesian coordinates.
 Although the volume integral term can stay as it is,  
 the boundary integral needs some special treatment
@@ -1094,7 +1094,7 @@ If we can obtain reasonable results in a smaller domain, we could use smaller $s
 In Figure~\ref{fig_NC10_compare_s}, we present three different domain sizes with the $s$ factor $s = 3, \ 4$, and $5$. At first glance, we can barely tell the differences between all three cases. In other words, there is no significant impact on aggregate behavior when reducing the domain size down to $s = 3$. Although we notice that the perturbations at $\vec{x}^{\star}$ show a little more variation with $s$, this remains a negligible effect.
 
 \subsection{Varying time step, $\Delta t$}
-We now vary the time step, $\Delta t$. We consider three different cases, $\Delta t = 0.75, \ 0.5$, and $0.25$. We are able to run simulations with somewhat large time steps since the aggregate size is small enough to have a velocity of order one. When the initial settling velocity is high, the CFL condition (\ref{eq_CFL}) can be violated, leading to instability. As the aggregate settles, the surrounding fluid becomes denser, which decreases the velocity, and therefore the CFL number. Thus, the velocities are more limiting on the time step at the beginning of the simulation. 
+We now vary the time step, $\Delta t$. We consider three different cases, $\Delta t = 0.75, \ 0.5$, and $0.25$. We are able to run simulations with somewhat large time steps since the aggregate size is small enough to have a velocity of order one. When the initial settling velocity is high, the CFL condition~(\ref{eq_CFL}) can be violated, leading to instability. As the aggregate settles, the surrounding fluid becomes denser, which decreases the velocity, and therefore the CFL number. Thus, the velocities are more limiting on the time step at the beginning of the simulation. 
 \par
 While we vary $\Delta t$, we set the domain size to aggregate diameter ratio $s = 3$ since we observed no critical changes in aggregate dynamics and we can save on computational time. For a fair comparison, we keep the grid size $\Delta x =1$. 
 The main takeaway of Figure~\ref{fig_NC10_compare_dt} is that there are no significant differences in the values we observe when we vary $\Delta t = 0.75, \ 0.5$, and $0.75$. Once again, we notice some variations in the perturbation $C(\vec{x}^{\star},t$ at later times. 
@@ -1127,7 +1127,7 @@ It is clear that the errors in all four values are fairly small compared to the 
 Lastly, we perform the simulations with several grid sizes, $\Delta x = 1, \ 2, $ and $4$. 
 The choice of such large grid sizes is justified by the approximation of constant stress over each face (of side length 2).
 In general, as long as all three choices produce similar results and have no stability issues, we prefer to use as large $\Delta x$ as possible to reduce the computational time. 
-The number of fluid grid points can also be a challenge in terms of computational memory required. 
+The number of fluid grid points can also be a challenge in terms of the computational memory required. 
 \par
 \begin{figure}[ht]
 	\begin{center}
@@ -1135,7 +1135,7 @@ The number of fluid grid points can also be a challenge in terms of computationa
 		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_cm3_all}
 		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_Fo3_all}
 		\includegraphics[scale=0.35]{./figures/fig_NC10_dx_C_star_interp3}
-	\caption{Comparison of various $\Delta x = 1, \ 2, \ 4$ in the domain size factor $s = 5$ with $\Delta t = 0.75$. We show (a) the settling speed, (b) the position of the center of mass, (c) the vertical force on the aggregate, and (d) the he value of the perturbation near the aggregate.}
+	\caption{Comparison of various $\Delta x = 1, \ 2, \ 4$ in the domain size factor $s = 5$ with $\Delta t = 0.75$. We show (a) the settling speed, (b) the position of the center of mass, (c) the vertical force on the aggregate, and (d) the value of the perturbation near the aggregate.}
 	\label{fig_NC10_compare_dx}
 \end{center}
 \end{figure}
@@ -1176,12 +1176,12 @@ To avoid any stability issues while being computationally efficient, we choose t
 Additionally, we select the stratification strength $\gamma$ more systematically. 
 To do so, we first consider the settling distance of an aggregate, denoting it as $z_T$. In Figure~\ref{fig_sample_agg10}, we show that the aggregate is initially located in the middle of the domain. We are interested in observing a setup where $\gamma$ is as large as possible while allowing the aggregate to travel about $z_T = 6R_a$, before
 reaching its level of neutral buoyancy.
-Equation (\ref{eq_rho_bg}) allows us to compute the background fluid stratification $\gamma$
+Equation~(\ref{eq_rho_bg}) allows us to compute the background fluid stratification $\gamma$
 \begin{equation}
 	\rho_{bg} = \rho_0 (1-\gamma z_T) =	\rho_0 (1 - \gamma 6R_a ) = \rho_a.
 	\label{eq_compute_G}
 \end{equation}
-We want the aggregate density $\rho_a$, which is defined in equation (\ref{eq_rho_a}), to reach neutral buoyancy, assuming its fluid portion $\rho_f$ is $\rho_0$.
+We want the aggregate density $\rho_a$, which is defined in equation~(\ref{eq_rho_a}), to reach neutral buoyancy, assuming its fluid portion $\rho_f$ is $\rho_0$.
 For an aggregate composed of 50 cubes, we have an estimated average radius $R_a \approx 9$~\cite{yoo_hydrodynamic_2020}, and thus we find $\gamma \approx 4 \times 10^{-4}$.  
 \begin{figure}[h]
 	\begin{center}
@@ -1195,13 +1195,13 @@ For an aggregate composed of 50 cubes, we have an estimated average radius $R_a 
 \end{figure}
 \par 
 In Figure~\ref{fig_NC50_snaps_all}, we show several 2D snapshots, sliced in the middle of the domain ($x = -0.74$), of the perturbation $C$ at various times. Note that we see negative values of $C$ since the perturbation is a concentration difference from the initial concentration. 
-We can observe much higher perturbations around the aggregate that increases in magnitude as time increases as the aggregate entrains upper-layer solute. 
+We can observe much higher perturbations around the aggregate that increases in magnitude as time increases as the aggregate entrains the upper-layer solute. 
 \par
 We observe the aggregate behavior more closely in Figure~\ref{fig_NC50_base_case_all}. As we introduced in the previous section, we measure (a) the settling speed and (b) the normalized total drag of the aggregate. We also exhibit the ratio of total drag to the settling speed in plot (c) as a measure of the coefficient in the linear relationship between drag and velocity
 that is observed in Stokes flow. Although both settling speed and drag seem to be decreasing over time, we find that their ratio (c) increases non-linearly. This implies that the stratification of the fluid plays a role in the aggregate's settling behavior, not only by reducing the buoyancy but also through the entrained fluid. 
 We would have observed a horizontal line if the surrounding fluid did not affect aggregate motion as it settles in a homogeneous fluid. 
 \par
-In the last plot (d), we observe the perturbation at a particular location outside the aggregate boundary. It is the white star point $\vec{x}^{\star} = (-0.74, 12.74, 0.24)$ in Figure~\ref{fig_NC50_snaps_all}. This point is approximately (1.01 + $R_m$) away from the center of mass of the aggregate. The perturbation is expected to grow in magnitude over time at this point. As the settling motion slows down, the magnitude of perturbation also smoothes out. 
+In the last plot (d), we observe the perturbation at a particular location outside the aggregate boundary. It is the white star point $\vec{x}^{\star} = (-0.74, 12.74, 0.24)$ in Figure~\ref{fig_NC50_snaps_all}. This point is approximately (1.01 + $R_m$) away from the center of mass of the aggregate. The perturbation is expected to grow over time in magnitude at this point. As the settling motion slows down, the magnitude of perturbation also smoothes out. 
 \par
 In the next section, we explore various shapes of aggregates made with 50 cubes, in addition to the base case. Afterward, we will observe the effects of varying Péclet numbers and background fluid density stratification $\gamma$. 
 \begin{figure}[ht]
