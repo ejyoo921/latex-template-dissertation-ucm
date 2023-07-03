@@ -1,17 +1,17 @@
 \par
-In this chapter, I report the summer 2023 internship work at LBNL and additional numerical implementations I continued to finish this thesis.
+In this chapter, I report the internship work at LBNL in the summer of 2022 with additional numerical implementations I continued to finish this thesis.
 
 \par
-{\color{blue}EY: I may move the following paragraph to Chapter 1.3: please let me know your thoughts!}
+{\color{blue}EY: Shilpa, I may move the following paragraph to Chapter 1.3: please let me know your thoughts!}
 \\
 Among many different types, we particularly study the granular materials for non-Newtonian flow behavior. They are highly ubiquitous and the second most common material on Earth after water. For example, there are grains we can find in the food industry, pharmaceutical powder to make medicine tablets, and geological matters, such as sand or soil.
 One fascinating feature of these matters is that their states between liquid, solid, and gas, can co-exist at the same time. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
-There are still many questions to understand their behaviors due to the complicated dynamics.
+There are still many questions we need an answer to understand these granular material behaviors due to the complicated dynamics.
 
 
 
 \section{Governing equations}
-We consider a steady simple shear flow of granular materials, that exhibit a non-Newtonian behavior. Although it is typically more suitable to apply a compressible flow for studying granular rheology, we assume a steady state and no pressure-dependant flow, as a first step. 
+We consider a steady simple shear flow of granular materials, that exhibit a non-Newtonian behavior. Although it is typically more suitable to apply a compressible flow for studying granular rheology, we assume a steady state and pressure-independent flow, as a first step. 
 We thus solve incompressible Navier-Stokes equations,
 \begin{equation}
   \nabla \cdot \vec{u} = 0 
@@ -59,8 +59,8 @@ We particularly pay attention to the viscous stress tensor of the form,
    \label{eq_CN_tau}
 \end{equation}
 where $\nu_0$ is constant in shear flow, and $\nu_1$ and $\nu_2$ are a function of $\dot{\gamma}$.
-The second-order complexity form of the deviatoric stress tensor, equation (\ref{eq_CN_tau}), was introduced by Rivlin-Ericksen tensors~\cite{rivlin_stress-deformation_1955} and
-the term $\bm{A_i}$ is called a Rivlin-Ericksen tensor, defined as
+The second-order complexity form of the deviatoric stress tensor, equation (\ref{eq_CN_tau}), was introduced by Colemann and Noll~\cite{coleman_approximation_1960} and
+the term $\bm{A_i}$ is the Rivlin-Ericksen tensor, defined as
 \begin{equation}
    {\bm A_1}  = \nabla \vec{u} +  \left( \nabla \vec{u} \right)^T = 2 \bm{D} 
 \end{equation}
@@ -73,9 +73,9 @@ and
 Note that the general form of the Rivlin-Ericksen tensor can be extended to order $n$,  
 \begin{equation}
   \boldsymbol{A}_{n+1}
-  =\frac{\partial \boldsymbol{A}_{n}}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_n+\boldsymbol{A}_n \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_n,
+  =\frac{\partial \boldsymbol{A}_{n}}{\partial t} + \vec{u} \cdot \nabla \boldsymbol{A}_n+\boldsymbol{A}_n \nabla \vec{u}+ \left(\nabla \vec{u} \right)^T \boldsymbol{A}_n.
 \end{equation}
-yet we decided to explore up to the second order.
+We have yet to decide to use up to the second order.
 \par
 
 % \begin{align}
@@ -89,7 +89,7 @@ yet we decided to explore up to the second order.
 % \end{align}
 % The terms $\mu_i, \kappa_i > 0 $ ($i, j = 1,2$) coefficients represent the shear rate-dependent and rate-independent contributions, respectively, to the total stress.
 \par
-In general, many researchers do not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ for examining a complex fluid. For polymer solutions, the most studied in the complex fluids field, it is well-known that the effect of  $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. However, for many other materials, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$; such as curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011}. We thus want to implement computational tools to study the second-order strain rate effect.
+In general, many researchers do not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ for examining a complex fluid. For polymer solutions, the most studied in non-Newtonian fluids area, it is well-known that the effect of  $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. However, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$ for  other materials, including granular matters. For example, we find a curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011}. We thus want to implement computational tools to study the second-order strain rate effect.
 
 % via two normal stress differences, $N_1$ and $N_2$. 
 
@@ -124,7 +124,7 @@ We now express a new stress tensor $\bm \tau$ with a higher-order strain rate th
     + \mu_1(\dot{\gamma}) \mathcal{O}({\bm D})
     + \mu_2(\dot{\gamma}) \mathcal{O}({\bm D^2}).
   \end{align}
-In this section, we focus on the methodology to compute the viscosity $\mu_i ({\dot{\gamma}})$ ($i = 1,2$) under the simple shear flow. 
+In this section, we focus on the methodology to compute the viscosity $\mu_i ({\dot{\gamma}})$ ($i = 1,2$) under a simple shear flow. 
 % A new apparent viscosity computation using the well-known $\mu(I)$ relation can also be found [{\color{blue}REFERENCE}]. 
 
 To describe a non-isotropic flow, we consider the deviatoric stress tensor of the form (\ref{eq_2ndOrder_tau}), which is derived under two conditions:
@@ -164,7 +164,7 @@ and
   \mu_2 (\dot{\gamma}) = 
   \left( \eta_2  \dot{\gamma}^2
   +  \kappa_2 
-  \right) \frac{1}{\dot{\gamma}^2}
+  \right) \frac{1}{\dot{\gamma}^2}.
   \label{eq_mu2_main}
 \end{equation}
 Note that the magnitude of strain rate, $\dot{\gamma}$, can be computed by applying the scaled Frobenius norm for a second-order tensor, 
@@ -174,13 +174,13 @@ Note that the magnitude of strain rate, $\dot{\gamma}$, can be computed by apply
 \]
 In general, the Frobenius norm states $\bm{D}^H$ instead of $\bm{D}^T$. Since we consider real-valued tensors, it is valid to have $\bm{D}^H = \bm{D}^T$.
 \par
-We also note that the functions, $\eta_i$ and $\kappa_i$ for $i = 1,2$, have the following dependency to the total stress: each $\eta_i(\dot{\gamma}, p)$ is (shear) rate-dependent and $\kappa_i (p)$ is (shear) rate-independent. 
+The flow functions, $\eta_i$ and $\kappa_i$ for $i = 1,2$, have the following dependency to the total stress: each $\eta_i(\dot{\gamma}, p)$ is (shear) rate-dependent and $\kappa_i (p)$ is (shear) rate-independent. 
 Along with the shear effect from $\eta_1$, we can observe the second normal-stress difference in shear flows from $\eta_2$.
 The rate-independent terms, $\kappa_1$ and $\kappa_2$, allow us to find yield stress. 
 We explain the details of these two types of functions in the following sub-section.
 
 \subsection{$\mu (I)$ rheology}
-The main key to getting $\eta_i$ and $\kappa_i$ terms is the well-known $\mu(I)$ relationship developed by \textit{Jop, 2006}~\cite{jop_constitutive_2006}.
+The key to getting $\eta_i$ and $\kappa_i$ terms is the well-known $\mu(I)$ relationship developed by \textit{Jop, 2006}~\cite{jop_constitutive_2006}.
 Here, $I$ is called the \textit{inertial number} defined as 
 \begin{equation}
   I =  \frac{\dot{\gamma} d }{\sqrt{P/\rho_p}},
