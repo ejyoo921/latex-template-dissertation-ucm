@@ -299,7 +299,7 @@ In particular, we implemented the following scheme,
 \end{equation}
 where 
 \[
-  {\bm F} = 
+  {\bm F} \left( \vec{u}^{n} \right)= 
     -\vec{u}^n \cdot \nabla \vec{u}^n 
     +\frac{1}{\rho}
     \biggl(
@@ -446,12 +446,25 @@ Now, we need to solve for red - next time step values:
 \]
 Note that ${\bm \tau}_i^* = {\bm \tau}(\vec{u}^*, \eta_i)$.
 \end{comment}
-\clearpage
 \section{Numerical validation}
+We mainly compare performance of two time integration methods; 1) the explicit Euler, which was already available in the AMReX-incflo, and 2) the explicit RK2 scheme that I implemented for granular rheology.
 \begin{itemize}
-  \item We follow the experiment setup found in \cite{couturier_suspensions_2011}
-  \item We want to present the N1 and N2 values with various volume fractions: from 0.1 to 0.5.
-  \item the geometry of a tilted trough with rigid spheres in a Newtonian fluid. 
+  \item We use $16 \times 32 \times 16$ grid points in a long-kind cube.
+  \item We consider a simple shear flow where the top of $z$-axis is moving with a velocity 0.1 (unit) under the gravity (how much)?  \item We look the granular material (what kind? - like sand) assuming no pressure-dependance
+  \item No-slip boundary conditions on x and z axis AND (a large) periodic boundary condition is applied for the y direction (flow moving)
+\end{itemize}
+
+
+
+\subsection{Stability analysis}
+\begin{itemize}
+  \item Show and compare the stability region
+  \item Compute the eigenvalues of the problem using a finite difference scheme (first order)
+  \item Show it is slightly better for this case since it is advection dominated problem
+\end{itemize}
+\subsection{Error analysis (order convergence)}
+\begin{itemize}
+  \item Show results plot using t 
 \end{itemize}
 
 \section{Discussion and future work}
