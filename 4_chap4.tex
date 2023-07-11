@@ -250,7 +250,7 @@ To describe a non-isotropic material, we consider a deviatoric stress tensor of 
 \begin{equation}
   {\bm {\bm \tau}}
   = \mu_1(\dot{\gamma}) {\bm D}
-  \ +  \ 
+  +  
  \mu_2 (\dot{\gamma})
   \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right],
   % \ + \
@@ -315,49 +315,62 @@ Meanwhile, the sand landing on the bottom part of the hourglass is forming a con
 \par
 In general, these three regimes can be categorized by the inertial number $I$. The solid-like state appears when $I$ is small. As $I$ increases, the granular material deformation occurs rapidly, following as we see in the middle of the hourglass. The collisional flow, acting like a gas, can be observed for a large $I$ number. 
 \par
-By applying this $\mu(I)$ rheology, Srivastava~\cite{srivastava_viscometric_2021} devleoped a callibration to obtain the coefficients $\eta_i$ and $\kappa_i$.
-For the first-order strain rate viscosity term, equation~(\ref{eq_mu1_main}), we have 
+By applying this $\mu(I)$ rheology, Srivastava~\cite{srivastava_viscometric_2021} devleoped a callibration to obtain the coefficients $\eta_i$ and $\kappa_i$, for $i = 1, \ 2$,
 \begin{equation}
-  \mu_1(I) = \mu_1^0 + A_1{ I}^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{P},\
-\label{eq_muI1}
+  \mu(I)_i = \mu_i^0 + A_i{ I}^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P},
+\label{eq_muI_general}
 \end{equation}
-where $\mu_1^0, A_1,$ and $\alpha_1$ are fitting parameters, depending on the matrials. 
-By substituting the inertial number $I$, equation~(\ref{eq_inertialI}), into equation~(\ref{eq_muI1}), we get
+where $\mu_i^0, A_i,$ and $\alpha_i$ are fitting parameters, depending on the matrials. 
+By substituting the inertial number $I$, equation~(\ref{eq_inertialI}), into equation~(\ref{eq_muI_general}),
+we get
 \begin{equation}
-  \mu_1(I) =
-     \mu_1^0 + A_1 {\left(  \frac{\dot{\gamma} a }{\sqrt{P/\rho}}\right) }^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{P}.
+  \mu(I)_i = \mu_i^0 + A_i {\left(  \frac{\dot{\gamma} d }{\sqrt{P/\rho}}\right) }^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P}.
+\label{eq_muI_I}
 \end{equation}
-We then find $\mu_1 (\dot{\gamma}, P)$ and $\kappa_1(p)$ as
+We then can find the viscous terms~(\ref{eq_mu1_main}) and~(\ref{eq_mu2_main}),
 \begin{equation}
-    \mu_1  (\dot{\gamma}, P)= 
-    \biggl( A_1 {\left(   d  \sqrt{\rho} \right) }^{ \alpha_1}\biggr) 
-     \dot{\gamma}^{\alpha-1} P^{1-\alpha/2}
+  \mu_i  (\dot{\gamma})= 
+ P \Biggl( \mu_i^0 + A_i {\left(  \frac{\dot{\gamma} d }{\sqrt{P/\rho}}\right) }^{ i \alpha_i}\Biggr) 
+   \frac{1}{\dot{\gamma}^i}
 \label{eq_eta1}
 \end{equation}
-\begin{equation}
-    \kappa_1(P) = \mu_1^0 P
-\label{eq_kappa1}
-\end{equation}
-\par
-Similarly, we can find the coefficients for the quadratic in ${\bm D}$ terms, having the $\mu(I)$ relationship as follows:
-\begin{equation}
-    \mu_2(I) = \mu_2^0 + A_2{ I^2}^{ \alpha_1} =  \frac{(\eta_2 \dot{\gamma}^2 + \kappa_2)}{P},\
-\label{eq_muI2}
-\end{equation}
-Then, we obtain $\mu_2 (\dot{\gamma}, P)$ and $\kappa_2(P)$
-\begin{equation}
-    \mu_2  (\dot{\gamma}, P)= 
-    \biggl( A_2 {\left(   d  \sqrt{\rho} \right) }^{ 2\alpha_2}\biggr) 
-     {\dot{\gamma}}^{2(\alpha_2-1)} P^{1-\alpha_2}
-\label{eq_eta2}
-\end{equation}
-\begin{equation}
-    \kappa_2(P) = \mu_2^0 P
-\label{eq_kappa2}
-\end{equation}
+% For the first-order strain rate viscosity term, equation~(\ref{eq_mu1_main}), we consider the following relationship
+% \begin{equation}
+%   \mu_1(I) = \mu_1^0 + A_1{ I}^{ \alpha_1} =  \frac{(\eta_1 \dot{\gamma} + \kappa_1)}{P},\
+% \label{eq_muI1}
+% \end{equation}
 
+% We then find $\mu_1 (\dot{\gamma}, P)$ and $\kappa_1(p)$ as
+% \begin{equation}
+%   \mu_1  (\dot{\gamma}, P)= 
+%   \biggl( A_1 {\left(   d  \sqrt{\rho} \right) }^{ \alpha_1}\biggr) 
+%    \dot{\gamma}^{\alpha-1} P^{1-\alpha/2}
+% \label{eq_eta1}
+% \end{equation}
+% \begin{equation}
+%     \kappa_1(P) = \mu_1^0 P
+% \label{eq_kappa1}
+% \end{equation}
+% \par
+% Similarly, we can find the coefficients for the quadratic in ${\bm D}$ terms, having the $\mu(I)$ relationship as follows:
+% \begin{equation}
+%     \mu_2(I) = \mu_2^0 + A_2{ I^2}^{ \alpha_1} =  \frac{(\eta_2 \dot{\gamma}^2 + \kappa_2)}{P},\
+% \label{eq_muI2}
+% \end{equation}
+% Then, we obtain $\mu_2 (\dot{\gamma}, P)$ and $\kappa_2(P)$
+% \begin{equation}
+%     \mu_2  (\dot{\gamma}, P)= 
+%     \biggl( A_2 {\left(   d  \sqrt{\rho} \right) }^{ 2\alpha_2}\biggr) 
+%      {\dot{\gamma}}^{2(\alpha_2-1)} P^{1-\alpha_2}
+% \label{eq_eta2}
+% \end{equation}
+% \begin{equation}
+%     \kappa_2(P) = \mu_2^0 P
+% \label{eq_kappa2}
+% \end{equation}
 %--------------------------------------------------
-We can obtain the flow fitting parameters from particle-based simulations, such as the discrete element method (DEM). The following parameter values are introduced in~\cite{jop_constitutive_2006} and~\cite{srivastava_viscometric_2021}:
+\noindent
+Note that we can obtain the fitting parameters from particle-based simulations, such as the discrete element method (DEM). The following parameter values are introduced in~\cite{jop_constitutive_2006} and~\cite{srivastava_viscometric_2021}:
     \[
     0.09 \leq \mu_1^0 \leq 0.33, 
     \ \ \ \ \ \ \ 
@@ -383,7 +396,7 @@ For the rest of the computation, we use the AMReX-incflo library as it is.
 \subsection{Velocity computation}
 The main AMReX-incflo library provides three integrations: 1) explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
 Since we have the stress tensor ${\bm \tau}$ of the form~(\ref{eq_CN_tau}), which is non-linear in the velocity, the most convenient choice was the explicit Euler method.
- However, it would be beneficial to have another scheme, for more stability. efficiency, and accuracy. 
+ However, it would be beneficial to have another scheme, for more stability, efficiency, and accuracy. 
  \par
  We consider a two-stage Runge-Kutta (RK2) method to achieve second-order convergence. 
 In particular, we implemented the following scheme,
@@ -406,7 +419,7 @@ where
         +  \rho  \vec{g} 
         \biggr).
 \]
-where the superscription $n$ represents the current time (known) value; $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, $\vec{u}^*  = \vec{u}^* (\vec{x}, t_{n+1})$. However, $\vec{u}^*$ does not necessarily satisfy the continuity equation~(\ref{eq_conserv_mass}). Thus, we project this intermediate velocity $\vec{u}^*$ onto the divergence-free space. 
+where the superscription $n$ represents the current time (known) value; $\vec{u}^n = \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, $\vec{u}^*  = \vec{u}^* (\vec{x}, t_{n+1})$. However, $\vec{u}^*$ does not necessarily satisfy the continuity equation~(\ref{eq_conserv_mass}). Thus, we project this intermediate velocity $\vec{u}^*$ onto the divergence-free space~\cite{sverdrup_highly_2018}.
 \par
 For the projection step, we express $\vec{u}^{*}$ according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
 \begin{equation}
