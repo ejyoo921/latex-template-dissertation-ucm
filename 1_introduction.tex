@@ -45,7 +45,7 @@ where $ \rho$ is fluid density (constant) and $\vec{u}, \ \vec{g}$ are fluid vel
 The first equation~(\ref{eq_conserv_mass}) shows the conservation of mass and the equation~(\ref{eq_momentum_NS}) describes the momentum conservation. 
 We also introduce the stress tensor, $\bar{\bar{\sigma}}$ as sum of the fluid pressure $P$ and deviatoric stress tensor $\bm{\tau}$,
 \begin{equation}
-   \bar{\bar{\sigma}} =-P \bar{\bar{I}} + {\bm \tau} = -P \bar{\bar{I}} + {\tilde{\mu}} {\bm D},
+   \bar{\bar{\sigma}} =-P \bar{\bar{I}} + {\bm \tau} = -P \bar{\bar{I}} + 2{\tilde{\mu}} {\bm D},
    \label{eq_stress_tensor}
 \end{equation}
 where ${\tilde{\mu}}$ is constant fluid viscosity and ${\bm D}$ is the symmetric strain rate tensor, that is,
@@ -160,30 +160,52 @@ In general, $\vec{f}(\vec{x})$ is the unknown stress vector, or traction, on the
 When $S$ is the boundary of a solid object, in our case an aggregate, the general representation formula may be simplified in two different ways, depending on the fluid domain characteristics and/or type of the object's surface. We will introduce those two formulae in Chapter 2. 
 
 
-\section{Non-Newtonian fluids}
+\section{Complex fluids}
 \label{sec:intro_complex_fluid}
 In the last part of this thesis, we will turn our attention to non-Newtonian fluids. This topic is added to my thesis as an extension of a summer internship at the Lawrence Berkeley National Lab in 2022, under the guidance of Dr. Ishan Srivastava. 
 \par
 \vphantom{text}
 \par
-A non-Newtonian fluid shows many interesting behaviors quite different than Newtonian fluids. To understand those phenomena, we focus on the viscous stress tensor, $\bar{\bar{\sigma}}$ introduced in equation~(\ref{eq_stress_tensor}). The major difference for non-Newtonian fluids is that the viscosity (denoted $\tilde{\mu}$ in the Newtonian fluid case) is not constant anymore; rather it is a function of the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$~\cite{kundu_chapter_2016}.
+A broad class of complex fluids encompasses various materials of natural, industrial, and medical importance, such as granular materials, suspensions of micro-scale materials, and biological molecules.
+Complex fluids show many interesting behaviors quite different than Newtonian fluids. 
+The major difference is that the viscosity (denoted $\tilde{\mu}$ in the Newtonian fluid case) is not constant anymore; rather it is attributed to the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$~\cite{kundu_chapter_2016}.
 Due to this varying viscosity, the constitutive behavior of non-Newtonian fluids is highly complex. 
-They show intriguing phenomena such as shear thickening, shear thinning, and jamming. Figure \ref{fig_rheology} demonstrates how the shear stress, $|\bm{\tau}|$, varies on the shear rate $\dot{\gamma}$, with an example.
-One defining feature of many complex fluids is the presence of a yield stress, which is shown as the red star in Figure \ref{fig_rheology} for a Bingham fluid. A simple example of a material with a yield stress is toothpaste. For an insufficiently stressed state, they behave like an elastic solid; once the yield stress is exceeded, they flow like a fluid. Note that the study of complex fluids, including those that exhibit two phases as responses to applied stress, is called {\textit{rheology}}. 
+To understand their behaviors, we shall focus on the viscous stress tensor, $\bm \tau$, introduced in equation~(\ref{eq_stress_tensor}). 
+In particular, we explore four features of viscosity in complex fluids: 1) (shear) rate-dependent viscosity, 2) yield stress, 3) a second-order strain rate rheology, and 4) granular material flow.
+Note that {\textit{rheology}} is the study of material deformation and flows as responses to applied stress, including those that exhibit co-existing two states.
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[scale=0.25]{figures/fig_yield_stress_graph.pdf}
+		\includegraphics[scale=0.2]{figures/fig_yield_stress_graph.pdf}
 	\end{center}
    \caption{Classification of fluid types based on descriptions in~\cite{irgens_rheology_2014}. Solid lines show different types of non-Newtonian behavior with examples in the parenthesis. The red star describes yield stress. The dashed line represents Newton's law of viscosity.}
 \label{fig_rheology}
 \end{figure}
 \par
-This broad class of non-Newtonian fluids encompasses various materials of industrial and natural importance,
-such as granular fluids, polymeric fluids, and suspensions. 
-In this project, we focus on the granular materials and their flow in a long cube-shaped channel. Assuming pressure-independent, we incorporate the varying viscosity into the incompressible Navier-Stokes equations, which are introduced in~(\ref{eq_conserv_mass}) and~(\ref{eq_momentum_NS}).
-Our project goal is to have a constitutive rheology code that can capture such complex continuum dynamics. 
+Figure \ref{fig_rheology} demonstrates how the shear stress, $|\bm{\tau}|$, varies on the shear rate $\dot{\gamma}$, with an example.
+Two types of rate-dependent viscosity, shear-thinning and thickening, are plotted with the green and purple lines, respectively.
+The viscosity of a shear-thinning fluid, such as shampoo or mayonnaise, decreases as the shear rate increases~\cite{singh_introduction_2013}. On the other hand, shear-thickening fluid viscosity gets higher under shear strain~\cite{barnes_introduction_1989}. 
+Meanwhile, the orange straight line represents the Bingham plastic fluid.
+One defining characteristic of many complex fluids is the presence of yield stress, which is shown as the red star on the vertical axis. 
+Yield stress is an instantaneous stress value to make a material flow.  
+For an insufficiently stressed state, the material behaves like an elastic solid, allowing deformation plastically; once the yield stress is exceeded, it flows like a fluid~\cite{irgens_rheology_2014}. 
+Examples of yield stress fluids include toothpaste, cement, mud, and blood. 
+We will discuss more of the relationship between viscosity and shear rate in Chapters 4.2 and 4.3.
+
 \par
-We use the exascale computing package \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. In particular, I implemented the granular rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations with the viscosity of granular flow in complex geometries without subcycling in time. We describe the details in Chapter 4.
+While the viscous stress tensor to model the rate-dependent and yield stress fluids is a multiple of their viscosity to the first-order strain rate, $\bm D$, other flow effects can be captured by a higher-order strain rate. In this thesis, we explore up to the second-order case and call them secondary flows.
+In the recent paper by~\cite{tanner_review_2018}, Tanner discussed several examples of non-colloidal suspensions and highlighted the importance of examining these secondary flows.
+For instance, a curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011} are found for a non-linear strain rate effect. We thus want to implement computational tools to study the second-order strain rate effect.
+\par
+Lastly, we study a little deeper for the granular materials.
+They are highly ubiquitous and the second most common material on earth after water. 
+For example, we can find grains in the food industry, pharmaceutical powder to make medicine tablets, and geological materials, such as sand or soil.
+One fascinating property is that they can behave like a liquid, solid, and gas, co-existing at the same time. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
+There are still many open questions we to study to understand the behaviors of granular materials due to the complicated dynamics.
+%  and their flow in a long cube-shaped channel. 
+\par
+Our ultimate goal for this project is to have a constitutive rheology code that can capture such complex continuum dynamics. 
+We use the exascale computing package \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. In particular, I implemented the granular rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations with the viscosity of granular flow in complex geometries without subcycling in time. 
+% We describe the details in Chapter 4.
 
 
 
