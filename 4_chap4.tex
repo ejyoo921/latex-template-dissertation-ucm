@@ -88,11 +88,12 @@ due to $|\bm{D}| = \dot{\gamma}$, and thus, we should have
 For this computation, we use the Papanastasiou regularization method~\cite{papanastasiou_flows_1987} since it is implemented in the AMReX-incflo. 
 \par
 By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
-\[
+\begin{equation}
   \frac{1}{\dot{\gamma}} \rightarrow \frac{1-e^{-\dot{\gamma} / \varepsilon}}{\dot{\gamma}}  
-\]
+\end{equation}
 for $\dot{\gamma}/\varepsilon \gg 1$. Otherwise, we simply use $1/\varepsilon$. 
 The detailed mathematics and analysis can be found in~\cite{sverdrup_highly_2018}.
+
 
 
 \section{Flow equations with a second-order strain rate rheolgy}
@@ -166,7 +167,6 @@ Note that the general form of the Rivlin-Ericksen tensor can be extended to orde
 In general, many researchers do not include the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ for examining a complex fluid. For polymer solutions, the most studied in non-Newtonian fluids, it is well-known that the effect of the $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. 
 However, there are potentially important characteristics that are neglected when we consider the stress only linear in $\boldsymbol{D}$ for other materials, including granular material. 
 We thus explore the second-order rheology with granular materials.
-
 
 % We will explore both first- and second-order rheologies, depending on the materials we consider. 
 % In the following four sections, we discuss the viscous tensor term $\bm \tau$ for each type of complex fluid. 
@@ -395,7 +395,10 @@ Note that we can obtain the fitting parameters from particle-based simulations, 
     0.28 \leq \alpha_2 \leq 0.44.
     \]
 One can find the corresponding $A_i$ values in~\cite{srivastava_viscometric_2021}.
-
+Note that we may use the following regularization for a higher-order strain rate, 
+\begin{equation}
+  \frac{1}{\dot{\gamma}^2} \rightarrow \frac{1-e^{-\dot{\gamma^2} / \varepsilon}}{\dot{\gamma^2}}  
+\end{equation}
 \subsection{Hydrostatic pressure dependency}
 For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate the viscosity.
 Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and perturbation, $P'$, such that
@@ -555,27 +558,44 @@ Now, we need to solve for red - next time step values:
 Note that ${\bm \tau}_i^* = {\bm \tau}(\vec{u}^*, \eta_i)$.
 \end{comment}
 \section{Numerical validation for time integrals}
-We mainly compare the performance of two time integration methods; 1) the explicit Euler, which was already available in the AMReX-incflo, and 2) the explicit RK2 scheme that I implemented for granular rheology.
-\begin{itemize}
-  \item We use $16 \times 32 \times 16$ grid points in a long-kind cube.
-  \item We consider a simple shear flow where the top of $z$-axis is moving with a velocity 0.1 (unit) under gravity (how much)?  \item We look at a material (what kind? - like sand) assuming bingham 
-  \item Toothpaste?
-  \item No-slip boundary conditions on the x and z axis AND (a large) periodic boundary condition is applied for the y direction (flow moving)
-\end{itemize}
+We compare the performance of two time integration methods: 1) the explicit Euler, which was already available in the AMReX-incflo, and 2) the explicit RK2 scheme that I implemented for a higher-order strain rate rheology.
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.25]{figures/fig_granular_domain.pdf}
+    \end{center}
+  \caption{Numerical simulation domain box filled with sand type material.}
+  \label{fig_granular_domain}
+\end{figure}
+\par
+For this validation, we consider a rectangular cuboid, as we describe in Figure~\ref{fig_granular_domain}, with dimensions $16 \ (\text{width}) \times 32 \  (\text{length}) \times 16 \ (\text{hieght})$, where all the walls in the $x-$ and $z-$directions are no-slip. We impose a periodic condition on the $y-$direction. Note that we consider centimeters (cm) for the length scale. We suppose this cuboid is filled with dry sands of a mean diameter $d = 0.15$ cm and material density $\rho = 1$ g/cm$^3$.
+In~\cite{senetakis_inter-particle_2013}, they observed the interparticle friction of dry sands $\mu_s \approx 0.01$, in which particle sizes are in the range of $1.18 \leq 2.36$. We then find the fitting parameters from~\cite{srivastava_viscometric_2021}, as in the following Table~\ref{table_test}. 
+\begin{table}[ht]
+  \resizebox{\textwidth}{!}{%
+   \begin{tabular}[ht]{|c|c|c|c|}
+   \hline
+   & \hspace{1.5cm} $\mu_i^0$ \hspace{1.5cm} & \hspace{1.5cm} $\alpha_i$ \hspace{1.5cm} &   \hspace{1.5cm}$A_i$   \hspace{1.5cm} \\  \hline
+   \hspace{1cm} $i = 1$ \hspace{1cm}   & \hspace{1.5cm} 0.12 \hspace{1.5cm} & \hspace{1.5cm} 0.41 \hspace{1.5cm} & \hspace{1.5cm}  0.512 \hspace{1.5cm}
+       \\  \hline
+       \hspace{1cm} $i = 2$ \hspace{1cm} & \hspace{1.5cm}  0.02 \hspace{1.5cm} & \hspace{1.5cm} 0.31 \hspace{1.5cm} & \hspace{1.5cm} 0.252 \hspace{1.5cm}
+  \\ 
+  \hline
+  \end{tabular}}
+   \caption{Fitting parameters of granular materials when the interparticle friction $\mu_s = 0.01$~\cite{srivastava_viscometric_2021}.
+   }
+   \label{table_test}
+   \end{table}
+
+\subsection{Error analysis (order convergence)}
 \subsection{Velocity in the shear flow direction}
 \subsection{Viscosity variation}
 
 
-\subsection{Error analysis (order convergence)}
-\begin{itemize}
-  \item Order convergence plot with various time step size 
-\end{itemize}
+
 
 \section{Discussion and future work}
 There are several potential future works we could consider. 
 In the near future, we may analyze the stabilities between two time integral methods for this particular case.
-In some preliminary results, we found that the RK2 method showed better stability than the explicit Euler method. 
-
+Our preliminary results in the early stage of a new time integral implementation showed that the RK2 method was more stable than the explicit Euler method for certain cases. 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.7]{figures/fig_stability_RK_Euler.pdf}
@@ -583,7 +603,8 @@ In some preliminary results, we found that the RK2 method showed better stabilit
   \caption{Stability regions of the explicit Euler and RK2 methods. }
   \label{fig_stability_RK_Euler}
 \end{figure}
-
+As we show in Figure~\ref{fig_stability_RK_Euler}, a typical stability region for the RK2 method is slightly larger than the explicit Euler.
+If we have more advection dominant flow than diffusion, it is possible to have all imaginary eigenvalues of the Jacobian of the right-hand side of equations~(\ref{eq_RK2_s1}) and~(\ref{eq_RK2_s2}). In that case, we might be able to use a bigger time step size than the explicit Euler. 
 \par
 From the second-order strain rate rheology perspective, we may add the time-dependent flow, which is presented in the last term in the following equation
 \begin{equation}
