@@ -15,14 +15,14 @@
 % In this thesis, we explore both Newtonian and non-Newtonian fluid behaviors. 
 The essential goal of studying fluid dynamics in Applied Mathematics is to develop a numerical method and contribute to various scientific fields. In particular, modeling fluid interactions with other matters can deliver information we cannot easily obtain in physical experiments. To achieve so, I learned both Newtonian and non-Newtonian fluids, by investigating marine aggregate models and granular rheology.
 \par
-We presented the settling marine aggregate simulations in the first two parts of this thesis. 
+We discussed the settling marine aggregate simulations in the first two parts of this thesis. 
 We are motivated for exploring marine aggregates due to their relevance to global climate change, which is the most significant environmental problem we face today.
 The ocean absorbs approximately 40\% of the carbon dioxide (CO$_2$) produced anthropogenically~\cite{omand_sinking_2020}. 
-Some amount of CO$_2$ dissolved at the surface of the ocean and fixed by marine aggregates. As they transport the dissolved carbon to the deep sea, the ocean reduces the CO$_2$ level in the atmosphere. 
+Some amount of CO$_2$ dissolved at the surface of the ocean and fixed by marine aggregates. As they transport the dissolved carbon to the deep sea, the ocean reduces the atmospheric CO$_2$ level. 
 This process is one of the most important factors playing a role in global warming.
 While there are many active experimental works in the oceanography area, it might have some limitations in fieldwork, such as obtaining and processing an actual marine aggregate. 
 With a computational approach, we can reduce these restrictions and assist in research for marine aggregate dynamics. 
-Our ultimate goal of this research is thus to provide numerical tools to attain useful information.
+Our ultimate goal of this project is thus to provide numerical tools to attain useful information to related biological or oceanic research.
 The methods we developed can create randomly formed aggregate models having a fractal dimension using two algorithms, IAA and CCA. The parameters for surrounding fluid can be easily adjusted in the Stokes approximation. 
 In addition, our methods allow users to quantify several values of interest to examine the behaviors of marine aggregates, including different types of forces acting on the aggregates, settling speed, time to pass a fluid density gradient, and concentration activity.
 We hope to contribute to the oceanic carbon cycle research area by understanding the fluid dynamics of marine aggregates. 
@@ -30,5 +30,8 @@ We hope to contribute to the oceanic carbon cycle research area by understanding
 
 %  In particular, the amount of carbon dioxide (CO2) dissolved at the surface of the ocean and fixed by micro-organisms is one of the most important factors playing a role in global warming. An important factor affecting the impact of marine aggregates on the carbon cycle is their settling behavior. The focus of our research is the computation of velocity fields and forces acting on aggregates, modeled as a collection of cubes, sinking in an ambient fluid under gravity. Mathematically, under the condition of small differences in density between the particles and fluid, the flow velocity can be expressed by the Stokes approximation which is a well-known model to describe fluid motion.
 For the last chapter, we introduced a general concept of complex fluids that show non-Newtonian behaviors. 
-Since they tend to exhibit more complicated properties than Newtonian fluids, we still seek answers to many questions. 
-With the constitutive rheology code, we can explore many different applications. 
+Since they tend to exhibit more complicated properties than Newtonian fluids, many researchers still seek answers to many questions. 
+In this project, we particularly focused on granular rheology. As we mentioned, we see granular materials everywhere in our daily lives. 
+The constitutive rheology code we worked on, AMReX-incflo, allows us to explore many different applications. 
+The second-order strain rate tensor we implemented here can be applied to any rheology. 
+Depending on our further interest, we can simply input viscosity computation for a complex fluid to observe its second-order effect. 
