@@ -1,37 +1,29 @@
-% \begin{itemize}
-%   \item conclusion
-%   \item Tie everything with the main motivation of the work
-%   \item No details
-%   \item No need to be long (1-2 pages)
-%   \item How can we contribute to aid research in the carbon cycle/marine aggregate? What information we can give them?
-%   \item having an infinite-like fluid domain does not suggest the aggregate can behave like a sphere
-%   \item Or this cannot justify the aggregate dynamics 
-%   \item Having a fractal structured aggregate would allow us to have more qualitative data to examine the local carbon cycle near the aggregate
-%   \item what other measurement is required to contribute in the marine biology or oceanography field?
-%   \item 
-%   
 
-% \end{itemize}
-% In this thesis, we explore both Newtonian and non-Newtonian fluid behaviors. 
-The essential goal of studying fluid dynamics in Applied Mathematics is to develop a numerical method and contribute to various scientific fields. In particular, modeling fluid interactions with other matters can deliver information we cannot easily obtain in physical experiments. To achieve so, I learned both Newtonian and non-Newtonian fluids, by investigating marine aggregate models and granular rheology.
+Our motivation and essential goal for studying fluid dynamics in Applied Mathematics are to develop numerical methods for accurate and efficient computations, contributing to various scientific fields. In particular, modeling fluid interactions with other matters can deliver information we cannot easily obtain in physical experiments. To achieve this, we studied both Newtonian and non-Newtonian fluids by investigating marine aggregate models and granular rheology.
 \par
 We discussed the settling marine aggregate simulations in the first two parts of this thesis. 
-We are motivated for exploring marine aggregates due to their relevance to global climate change, which is the most significant environmental problem we face today.
+We are motivated in exploring marine aggregates by their relevance to global climate change, which is the most significant environmental problem we face today.
 The ocean absorbs approximately 40\% of the carbon dioxide (CO$_2$) produced anthropogenically~\cite{omand_sinking_2020}. 
-Some amount of CO$_2$ dissolved at the surface of the ocean and fixed by marine aggregates. As they transport the dissolved carbon to the deep sea, the ocean reduces the atmospheric CO$_2$ level. 
-This process is one of the most important factors playing a role in global warming.
-While there are many active experimental works in the oceanography area, it might have some limitations in fieldwork, such as obtaining and processing an actual marine aggregate. 
+A portion of the atmospheric CO$_2$ is dissolved at the surface of the ocean and fixed by marine aggregates. As they transport the dissolved carbon to the deep sea, marine aggregates contribute to reducing the atmospheric CO$_2$ level. 
+% This process is one of the most important factors playing a role in global warming.
+While there are many active experimental works in oceanography, there are limitations to obtaining and processing an actual marine aggregate. 
 With a computational approach, we can reduce these restrictions and assist in research for marine aggregate dynamics. 
-Our ultimate goal of this project is thus to provide numerical tools to attain useful information to related biological or oceanic research.
-The methods we developed can create randomly formed aggregate models having a fractal dimension using two algorithms, IAA and CCA. The parameters for surrounding fluid can be easily adjusted in the Stokes approximation. 
-In addition, our methods allow users to quantify several values of interest to examine the behaviors of marine aggregates, including different types of forces acting on the aggregates, settling speed, time to pass a fluid density gradient, and concentration activity.
-We hope to contribute to the oceanic carbon cycle research area by understanding the fluid dynamics of marine aggregates. 
+Our ultimate goal for this project is thus to provide numerical tools to attain useful information related to biological or oceanic research.
+The methods we developed can create randomly formed aggregate models having a fractal dimension using two algorithms, individually-added aggregation and cluster-to-cluster aggregation. The parameters for surrounding fluid can be easily adjusted in the Stokes approximation. 
+In addition, our methods allow users to quantify several values of interest to examine the behaviors of marine aggregates, including different types of forces acting on the aggregates, settling speed, time to pass a fluid density gradient, and concentration perturbation.
+We hope to contribute to oceanic carbon cycle research by providing an understanding of the fluid dynamics of marine aggregates. 
 
 
 %  In particular, the amount of carbon dioxide (CO2) dissolved at the surface of the ocean and fixed by micro-organisms is one of the most important factors playing a role in global warming. An important factor affecting the impact of marine aggregates on the carbon cycle is their settling behavior. The focus of our research is the computation of velocity fields and forces acting on aggregates, modeled as a collection of cubes, sinking in an ambient fluid under gravity. Mathematically, under the condition of small differences in density between the particles and fluid, the flow velocity can be expressed by the Stokes approximation which is a well-known model to describe fluid motion.
-For the last chapter, we introduced a general concept of complex fluids that show non-Newtonian behaviors. 
-Since they tend to exhibit more complicated properties than Newtonian fluids, many researchers still seek answers to many questions. 
-In this project, we particularly focused on granular rheology. As we mentioned, we see granular materials everywhere in our daily lives. 
-The constitutive rheology code we worked on, AMReX-incflo, allows us to explore many different applications. 
-The second-order strain rate tensor we implemented here can be applied to any rheology. 
-Depending on our further interest, we can simply input viscosity computation for a complex fluid to observe its second-order effect. 
+For the last chapter of this thesis, we introduced a general strain-to-stress relation for complex fluids that show non-Newtonian behaviors. 
+Since they tend to exhibit more complicated properties than Newtonian fluids,
+there are still many open questions in this field.
+In this project, we particularly focused on flows of granular materials, which are present everywhere in our daily lives. 
+One example is the sand sliding in nature. A dune sliding due to its instability could be extremely hazardous and may even result in casualties depending on its location. In this case, measuring and predicting the slope of a dune is important to prevent any future accidents~\cite{xie_summary_2021}.
+Since their state can co-exist between solid, liquid, and gas, simulating granular material behaviors using computational programs is difficult in general. 
+The constitutive rheology code, AMReX-incflo, developed by researchers at Lawrence Berkeley National Laboratory, provides various rheological models by incorporating a viscous term into an incompressible flow. 
+In this library, we implemented the viscosity computation for granular rheology. 
+To explore a second-order shear rate behavior of complex fluids, we also coded the quadratic strain tensor computation for the incompressible flow solution. 
+For better order convergence and stability, we added a two-stage Runge-Kutta scheme in the AMReX-incflo. 
+Our numerical development in the AMReX-incflo would allow us to examine complex fluid behavior in a more sophisticated way.
+We hope to continue studying complex fluid research and contributing to various scientific fields. 

@@ -402,16 +402,18 @@ Class]
     \fmsmallfont
     Committee in charge:
     \begin{quote}
-       {\@chair}, Chair \par
+       {\@chair}, Co-Chair \par
     \vspace{0.05in}
        \ifx\@cochair\@isnotdefined \else%
 	     {\@cochair}, Co-Chair\newline\fi
+       \par
+       \vspace{0.05in}
        {\@memberone} \par
     \vspace{0.05in}
        {\@membertwo} \par
     \vspace{0.05in}
        \ifx\@memberthree\@isnotdefined \else%
-	     {\@memberthree}\par\fi
+	     {\@memberthree}\par 
     \vspace{0.05in}
        \ifx\@memberfour\@isnotdefined \else%
 	     {\@memberfour}\newline\fi
@@ -458,7 +460,7 @@ All chapters \copyright \ \@degreeyear \ \@author
 \begin{center}
 \vspace{.25in}
 \vspace{\@approvalspace}
-\makebox[5in][l]{\parbox{5in}{\fmfont The dissertation of {\@author} 
+\makebox[5in][l]{\parbox{5in}{\fmfont The dissertation of  {\@author} 
 is approved, and it is acceptable in quality and form for publication 
   on microfilm and electronically: }}\\[2em]
 \begin{tabular*}{5.5in}[t]{r@{\extracolsep{\fill}}r}
@@ -509,9 +511,10 @@ is approved, and it is acceptable in quality and form for publication
 \addtolength{\@tempapprovalspace}{-2pt}
 \raisebox{\@approvalspace}[\@approvalspace][0pt]%
 {\raisebox{\@tempapprovalspace}{(\@cochair, Co-Chair)}} \\
+\vphantom{text}
+\\
 \hline
 \fi
-
 & (\@chair, Chair) 
 \end{tabular*}\\[\@approvalspace]
 {\fmfont University of California, {\@campus}} \\
@@ -632,7 +635,9 @@ by \@author\par
 \vspace{.1in}
 University of California {\@campus}, \@degreeyear \par
 \vspace{.1in}
-Committee Chair: {\@chair}}
+Committee Co-Chairs: {\@chair} and {\@cochair}} %Cochair here
+% Committee Chair: {\@chair} } % one chair
+
 \vspace{.05in}
 \end{center}
 \addcontentsline{toc}{chapter}{\protect\numberline{}\abstractshortname}%

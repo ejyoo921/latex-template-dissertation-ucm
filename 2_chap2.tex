@@ -601,19 +601,19 @@ In the remainder of this paper, we, therefore, present results obtained using th
 %-----------------
 \subsection{Streamlines} 
 \label{ch_streamlines}
+\begin{figure}[ht]
+	\begin{center}
+		\epsfig{figure=figures/fig_streamlines_all.pdf, width=140mm}
+	\end{center}
+	\caption{Streamlines around a cube with varying resolution moving in the $z'-$direction. The resolution is: (a) $\Delta x = 2$, (b) $\Delta x = 1$, (c) $\Delta x  =0.5$, and (d) $ \Delta x =0.25$. }
+	\label{fig_strlns}
+\end{figure}
 To gain a better understanding of the flow around a cube, we present the streamlines generated when $\vec{U}'_a = (0,0,-1)$. We show the streamlines around the cube in the frame of reference of the cube for $y' = 0$ in Figure ~\ref{fig_strlns} 
 (see Figure~\ref{fig_face_description} for the exact location of the face and sample streamlines).
 To compute the streamlines, we first obtain the values of stress vector, $\vec{f}'(\vec{x}'_s)$, on each square face of the cube using equation~(\ref{eq_BI_sl_ND}).
 We then chose initial positions below the cube and use a second-order Runge-Kutta method to advance the positions in time using the corresponding velocities computed using equation~(\ref{eq_BI_sl_ND}) at each position. 
 We compare the streamlines with four different resolutions of the cube; $\Delta x = 2,1, 0.5,$ and $0.25$. For the cube with $\Delta x = 2$, streamlines are seen to enter the interior of the cube. As we increase the resolution, the streamlines remain exterior to the cube.
 Moreover, higher resolutions result in streamlines following the cube boundary more accurately, showing the convergence of the method.
-\begin{figure}[ht]
-	\begin{center}
-		\epsfig{figure=figures/fig_strlns_horizontal-compressed.pdf, width=140mm}
-	\end{center}
-	\caption{Streamlines around a cube with varying resolution moving in the $z'-$direction. The resolution is: (a) $\Delta x = 2$, (b) $\Delta x = 1$, (c) $\Delta x  =0.5$, and (d) $ \Delta x =0.25$. }
-	\label{fig_strlns}
-\end{figure}
 %-------------------------------------
 \section{Forces on Aggregates Subject to a Background Flow} 
 \label{sec:results}
@@ -920,7 +920,7 @@ We, therefore, compare the finite differences and the discrete Fourier transform
 \par
 At a glance, the error decreases, and computing time increases with higher resolutions, as we expected. In particular, the left panel of Figure~\ref{fig_precision} shows a smaller error due to the jump size that is about $\mathcal{O}(10^{-4})$.
 We note the computing time differences between the two methods. We can see this clearly in the right panel of Figure~\ref{fig_precision}. To get a certain error size, for instance, $\mathcal{O}(10^{-5})$, the finite differences scheme requires less time than the DFT method. The gap between the two methods becomes larger as we compute the solution with finer resolution.  
-The reason we got this result is that the MATLAB built-in functions, \verb+fft+, and \verb+ifft+, spend more time than building the sparse matrix for the finite differences to compute derivatives. It shows that the finite differences are more efficient for our situation. 
+The reason we got this result is that the MATLAB built-in functions, \verb+fft+, and \verb+ifft+, spend more time than building the sparse matrix for the finite differences to compute derivatives. It shows that finite differences are more efficient for our situation. 
 Thus, we have decided to use the finite differences scheme for spatial discretization of the advection-diffusion equation.
 \begin{figure}[ht]
 	\begin{center}

@@ -154,7 +154,7 @@ As we see, the velocity at a point $\vec{u}(\vec{y},t)$ is now dependent on spac
 \subsection{Force balance}
 \label{sec:force_balance}
 \par
-Since the velocity of the aggregate is no longer constant in time, we now need to solve for it.
+Since the velocity of the aggregate is no longer constant in time, we now need to solve it.
 Specifically, we now need to solve for the translational and angular velocity, $\vec{U}_a$ and $\vec{\Omega}$, respectively, by prescribing the total body force and total torque from the fluid on the aggregate.
 To close the system of equations, we prescribe the total drag force, $\vec{F}_o$, and total torque, $\vec{Q}_o$. 
 
@@ -1094,10 +1094,10 @@ If we can obtain reasonable results in a smaller domain, we could use smaller $s
 In Figure~\ref{fig_NC10_compare_s}, we present three different domain sizes with the $s$ factor $s = 3, \ 4$, and $5$. At first glance, we can barely tell the differences between all three cases. In other words, there is no significant impact on aggregate behavior when reducing the domain size down to $s = 3$. Although we notice that the perturbations at $\vec{x}^{\star}$ show a little more variation with $s$, this remains a negligible effect.
 
 \subsection{Varying time step, $\Delta t$}
-We now vary the time step, $\Delta t$. We consider three different cases, $\Delta t = 0.75, \ 0.5$, and $0.25$. We are able to run simulations with somewhat large time steps since the aggregate size is small enough to have a velocity of order one. When the initial settling velocity is high, the CFL condition~(\ref{eq_CFL}) can be violated, leading to instability. As the aggregate settles, the surrounding fluid becomes denser, which decreases the velocity, and therefore the CFL number. Thus, the velocities are more limiting on the time step at the beginning of the simulation. 
+We now vary the time step, $\Delta t$. We consider three different cases, $\Delta t = 0.75, \ 0.5$, and $0.25$. We are able to run simulations with somewhat large time steps since the aggregate size is small enough to have a velocity of order one. When the initial settling velocity is high, the CFL condition~(\ref{eq_CFL}) can be violated, leading to instability. As the aggregate settles, the surrounding fluid becomes denser, which decreases the velocity, and therefore the CFL number. Thus, the velocities are more limited on the time step at the beginning of the simulation. 
 \par
 While we vary $\Delta t$, we set the domain size to aggregate diameter ratio $s = 3$ since we observed no critical changes in aggregate dynamics and we can save on computational time. For a fair comparison, we keep the grid size $\Delta x =1$. 
-The main takeaway of Figure~\ref{fig_NC10_compare_dt} is that there are no significant differences in the values we observe when we vary $\Delta t = 0.75, \ 0.5$, and $0.75$. Once again, we notice some variations in the perturbation $C(\vec{x}^{\star},t$ at later times. 
+The main takeaway of Figure~\ref{fig_NC10_compare_dt} is that there are no significant differences in the values we observe when we vary $\Delta t = 0.75, \ 0.5$, and $0.75$. Once again, we notice some variations in the perturbation $C(\vec{x}^{\star},t)$ at later times. 
 However, these remain smaller than 4\%.
 \begin{figure}[ht]
 	\begin{center}
@@ -1197,7 +1197,7 @@ For an aggregate composed of 50 cubes, we have an estimated average radius $R_a 
 In Figure~\ref{fig_NC50_snaps_all}, we show several 2D snapshots, sliced in the middle of the domain ($x = -0.74$), of the perturbation $C$ at various times. Note that we see negative values of $C$ since the perturbation is a concentration difference from the initial concentration. 
 We can observe much higher perturbations around the aggregate that increases in magnitude as time increases as the aggregate entrains the upper-layer solute. 
 \par
-We observe the aggregate behavior more closely in Figure~\ref{fig_NC50_base_case_all}. As we introduced in the previous section, we measure (a) the settling speed and (b) the normalized total drag of the aggregate. We also exhibit the ratio of total drag to the settling speed in plot (c) as a measure of the coefficient in the linear relationship between drag and velocity
+We observe the aggregate behavior more closely in Figure~\ref{fig_NC50_base_case_all}. As we introduced in the previous section, we measure (a) the settling speed and (b) the normalized total drag of the aggregate. We also exhibit the ratio of total drag to the settling speed in the plot (c) as a measure of the coefficient in the linear relationship between drag and velocity
 that is observed in Stokes flow. Although both settling speed and drag seem to be decreasing over time, we find that their ratio (c) increases non-linearly. This implies that the stratification of the fluid plays a role in the aggregate's settling behavior, not only by reducing the buoyancy but also through the entrained fluid. 
 We would have observed a horizontal line if the surrounding fluid did not affect aggregate motion as it settles in a homogeneous fluid. 
 \par
@@ -1264,7 +1264,7 @@ Since we have more numerical instability for lower Péclet numbers, we reduce th
 \end{figure}
 \par
 Figure~\ref{fig_NC50_Pe} shows no drastic variations between all three Péclet numbers, especially for the velocity and total drag. 
-Focusing on the perturbation plot (d), we can see that more diffusion occurs for the smallest Péclet, Pe = 1, having steady perturbation value after time $t = 30$.
+Focusing on the perturbation plot (d), we can see that more diffusion occurs for the smallest Péclet, Pe = 1, having a steady perturbation value after time $t = 30$.
 Overall, it is clear that all four plots agree well with our expectations, even though the impact of varying the Péclet number is small in this regime. 
 \subsection{Various stratification strength $\gamma$}
 Lastly, we investigate three different stratification strengths, 
