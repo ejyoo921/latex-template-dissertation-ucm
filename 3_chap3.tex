@@ -100,9 +100,9 @@ When we multiply by $ C(\vec{x},t) $ on both sides and integrate the entire equa
 	\ \textrm{d}V(\vec{x}) = 0 .
 \label{eq_single_stokes_sub2}
 \end{equation}
-Note that the operator $\nabla$ is linear and describes derivatives in $\vec{y}$. We are able to switch the order with the integral operator as follows,
+Note that the operator $\nabla$ is linear and describes derivatives in $\vec{y}$. Additionally, since the volume $V$ stays the same, we are able to switch the order with the integral operator as follows,
 \begin{equation}
-	\tilde{\mu} \ \nabla^2 
+	\tilde{\mu}  \nabla^2 
 	\int_{V}
 	\biggl( \frac{\bar{\bar{G \ }}(\vec{x}, \vec{y})
 	\cdot  \vec{q} }{8\pi \tilde{\mu}}  \biggr)
@@ -187,7 +187,7 @@ To calculate the aggregate density, $\rho_a$, we consider aggregate porosity, $\
 \end{equation}
 where $\rho_{f}$ and $\rho_s$ are the density of the fluid and solid portion of the aggregate, respectively. To obtain the fluid portion of the aggregate density, we take an average of the fluid density where the aggregate is located,
 \begin{equation}
-	\rho_{f}(t) = \frac{1}{V_a}\int_{V_a} \rho(\vec{x}, t) \  \textrm{d}V(\vec{x}))
+	\rho_{f}(t) = \frac{1}{V_a}\int_{V_a} \rho(\vec{x}, t) \  \textrm{d}V(\vec{x})
 \end{equation}
 We here consider the solid part of the aggregate density as $\rho_s \approx 1400 $kg$/$m$^3.$ 
 We also set the porosity to $\phi = 0.95$.
@@ -216,7 +216,7 @@ As the aggregate settles, the concentration, and therefore the fluid density, ch
 \label{eq_AD_rho}
 \end{equation}
 where $D$ is the diffusion coefficient.
-By applying the relationship between fluid density $\rho$ and the concentration perturbation $C$ from equation~(\ref{eq_density}), we can re-write the equation~(\ref{eq_AD_rho}) in terms of $C$, 
+By applying the relationship between fluid density $\rho$ and the concentration perturbation $C$ from equation~(\ref{eq_density}), we can rewrite the equation~(\ref{eq_AD_rho}) in terms of $C$, 
 \begin{equation}
 	\frac{\partial C(\vec{y},t)}{\partial t}
 	+ \vec{u}(\vec{y}) \cdot \nabla C(\vec{y},t)
@@ -301,7 +301,7 @@ Lastly, the advection-diffusion equation becomes,
 	\label{eq_AD_nonD}
 	\end{equation}
 using the velocity field from equation~(\ref{eq_vel_all_onS_nonD}), for the advection term.
-Note that we discussed the Péclet number with CO$_2$ diffusivity in Chapter~(\ref{sec:concentration}) while introducing its definition in equation~(\ref{eq_def_Pe}).
+Note that we discussed the Péclet number with CO$_2$ diffusivity in Chapter~\ref{sec:concentration} while introducing its definition in equation~(\ref{eq_def_Pe}).
 In addition, using the thermal diffusivity of the ocean, $D_{heat}$~\cite{nayar_thermophysical_2016,sharqawy_thermophysical_2010}: we get a Péclet number of
 
 \begin{align}
@@ -610,7 +610,7 @@ In addition, the top part of the right-hand side of the equation~(\ref{eq_slp_li
 \label{eq_volume_rhs}
 \end{equation}
    where $N_s$ is the total number of grid or source points in the fluid domain. We discuss more details of the volume integral computation in the next section. 
-%   ~\ref{section_volume_int}.
+%  ~\ref{section_volume_int}.
   One can find factor 4 multiplied by the second and third blocks on the right-hand side of the system~(\ref{eq_slp_linear_system}). 
  Since we set the side length of a cube as 2, factor 4 represents the area of a square face, which is the integral domain of the total force and torque equations. 
  \par
@@ -620,8 +620,8 @@ In addition, the top part of the right-hand side of the equation~(\ref{eq_slp_li
  %----FMM--------------------------------------------------------------------------
 \subsection{Fast Multipole Method (FMM)}
 \label{subsec:FMM}
-Knowing that we simulate our problem in a three-dimensional fluid domain, it is necessary to implement an efficient and fast method for each part of the code while we keep the stability and desired accuracy. 
-The FMM is a numerical scheme for rapid computation of $N$-body problems governed by a Green's function using a multipole expansion. It was first introduced by Greengard and Rokhlin~\cite{greengard_fast_1987}. Since then, the researchers at Flatiron Institute - Simons Foundation,  including the original authors of the FMM, have developed the methods and shared the source code.~\cite{cheng_fast_1999,greengard_new_1997,greengard_new_2002} We choose to use their library, called \href{https://github.com/flatironinstitute/FMM3D}{{\color{blue}FMM3D}}. It provides the code of the $N-$body interactions governed by Laplace and Helmholtz equations in three dimensions.
+Knowing that we simulate our problem in a three-dimensional fluid domain, it is necessary to implement an efficient and fast method for each part of the code. At the same time, we want to keep the stability and desired accuracy. 
+The FMM is a numerical scheme for rapid computation of $N$-body problems governed by a Green's function using a multipole expansion. It was first introduced by Greengard and Rokhlin~\cite{greengard_fast_1987}. Since then, the researchers at Flatiron Institute - Simons Foundation,  including the original authors of the FMM, have developed the methods and shared the source code~\cite{cheng_fast_1999,greengard_new_1997,greengard_new_2002}. We choose to use their library, called \href{https://github.com/flatironinstitute/FMM3D}{{\color{blue}FMM3D}}. It provides the Fortran code with MATLAB wrapper for the $N-$body interactions governed by Laplace and Helmholtz equations in three dimensions.
 For our problem, we can modify the Laplace kernel, as shown in~\cite{tornberg_fast_2008}, to compute the integrals of the Stokeslet~(\ref{eq_stokeslet}).
 The definition of the Laplace FMM in the FMM3D library is the following:
 \begin{definition} (\textit{Laplace FMM})
@@ -797,7 +797,7 @@ Here, the points $\vec{x}$ are the sources, and $\vec{y}$ are the targets.
 For the velocity inside and on the aggregate boundary, we use the rigid boundary velocity $u(\vec{x}) = \vec{U}_a + \vec{\Omega} \times \left(\vec{x} - \vec{x}_{cm} \right)$. This implies that we only use targets located outside the aggregate, and we do not expect any singularity in this computation ($\vec{x} \neq \vec{y}$). However, we may have close evaluation problems. We will discuss the size of errors in the next section. 
 \par
 We handle the integration of the Stokeslet in a manner similar to what was done for the volume integral. 
-Using the Laplace kernel, we can re-write the surface integral~(\ref{eq_uH}) as
+Using the Laplace kernel, we can rewrite the surface integral~(\ref{eq_uH}) as
 \begin{equation}
 	u_H(\vec{y}) =
 	\int_S 
@@ -884,7 +884,7 @@ In Figure~\ref{fig_corner_err}, we see the square face at $x = 1$, where the whi
 \end{center}
 \end{figure}
 \par
-Two parameters affect the efficiency and accuracy of the FMM computations: 1) the number of quadrature points, $N_s^2$, and 2) the tolerance $\varepsilon$ in the FMM3D library, which determines the number of terms in the series expansion.
+Two parameters affect the efficiency and accuracy of the FMM computations: 1) the number of quadrature points, $N_s^2$, and 2) the relative precision $\varepsilon$ in the FMM3D library, which determines the number of terms in the series expansion.
 In Figure~\ref{fig_Ef_EG_compare}, we vary the number of integration points to choose an optimal value. 
 We test a single-time simulation in the domain,  $[-5, 5] \times [-5, 5] \times [-10, 10]$,  with the one cube aggregate model. To check the responses of varying $\varepsilon$ values, we simulated the same setup with two tolerance values, $\varepsilon = 10^{-1}, \ 10^{-6}$.
 From this analysis, we chose that $Ns = 9^2$ quadrature points as the error is of a size we can tolerate. We had similar results for the $\varepsilon = 10^{-6}$ case. We did not notice any difference in accuracy. We may observe this because the corner error, $E_f$, dominates our approximation and is already larger than $10 \%$. 

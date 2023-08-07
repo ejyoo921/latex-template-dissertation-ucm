@@ -10,7 +10,7 @@ We can describe rate-dependent flow with the following power law~\cite{herschel_
   =2^n \tilde{\mu} \dot{\gamma} ^{n-1} {\bm D},
   \label{eq_HS_tau}
   \end{equation}
-where $\tilde{\mu}$ is constant viscosity under zero shear rate and $n$ is the flow behavior index that can be determined experimentally depending on the materials.
+where $\tilde{\mu}$ is the constant viscosity under zero shear rate and $n$ is the flow behavior index that can be determined experimentally depending on the materials.
 We also recall that the magnitude of strain rate is $\dot{\gamma} = |\bm{D}|$.
 Note that this value can be computed by applying the scaled Frobenius norm for a second-order tensor, 
 \[
@@ -43,8 +43,8 @@ Furthermore, the purple and green lines in Figure~\ref{fig_appr_viscosity} imply
 % \subsection{Yield stress}
 % The main characteristic of rate-dependent fluids is yield stress. 
 \par
-As we have shown in Figure~\ref{fig_rheology} in Chapter 1.3, Bingham fluid is a particular case of the rate-dependent flow. 
-Bingham fluid behaves as a solid, like plastic, under stress less than the yield stress, and begins flowing like a fluid with varying viscosity. 
+As we have shown in Figure~\ref{fig_rheology} in Chapter 1.3, a Bingham fluid is a particular case of the rate-dependent flow. 
+Bingham fluid behaves as a solid, like plastic, under stress less than the yield stress and begins flowing like a fluid with varying viscosity. 
 This is why it is classified as a \textit{viscoplastic} fluid.
 The rheological equations describing Bingham fluid~\cite{bingham_investigation_1917} with yield stress $\tau_0$ are,
 \begin{align}
@@ -57,9 +57,10 @@ The rheological equations describing Bingham fluid~\cite{bingham_investigation_1
   \end{align}
 and its corresponding apparent viscosity is
 \begin{equation}
-  \eta=\tilde{\mu} +\frac{\tau_0}{2 \dot{\gamma}}.
+  \eta=\tilde{\mu} +\frac{\tau_0}{2 \dot{\gamma}},
   \end{equation}
-  To illustrate more general yield stress fluid,~\cite{sverdrup_highly_2018} proposed the constitutive equations by combining equations~(\ref{eq_HS_tau}) and~(\ref{eq_Bingham}),
+  when $|\bm{\tau}| \geq \tau_0$.
+  To illustrate more general yield stress fluids,~\cite{sverdrup_highly_2018} proposed the constitutive equations by combining equations~(\ref{eq_HS_tau}) and~(\ref{eq_Bingham}),
   \begin{equation}
     \left\{\begin{matrix}
   {\bm D }=0, 
@@ -77,7 +78,7 @@ When $n = 1$, we recover the Bingham fluid.
 % \subsection{Viscosity regularization}
 \par
 As it is implied in equation~(\ref{eq_HS_B}), we obtain the yield stress of a fluid as $|\bm{\tau}| \rightarrow \tau_0$. 
-When we solve for $\tau_0$ from equation~(\ref{eq_HS_B}), we see that 
+When we solve for $\tau_0$ in equation~(\ref{eq_HS_B}), we see that 
 \begin{equation}
 2^n \tilde{\mu} \dot{\gamma}^{n} + \tau_0
 \rightarrow \tau_0,
@@ -86,8 +87,8 @@ due to $|\bm{D}| = \dot{\gamma}$, and thus, we should have
 \begin{equation}
   \dot{\gamma} \rightarrow 0.
 \end{equation}
-For this computation, we use the Papanastasiou regularization method~\cite{papanastasiou_flows_1987} since it is implemented in the AMReX-incflo. 
 \par
+Note that the computation of $\bm{\tau}$ is already implemented for a general rate-dependent fluid in AMReX. In the implementation, they use the Papanastasiou regularization method~\cite{papanastasiou_flows_1987}.
 By introducing a small parameter, denoted as $\varepsilon$, we can regularize the singularity of $\dot{\gamma}$ as following,
 \begin{equation}
   \frac{1}{\dot{\gamma}} \rightarrow \frac{1-e^{-\dot{\gamma} / \varepsilon}}{\dot{\gamma}}  
@@ -98,7 +99,7 @@ The detailed mathematics and analysis can be found in~\cite{sverdrup_highly_2018
 
 
 \section{Second-order strain rate rheolgy}
-Assuming pressure-independent, we incorporate the varying viscosity into the incompressible Navier-Stokes equations, which are introduced in~(\ref{eq_conserv_mass}) and~(\ref{eq_momentum_NS}), recalling here,
+Once we obtain the stress tensor $\bm{\tau}$ for a complex fluid, we can incorporate the varying viscosity into the incompressible Navier-Stokes equations, which are introduced in~(\ref{eq_conserv_mass}) and~(\ref{eq_momentum_NS}), recalling here,
 \begin{equation*}
   \nabla \cdot \vec{u} = 0 
   \nonumber
@@ -167,7 +168,7 @@ Note that the general form of the Rivlin-Ericksen tensor can be extended to orde
 \end{equation}
 \par
 For polymer solutions, the most studied in non-Newtonian fluids, it is well-known that the effect of the $\mathcal{O}\left( \bm{D}^2 \right)$ term is small enough to ignore, compared to  $\mathcal{O}\left( \bm{D} \right)$~\cite{bird_dynamics_1987}. For this reason, the effect of $\mathcal{O}\left( \bm{D}^2 \right)$ has been neglected in many research works for a complex fluid. 
-For other materials, however, there are potentially important characteristics we should pay attention to considering the stress with a higher-order in $\boldsymbol{D}$, including granular material. 
+For other materials, however, there are potentially important characteristics we should pay attention to considering the stress with higher-order terms in $\boldsymbol{D}$, including granular materials. 
 As a first step, we thus explore the second-order rheology with granular materials.
 
 % We will explore both first- and second-order rheologies, depending on the materials we consider. 
@@ -289,7 +290,7 @@ and
 \end{equation}
 As a particular application to equation~(\ref{eq_CN_tau}), the form~(\ref{eq_mu2_main}) is derived under two conditions:
 (1) the flow motion is simple with a constant stretch by neglecting deformation history, and (2) the flow is isochoric, having uniform properties along streamlines and tr$(D) = 0$. 
-Note that the last term in equation~(\ref{eq_mu2_main}) with tr$\left( \bm D^2 \right)$ appears to show the pressure dependency of the granular material, in addition to the hydrostatic pressure $P$~\cite{rajagopal_implicit_2006}.
+Note that the last term in equation~(\ref{eq_2ndOrder_tau}) with tr$\left( \bm D^2 \right)$ appears to show the pressure dependency of the granular material, in addition to the hydrostatic pressure $P$~\cite{rajagopal_implicit_2006}.
 
 
 
@@ -298,7 +299,7 @@ Note that the last term in equation~(\ref{eq_mu2_main}) with tr$\left( \bm D^2 \
 
 % it is valid to have $\bm{D}^H = \bm{D}^T$.
 \par
-The flow functions, $\eta_i$ and $\kappa_i$ for $i = 1,2$, have the following dependencies on total stress: each $\eta_i(\dot{\gamma}, p)$ is (shear) rate-dependent and $\kappa_i (p)$ is (shear) rate-independent. 
+The flow functions, $\eta_i$ and $\kappa_i$ for $i = 1,2$, have the following dependence on total stress: each $\eta_i(\dot{\gamma}, p)$ is (shear) rate-dependent and $\kappa_i (p)$ is (shear) rate-independent. 
 % Along with the shear effect from $\eta_1$, we can observe the second normal-stress difference in shear flows from $\eta_2$.
 % The rate-independent terms, $\kappa_1$ and $\kappa_2$, allow us to find yield stress. 
 We shall explain the details of these two types of functions in the following sub-section.
@@ -311,7 +312,7 @@ Here, $I$ is the \textit{inertial number},
   \label{eq_inertialI}
 \end{equation}
 where $d$ and $\rho_p$ are the average particle diameter and density of a given granular material.
-This dimensionless quantity describes the ratio of the average static force to the inertial force between granular particles~\cite{jop_constitutive_2006}, interpreted the inertial number as the ratio between a macroscopic deformation and an inertial timescale. 
+This dimensionless quantity describes the ratio of the average static force to the inertial force between granular particles,~\cite{jop_constitutive_2006} interpreted the inertial number as the ratio between a macroscopic deformation and an inertial timescale. 
 \par
 To understand the granular flow regimes depending on the inertial number. We consider an hourglass example. 
 \begin{figure}[ht]
@@ -324,20 +325,20 @@ To understand the granular flow regimes depending on the inertial number. We con
 As we can see in Figure~\ref{fig_hourglass}, three different states can co-exist in granular materials. 
 In the top part of the hourglass, filled with sand, the particles seem not to move and resemble a solid. 
 In the middle nozzle of the hourglass, we can observe the sands passing through the nozzle, flowing like a liquid.
-Meanwhile, the sand landing on the bottom part of the hourglass is forming a cone shape. When we look very closely at the top of the cone, we can see that the sand is falling and colliding, behaving like a gas.
+Meanwhile, the sand landing on the bottom part of the hourglass forms a cone shape. When we look very closely at the top of the cone, we can see that the sand is falling and colliding, behaving like a gas.
 \par
-In general, these three regimes can be categorized by the inertial number $I$. The solid-like state appears when $I$ is small. As $I$ increases, the granular material deformation occurs rapidly, flowing as we see in the middle of the hourglass. The collisional flow, acting like a gas, can be observed for a large $I$ number. 
+In general, these three regimes can be categorized by the inertial number $I$. The solid-like state appears when $I$ is small. As $I$ increases, the granular material deformation occurs rapidly, as we see in the middle of the hourglass. The collisional flow, acting like a gas, can be observed for a large $I$ number. 
 \par
 By applying this $\mu(I)$ rheology, Srivastava~\cite{srivastava_viscometric_2021} developed a calibration to obtain the coefficients $\eta_i$ and $\kappa_i$, for $i = 1, \ 2$,
 \begin{equation}
-  \mu(I)_i = \mu_i^0 + A_i{ I}^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P},
+  \mu_i(I) = \mu_i^0 + A_i{ I}^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P},
 \label{eq_muI_general}
 \end{equation}
 where $\mu_i^0, A_i,$ and $\alpha_i$ are fitting parameters, depending on the materials. 
 By substituting the inertial number $I$, equation~(\ref{eq_inertialI}), into equation~(\ref{eq_muI_general}),
 we get
 \begin{equation}
-  \mu(I)_i = \mu_i^0 + A_i {\left(  \frac{\dot{\gamma} d }{\sqrt{P/\rho}}\right) }^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P}.
+  \mu_i(I) = \mu_i^0 + A_i {\left(  \frac{\dot{\gamma} d }{\sqrt{P/\rho}}\right) }^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P}.
 \label{eq_muI_I}
 \end{equation}
 We then can find the viscous terms~(\ref{eq_mu1_main}) and~(\ref{eq_mu2_main}),
@@ -383,7 +384,7 @@ We then can find the viscous terms~(\ref{eq_mu1_main}) and~(\ref{eq_mu2_main}),
 % \end{equation}
 %--------------------------------------------------
 \noindent
-Note that we can obtain the fitting parameters from particle-based simulations, such as the discrete element method (DEM). The following parameter values are introduced in~\cite{jop_constitutive_2006} and~\cite{srivastava_viscometric_2021}:
+Note that we can obtain the fitting parameters from particle-based simulations for granular materials, such as the discrete element method (DEM). The following parameter values are introduced in~\cite{jop_constitutive_2006} and~\cite{srivastava_viscometric_2021}:
     \[
     0.09 \leq \mu_1^0 \leq 0.33, 
     \ \ \ \ \ \ \ 
@@ -401,17 +402,17 @@ Note that we use the following regularization,
 \end{equation}
 for a higher-order strain rate.
 \subsection{Hydrostatic pressure dependency}
-For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate the viscosity.
-Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and perturbation, $P'$, such that
+For granular rheology, it is typical to see compressible flow. It is, thus, essential to take pressure into account to evaluate the viscosity as seen in equation (\ref{eq_eta1}).
+Here, we consider the pressure as a combination of background flow pressure, $P_0$, that is linear in the vertical direction, $z$, and a perturbation, $P'$, such that
 \[
 P = P_0(z) + P'(x,y,z).\]
-Note that the perturbations are due to gravity. Without a gravitational force, we may simply input the pressure, $P_0$, and keep it constant over time.
+Note that the perturbations are due to gravity. Without a gravitational force, we may simply input the pressure, $P_0$, constant over time.
 \par
 In case gravity is involved, we consider the density term in order to approximate the perturbation, as 
 \[
 \rho  = \rho_0  + \rho'(x,y,z), 
 \]
-where $\rho_0$ is constant and $\rho'$ is a spacial-dependent density perturbation of the flow. 
+where $\rho_0$ is constant and $\rho'$ is a spacially-dependent density perturbation of the flow. 
 Here, we assume that 
 \begin{equation}
     \nabla P_0  = \frac{d P_0}{d z} \approx \rho_0  g.  
@@ -432,10 +433,10 @@ We also need to use a different module than the AMReX-incflo for a compressible 
 We thus leave the pressure-dependent granular flow as a future work.
 
 \section{Numerical method}
-In this section, we demonstrate the numerical method used to solve the flow velocity with incompressible Navier-Stokes equations incorporating the various viscosities. We particularly focus on the time integration that we wanted to improve as we consider the second-order strain rate stress tensor.
+In this section, we demonstrate the numerical method used to solve the flow velocity with incompressible Navier-Stokes equations incorporating the viscosity (\ref{eq_eta1}). We particularly focus on the time integration that we wanted to improve as we consider the second-order strain rate stress tensor.
 The main AMReX-incflo library provides three different time integration methods: 1) explicit Euler, 2) Crank-Nicolson, and 3) implicit Euler methods. 
 Since we have the stress tensor ${\bm \tau}$ of the form~(\ref{eq_CN_tau}), which is non-linear in the velocity, the most convenient choice was the explicit Euler method.
- However, it would be beneficial to have another scheme, for more stability, efficiency, and accuracy. 
+ However, it would be beneficial to have another scheme for more stability, efficiency, and accuracy. 
  \par
  We consider a two-stage Runge-Kutta (RK2) method to achieve second-order convergence. 
 In particular, we implemented the following scheme,
@@ -458,8 +459,8 @@ where
         +  \rho  \vec{g} 
         \biggr).
 \]
-where the superscription $n$ represents the current time (known) value; $\vec{u}^n \approx \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, $\vec{u}^*  \approx \vec{u} (\vec{x}, t_{n+1})$. 
-Note that the \textit{temp} time is considered to be $ n + n$/2. One important part to be consistent is that we only update the one time step with $\Delta t$, from the time $n$ to $*$. 
+where the superscript $n$ represents the current time (known) value; $\vec{u}^n \approx \vec{u}(\vec{x}, t_n)$. The new velocity value $\vec{u}^*$ is an updated velocity to the next time, $\vec{u}^*  \approx \vec{u} (\vec{x}, t_{n+1})$. 
+Note that the \textit{temp} time is considered to be $ n + n$/2. One important part of being consistent is that we only update the one time step with $\Delta t$, from the time $n$ to $*$. 
 \par
 After we integrate over one time step, we should make sure that $\vec{u}^*$ satisfies the continuity equation~(\ref{eq_conserv_mass}). We thus project this intermediate velocity $\vec{u}^*$ onto the divergence-free space~\cite{sverdrup_highly_2018}.
 For the projection step, we first express $\vec{u}^{*}$ according to the Helmholtz-Hodge-Decomposition~\cite{chorin_mathematical_1993}, 
@@ -476,7 +477,7 @@ After we solve for $\phi$, applying given boundary conditions, we find the updat
 \[
   \vec{u}^{n+1} = \vec{u}^* - \nabla \phi.
 \]
-As we mentioned, our contribution to the AMReX-incflo for this project is the granular material viscosity evaluation and the RK2 scheme implementation. For the rest of the parts to solve for the Navier-Stokes equations, we use the AMReX-incflo library as it is. Note that the details of general algorithms for this library can be found in~\cite{almgren_conservative_1998}.
+As we mentioned, my contribution to the AMReX-incflo for this project is the granular material viscosity evaluation and the RK2 scheme implementation. For the rest of the parts to solve for the Navier-Stokes equations, we use the AMReX-incflo library as it is. Note that the details of general algorithms for this library can be found in~\cite{almgren_conservative_1998}.
 % In the following section, we validate the implementation of the RK2 scheme with second-order granular rheology. We should mention that the order convergence might not be recovered due to the higher-order tensor computations and projection step. Nonetheless, we expect to obtain a better convergence rate and better accuracy with the RK2 method compared to explicit Euler.
 
 % {\color{blue} Are we keeping this the whole time? Is there any pressure change over time? Does a volume fraction come into play?}
@@ -570,12 +571,14 @@ We compare the performance of time integration methods: 1) the explicit Euler, w
   \label{fig_granular_domain}
 \end{figure}
 \par
-For this validation, we consider a rectangular cuboid, as we describe in Figure~\ref{fig_granular_domain}, with dimensions $2 \ (x) \times 1 \  (y) \times 2 \ (z)$, where all the walls in the $x-$ and $z-$directions are no-slip. We impose a periodic condition on the $y-$direction. Note that we consider centimeters (cm) for the length scale. 
-In the finite volume sense of spatial discretization, the total number of cells composed of the cuboid is $8 \times 8 \times 8$.
+For this validation, we consider a rectangular cuboid, as we show in Figure~\ref{fig_granular_domain}, with dimensions $2 \text{ cm} \ (x) \times 1 \text{ cm} \  (y) \times 2 \text{ cm} \ (z)$, where all the walls in the $x-$ and $z-$directions have a no-slip boundary condition. We impose a periodic condition on the $y-$direction. Note that we consider centimeters (cm) for the length scale. 
+In the finite volume sense of spatial discretization, the total number of cells composing the cuboid is $8 \times 8 \times 8$.
 % the number of cells composed of the cuboid is the same as the dimensions of the cuboid, i.e., each cell size is $1 \times 1 \times 1$. 
 We suppose this cuboid is filled with dry sands of a mean diameter $d = 0.15$ cm and material density $\rho = 1$ g/cm$^3$. To make sands flow, we move the top plate in the $y-$direction, shown as the pink in Figure~\ref{fig_granular_domain}, with the velocity (0, 1, 0) cm/s.
 For the rest of the parameters, we obtain information from other research papers.
-In~\cite{senetakis_inter-particle_2013}, they observed the interparticle friction of dry sands $\mu_s \approx 0.01$, in which particle sizes are in the range of $1.18 \leq d \leq 2.36$. We then find the fitting parameters from~\cite{srivastava_viscometric_2021}, as in the following Table~\ref{table_test}. 
+In~\cite{senetakis_inter-particle_2013}, they observed the interparticle friction of dry sands $\mu_s \approx 0.01$~g$\cdot$cm/s$^2$, in which particle sizes are in the range of 0.12 cm and 0.24 cm. 
+% of~$0.12\text{ cm} \leq d \leq 0.24$~cm. 
+We then find the fitting parameters from~\cite{srivastava_viscometric_2021}, as in the following Table~\ref{table_test}. 
 \begin{table}[ht]
   \resizebox{\textwidth}{!}{%
    \begin{tabular}[ht]{|c|c|c|c|}
@@ -591,44 +594,44 @@ In~\cite{senetakis_inter-particle_2013}, they observed the interparticle frictio
 }
 \label{table_test}
 \end{table}
-With all those setups and parameters, we first observe the finest results we obtain to get an idea of the flow.  
+With this setup and parameters, we first observe the finest results to understand the flow.  
 \subsection{Velocity in the shear flow direction}
  We first present the reference solution of our simulation. In particular, we show the velocity in the shear flow direction, $y$, in Figure~\ref{fig_reference_3d_T110}.
 \begin{figure}[ht]
 \begin{center}
   \includegraphics[scale=0.23]{figures/fig_reference_3d_T110.pdf}
   \end{center}
-\caption{Velocity component in $y-$axis at time $t = 0.1, \ 0.4$ and $t = 1$.}
+\caption{Velocity component (cm/s) in $y-$axis at time $t = 0.1, \ 0.4$ and $t = 1$ (s).}
 \label{fig_reference_3d_T110}
 \end{figure}
-We use the explicit Euler method with the time step $\Delta t = 10^{-5}$ as the reference solution. The final time of this validation is $t = 1$.
+We use the explicit Euler method with the time step $\Delta t = 10^{-5}$ (s) as the reference solution. The final time of this validation is $t = 1$ s.
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.25]{figures/fig_reference_T1610.pdf}
     \end{center}
-  \caption{Velocity component in $y-$axis at time $t = 1, 6,$ and 10.}
+  \caption{Velocity component (cm/s) in $y-$axis at time $t = 1, 6,$ and 10 (s).}
   \label{fig_rerference_T1}
 \end{figure}
 \par
-We note that in this setup the velocity is independent of $y$, although we move the plate in this direction. To observe the variation of $x-z$ plane clearly, we obtain Figure~\ref{fig_rerference_T1} when $y = 1$. We can see that the most variation occurs on the top of the $z$-axis where the plate is moving. 
+We note that in this setup, the velocity is independent of $y$, although we move the plate in this direction. To observe the variation of $x-z$ plane clearly, we obtain Figure~\ref{fig_rerference_T1} when $y = 1$. We can see that the most variation occurs on the top of the $z$-axis where the plate is moving. 
 
 \subsection{Error analysis (order convergence)}
-Using the reference velocity in $y-$direction obtained by the explicit Euler, we get the errors of Euler and RK2 methods with various time step sizes, $\Delta t$. 
+Using the reference velocity in $y-$direction obtained by the explicit Euler, we get the errors of the Euler and RK2 methods with various time step sizes, $\Delta t$. 
 In Figure~\ref{fig_second_order_compare_err_time}, we obtain the infinite norm of the absolute difference of velocities in the $y-$axis. 
 It is clear to see that RK2 is performing much better in terms of order convergence and accuracy. 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.4]{figures/fig_granular_box212_8cube_infnorm}
     \end{center}
-  \caption{Order convergence between the explicit Euler and RK2 schemes at time $t = 1$. The vertical axis shows the infinite norm of the absolute differences between the reference solution and each method.}
+  \caption{Order convergence between the explicit Euler and RK2 schemes at time $t = 1$ (s). The vertical axis shows the infinite norm of the absolute differences between the reference solution and each method.}
   \label{fig_second_order_compare_err_time}
 \end{figure}
 \par
-As we expected, the explicit Euler method shows close to the first order and the RK2 shows the second order. Note that due to the time constraint, we used two points, $\Delta t = 10^{-4}, \ 50^{-5}$, to plot Figure~\ref{fig_second_order_compare_err_time}. Since the error of the explicit Euler method is large, yet we need the Euler method for a reference solution to validate the RK2 scheme, we have to use quite a small time step $\Delta t$ to confirm the convergence. 
+As we expected, the explicit Euler method shows close to the first order, and the RK2 shows second-order convergence. Note that due to the time constraint, we used two points, $\Delta t = 10^{-4}, \ 50^{-5}$, to plot Figure~\ref{fig_second_order_compare_err_time}. Since the error of the explicit Euler method is large and we need the Euler method for a reference solution to validate the RK2 scheme, we have to use quite a small time step $\Delta t$ to confirm the convergence. 
 \section{Future work}
 There are several potential future works we could consider as an extension of this project. 
 We may analyze the stabilities between the explicit Euler and RK2 methods for this particular granular flow in the cuboid.
-Our preliminary results in the early stage of a new time integral implementation showed that the RK2 method was more stable than the explicit Euler method for certain fitting parameters.
+Our preliminary results of the new time integral implementation showed that the RK2 method was more stable than the explicit Euler method for certain fitting parameters.
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.65]{figures/fig_stability_RK_Euler.pdf}
@@ -682,10 +685,11 @@ The idea is similar to an implicit RK2 scheme. The main difference is that we sp
 \[
 {\bm \tau_1} \propto {\bm D}, \ \ \ {\text{and}} \ \ \  {\bm \tau_2} \propto {\bm D^2}.
 \]
-The complication of this implementation is building the linear system to solve for each velocity, $\vec{u}^{temp}$ and $\vec{u^{n+1}}$. This requires a deeper understanding and knowledge of the main AMReX library. 
+The complication of this implementation is building the linear system to solve for each velocity, $\vec{u}^{temp}$ and $\vec{u^{n+1}}$. 
+% This requires a deeper understanding and knowledge of the main AMReX library. 
 %If we have more advection dominant flow than diffusion, it is possible to have all imaginary eigenvalues of the Jacobian of the right-hand side of equations~(\ref{eq_RK2_s1}) and~(\ref{eq_RK2_s2}). In that case, we might be able to use a bigger time step size than the explicit Euler. 
 \par
-From the second-order strain rate rheology perspective, we may add the time-dependent term, 
+From the second-order strain rate rheology perspective, we consider adding the time-dependent term, 
 \begin{equation}
   % \bm{\tau} =  \mu_1 {\bm D} 
   %   + \mu_2  \left[ {\bm D}^2  - \frac{\text{tr}\left({\bm D}^2\right)}{3}{\bm I} \right]

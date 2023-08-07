@@ -29,13 +29,16 @@ To integrate over any square face, we first map the square over which we need to
 \label{appdx_single}
 
 In the single-layer potential approach, we need to compute integrals of the form
-\begin{equation}
- \int_S  \left( \frac{\bar{\bar{I}}}{  ||\vec{x}-\vec{x}_0 ||  } + \frac{(\vec{x}-\vec{x}_0) (\vec{x}-\vec{x}_0) }{||\vec{x}-\vec{x}_0||^3} \right)  \ \text{d}S(\vec{x}) = \int_S   \frac{\bar{\bar{I}}}{  ||\vec{x}-\vec{x}_0 ||  }\text{d}S(\vec{x}) + \int_S   \frac{(\vec{x}-\vec{x}_0) (\vec{x}-\vec{x}_0) }{||\vec{x}-\vec{x}_0||^3}   \text{d}S(\vec{x}) = I_1 + I_2
+\begin{align}
+ \int_S  \left( \frac{\bar{\bar{I}}}{  ||\vec{x}-\vec{y} ||  } + \frac{(\vec{x}-\vec{y}) (\vec{x}-\vec{y}) }{||\vec{x}-\vec{y}||^3} \right)  \ \text{d}S(\vec{x})
+ \nonumber \\
+ = \int_S   \frac{\bar{\bar{I}}}{  ||\vec{x}-\vec{y} ||  }\text{d}S(\vec{x}) + \int_S   \frac{(\vec{x}-\vec{y}) (\vec{x}-\vec{y}) }{||\vec{x}-\vec{y}||^3}   \text{d}S(\vec{x}) 
+ = I_1 + I_2
  \label{eq_slp_int}.
-\end{equation}
-Here, we have that $ \vec{x} = (x,y,0)$ and we write $\vec{x}_0= (x_0,y_0,z_0)$ and
+\end{align}
+Here, we have that $ \vec{x} = (x,y,0)$ and we write $\vec{y}= (x_0,y_0,z_0)$ and
 \[
- ||\vec{x}-\vec{x}_0||=R(x,y) = \sqrt{ (x-x_0)^2+(y-y_0)^2+z_0^2  }
+ ||\vec{x}-\vec{y}||=R(x,y) = \sqrt{ (x-x_0)^2+(y-y_0)^2+z_0^2  }
 \]
  We first consider the case when $x_0=y_0=z_0=0$, which arises when integrating over a face centered at the point where we are computing the velocity. In that case, we have $R(x,y) = \sqrt{x^2+y^2}$. We find for the diagonal terms of $I_1$
 \begin{equation}
@@ -43,16 +46,16 @@ Here, we have that $ \vec{x} = (x,y,0)$ and we write $\vec{x}_0= (x_0,y_0,z_0)$ 
 \end{equation}
 and all the non-diagonal terms are zero. 
 
-Away from the singularity, we can generally find antiderivatives, computed using Mathematica. For the integral $I_1$, we have
+Away from the singularity, we can generally find antiderivatives computed using Mathematica. For the integral $I_1$, we have
 \begin{align}
-\int_S \frac{1}{||\vec{x}-\vec{x}_0||}  \text{d}S(\vec{x})
-& =
+\int_S \frac{1}{||\vec{x}-\vec{y}||}  \text{d}S(\vec{x})
+ =
 \int_{-1}^1 \int_{-1}^1  \frac{1   }{R(x,y)  } \ \text{d}x \text{d}y
 \nonumber \\
-&=
+=
 (x-x_0) \log \left(R(x,y) + (y-y_0)\right)
 +(y-y_0)\log \left(R(x,y) +(x-x_0)   \right) \nonumber \\
-&\left. \left. -z_0 \arctan \left(\frac{(x-x_0) (y-y_0)}{z_0 R(x,y) }\right)
+\left. \left. -z_0 \arctan \left(\frac{(x-x_0) (y-y_0)}{z_0 R(x,y) }\right)
 +z_0 \arctan \left(\frac{(y-y_0)}{z_0}\right)
 -(y-y_0)\right|_{x=-1}^1 \right|_{y=-1}^1 .
 \label{eq_slp_const}
@@ -63,9 +66,9 @@ Note that there is no issue with evaluating the arctangent when $z_0=0$, as the 
 \int_{-1}^{1} \int_{-1}^{1} \frac{1}{   \sqrt{ 1+x^2  }  }  \ \text{d}x \text{d}y = 4 \sinh^{-1}(1).
 \end{equation}
 
-Next, we consider the second part of integral equation (\ref{eq_slp_int}), $I_2$, which we index with $m$ and $n$
+Next, we consider the second part of the integral equation (\ref{eq_slp_int}), $I_2$, which we index with $m$ and $n$
 \begin{equation}
-I_2 = \int_{-1}^1  \int_{-1}^1  \frac{(\vec{x}-\vec{x}_0)_m (\vec{x}-\vec{x}_0)_n }{R(x,y)^3}
+I_2 = \int_{-1}^1  \int_{-1}^1  \frac{(\vec{x}-\vec{y})_m (\vec{x}-\vec{y})_n }{R(x,y)^3}
 	\ \text{d}x \text{d}y
 .
 \label{eq_slp_xx}
@@ -89,14 +92,14 @@ Again, we treat $x_0=y_0=z_0=0$ separately. The first two diagonal terms (case (
 	\ \text{d}x \text{d}y
 	=4 \ \text{arcsinh}(1).
 \end{equation}
-The third diagonal term is zero because here $z_0=0$, and every non-diagonal term is zero by symmetry.
+The third diagonal term is zero because of $z_0=0$, and every non-diagonal term is zero by symmetry.
 
 Assuming that $x_0y_0z_0\neq0$,  we consider cases (a)-(d) in turn.
 For case (a), we have
 \begin{align}
 \int_{-1}^1 \int_{-1}^1 \frac{(x-x_0)^2 }{R(x,y)^{3}}  \ \text{d}x \text{d}y
-&=(y-y_0) \left(\log \left(R(x,y)+x\right)-1\right) \nonumber \\ 
- &+z_0  \arctan\left(\frac{(y-y_0)}{z_0}\right) \left. \left.
+=(y-y_0) \left(\log \left(R(x,y)+x\right)-1\right) \nonumber \\ 
+ +z_0  \arctan\left(\frac{(y-y_0)}{z_0}\right) \left. \left.
 -z_0 \arctan\left(\frac{(x-x_0)(y-y_0)}{ z_0R(x,y)}\right) \right|_{x=-1}^1 \right|_{y=-1}^1 .
 \label{eq_slp_int_xx}
 \end{align}
@@ -138,14 +141,14 @@ As before, this case also does not have any issue since $R(x,y)+(y-y_0)$ can onl
 We now consider the double-layer potential integrals of the form
 \begin{equation}
  \int_S
- \frac{(\vec{x}-\vec{x}_0)(\vec{x}-\vec{x}_0)     }{R(x,y)^5 }
-\ (\vec{x}-\vec{x}_0) \cdot  n_k    \ \text{d}S(\vec{x}).
+ \frac{(\vec{x}-\vec{y})(\vec{x}-\vec{y})     }{R(x,y)^5 }
+\ (\vec{x}-\vec{y}) \cdot  n_k    \ \text{d}S(\vec{x}).
 \label{eq_dlp_int}
 \end{equation}
 Since the inner product between the position and normal vectors always gives $z_0$ in the mapped coordinates, we focus on the integral,
 \begin{equation}
 \int_S
- \frac{(\vec{x}-\vec{x}_0)_m(\vec{x}-\vec{x}_0)_n     }{R(x,y)^5 }
+ \frac{(\vec{x}-\vec{y})_m(\vec{x}-\vec{y})_n     }{R(x,y)^5 }
     \ \text{d}S(\vec{x}).
 \label{eq_dlp_int2}
 \end{equation}
@@ -159,10 +162,11 @@ For case (a), we find
   \int_{-1}^1 \int_{-1}^1
   \frac{ (x-x_0)^2 }{R(x,y)^5 }
   \ \text{d}x \text{d}y
+  \nonumber \\
   =
   \frac{1}{3} 
   \biggl[
-  &\frac{1}{z_0}\arctan \left(\frac{(x-x_0)(y-y_0)}{z_0 R(x,y)}\right) \biggr.
+  \frac{1}{z_0}\arctan \left(\frac{(x-x_0)(y-y_0)}{z_0 R(x,y)}\right) \biggr.
   \left. \left. \biggl. -\frac{(x-x_0) (y-y_0)}{\left((x-x_0)^2+z_0^2\right) R(x,y)}
   \biggr]   \ \right|_{x=-1}^1 \right|_{y=-1}^1 .
 \label{eq_dlp_int_xx}
@@ -176,11 +180,11 @@ For case (b),
 \ \text{d}x \text{d}y
 =
 \frac{1}{3}
-&\biggl[
+\biggl[
 \frac{1}{z_0}
 \arctan \left(\frac{(x-x_0) (y-y_0)}{z_0 R(x,y)}\right)
 \nonumber \\
-& \left. \left. +\frac{(x-x_0) (y-y_0) \left(R(x,y)^2+ z_0^2\right)}{\left((x-x_0)^2+z_0^2\right) \left((y-y_0)^2+z_0^2\right) R(x,y)}
+ \left. \left. +\frac{(x-x_0) (y-y_0) \left(R(x,y)^2+ z_0^2\right)}{\left((x-x_0)^2+z_0^2\right) \left((y-y_0)^2+z_0^2\right) R(x,y)}
 \biggr] \right|_{x=-1}^1 \right|_{y=-1}^1 ,
 \label{eq_dlp_int_zz}
 \end{align}
@@ -215,7 +219,7 @@ Once again, this is simple to evaluate when $z_0\neq0$.
 
 In the case of a sphere of radius $R_s$, one may compute an exact solution for the flow satisfying $\vec{U}_{bg} = \bar{\bar{M}}\cdot \vec{x}$ at infinity and $\vec{U}_{bg} = 0$ on the surface of the sphere. 
 
-The Stokes flow around the sphere is then \cite{guazzelli2012}
+The Stokes flow around the sphere is then \cite{guazzelli_physical_2011}
 \[
 \vec{u} = \left( \bar{\bar{M}} \cdot \vec{x} \right) \left( 1 - \frac{R_s^5}{r^5} \right) + \left( (\bar{\bar{M}} : \vec{x} \vec{x}) \vec{x} \right) \ \left( \frac{5}{2} \right)\left( \frac{R_s^5}{r^7}- \frac{R_s^3}{r^5} \right)
 \]
