@@ -1,6 +1,9 @@
-{\color{red} This chapter is referred by Yoo, Blanchette, and Khatri's own publication \cite{yoo_hydrodynamic_2020}. }
-
+% {\color{red} This chapter is referred by Yoo, Blanchette, and Khatri's own publication \cite{yoo_hydrodynamic_2020}. }
+The text of This chapter has a reprint of our article that is published.~\fullcite{yoo_hydrodynamic_2020}.
 %
+\par
+\vphantom{text}
+\par
 In this chapter, we compute	the flow around randomly-formed aggregates and 
 characterize the resulting hydrodynamic forces in a constant-density fluid.
 Since the 1980s, there have been numerous models of aggregation, including marine aggregation, based on the random motion of small particulates 
@@ -624,7 +627,11 @@ To gain a better understanding of the flow around a cube, we present the streaml
 (see Figure~\ref{fig_face_description} for the exact location of the face and sample streamlines).
 To compute the streamlines, we first obtain the values of stress vector, $\vec{f}'(\vec{x}'_s)$, on each square face of the cube using equation~(\ref{eq_BI_sl_ND}).
 We then chose initial positions below the cube and used a second-order Runge-Kutta method to advance the positions in time using the corresponding velocities computed using equation~(\ref{eq_BI_sl_ND}) at each position. 
-We compare the streamlines with four different resolutions of the cube; $\Delta x = 2,1, 0.5,$ and $0.25$. For the cube with $\Delta x = 2$, streamlines are seen to enter the interior of the cube. As we increase the resolution, the streamlines remain exterior to the cube.
+We compare the streamlines with four different resolutions of the cube; $\Delta x = 2,1, 0.5,$ and $0.25$. For the cube with $\Delta x = 2$, streamlines are seen to enter the interior of the cube.
+\par
+In Figure~\ref{fig_strlns} (a), we obtained the most inaccurate streamlines, violating our solid boundary surface assumption. This implies that we need more than one cube to model an aggregate. We observe the major error occurs at the corner of the cubes. 
+We interpret the error at low resolution as smoothing of the cube. 
+As we increase the resolution, the streamlines remain exterior to the cube.
 Moreover, higher resolutions result in streamlines following the cube boundary more accurately, showing the convergence of the method.
 %-------------------------------------
 \section{Forces on Aggregates Subject to a Background Flow} 
@@ -862,7 +869,8 @@ As we non-dimensionalize equation~(\ref{eq_ad_diff_3D}),
 \label{eq_def_Pe}
  \end{equation}
  It describes the ratio between the advection and diffusion time scales of the aggregate.  
- The resulting equation is
+ One can also find the Schmidt number to understand the diffusion rate of the fluid. Since we consider the Stokes flow, the Schmidt number is effectively infinite. 
+\par With the Péclet number, the resulting advection-diffusion equation is
 \begin{equation}
 	\frac{\partial C' }{\partial t'} 
 	= - \vec{u}' \cdot \nabla' C'

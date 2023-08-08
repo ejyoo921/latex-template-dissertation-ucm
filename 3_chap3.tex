@@ -613,6 +613,7 @@ In addition, the top part of the right-hand side of the equation~(\ref{eq_slp_li
 %  ~\ref{section_volume_int}.
   One can find factor 4 multiplied by the second and third blocks on the right-hand side of the system~(\ref{eq_slp_linear_system}). 
  Since we set the side length of a cube as 2, factor 4 represents the area of a square face, which is the integral domain of the total force and torque equations. 
+Note that the linear system~\ref{eq_slp_linear_system} gives us infinitely many solutions. To select a unique solution, we use the method of least squres. 
  \par
  Once we solve the linear system and obtain the unknowns, we use equation~(\ref{eq_vel_all_onS_nonD}) to calculate the velocity field at all points in the fluid domain. We want to point out that the fluid velocity computation, especially including the volume integral~(\ref{eq_volume_rhs}), is a very numerically expensive calculation. To accelerate it, we apply the fast multipole method (FMM) to our simulations. In the following section, we explain how we use the FMM. 
  %
@@ -833,7 +834,7 @@ where the error coming from this approximation is denoted as $E_f$. A more detai
  Note that the stress $\vec{f}(\vec{x}^n)$ is assumed to be constant over each square face.  One can find that we have a significant error in the cube's corners. We want to ensure that we do not introduce larger errors as we make further approximations. 
 
 \par
-Next, we need to approximate the surface integral in equation~(\ref{eq_surf_fmm_N_f}) using a Riemann sum,
+Next, we need to approximate the surface integral in equation~(\ref{eq_surf_fmm_N_f}) using a mid-point rule for a Riemann sum,
 \begin{align}
 	\tilde{H}(\vec{y}^m) 
 	& = H^n(\vec{y}^m) - E_{G} 
@@ -875,7 +876,9 @@ We then observe the relative error of the vertical velocity on one square face, 
 	\label{fig_corner_err}
 \end{center}
 \end{figure}
-In Figure~\ref{fig_corner_err}, we see the square face at $x = 1$, where the white dashed line shows the location of the square face, and the color indicates the relative error. It implies that the maximum of 23.12$\%$ error occurs at the cube corners, as we expected. We thus would like to control the quadrature error, $E_G$, by adjusting the total number of integration points, $Ns^2$.
+In Figure~\ref{fig_corner_err}, we see the square face at $x = 1$, where the white dashed line shows the location of the square face, and the color indicates the relative error. It implies that the maximum of 23.12$\%$ error occurs at the cube corners.
+Note that this error made on the drag of a single cube is the worst-case scenario of our simulations. We have confirmed the effect of doubling the resolution of larger aggregates in Chapter 2. We found changes of less than 2\% for the drag and 5\% for the torque. 
+We thus would like to control the quadrature error, $E_G$, by adjusting the total number of integration points, $Ns^2$.
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[scale=0.4]{./figures/fig_Ef_Eg_ep-1}

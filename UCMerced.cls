@@ -440,7 +440,9 @@ Class]
 \null\vfill\dsp 
 \begin{center}
 {\fmfont
-All chapters \copyright \ \@degreeyear \ \@author
+Chapter 2 \copyright \ 2020 \ American Physical Society (APS)
+\\
+All other chapters \copyright \ \@degreeyear \ \@author
 }
 \end{center}
 \end{alwayssingle}

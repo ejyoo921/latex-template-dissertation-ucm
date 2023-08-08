@@ -24,7 +24,7 @@ Note that this value can be computed by applying the scaled Frobenius norm for a
   \begin{center}
     \includegraphics[scale=0.19]{figures/fig_appr_viscosity.pdf}
     \end{center}
-  \caption{Relationship between apparent viscosity and shear rate. The plot is drawn based on~\cite{irgens_rheology_2014}. The value $\eta_{\infty}$ is the asymptotic viscosity at high shear rate.}
+  \caption{Relationship between apparent viscosity and shear rate. The plot is drawn based on~\cite{irgens_rheology_2014}. The value $\mu_{\infty}$ is the asymptotic viscosity at high shear rate.}
   \label{fig_appr_viscosity}
 \end{figure}
 \par
@@ -329,16 +329,16 @@ Meanwhile, the sand landing on the bottom part of the hourglass forms a cone sha
 \par
 In general, these three regimes can be categorized by the inertial number $I$. The solid-like state appears when $I$ is small. As $I$ increases, the granular material deformation occurs rapidly, as we see in the middle of the hourglass. The collisional flow, acting like a gas, can be observed for a large $I$ number. 
 \par
-By applying this $\mu(I)$ rheology, Srivastava~\cite{srivastava_viscometric_2021} developed a calibration to obtain the coefficients $\eta_i$ and $\kappa_i$, for $i = 1, \ 2$,
+ Srivastava~\cite{srivastava_viscometric_2021} developed a calibration to obtain the coefficients $\eta_i$ and $\kappa_i$, for $i = 1, \ 2$, by applying the $\mu(I)^g$ rheology for granular materials,
 \begin{equation}
-  \mu_i(I) = \mu_i^0 + A_i{ I}^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P},
+  \mu(I)_i^g = \mu_i^0 + A_i{ I}^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P},
 \label{eq_muI_general}
 \end{equation}
-where $\mu_i^0, A_i,$ and $\alpha_i$ are fitting parameters, depending on the materials. 
+where $\mu_i^0, A_i,$ and $\alpha_i$ are fitting parameters, depending on the materials. Note that $\mu(I)^g$ is a dimensionless function of $I$.
 By substituting the inertial number $I$, equation~(\ref{eq_inertialI}), into equation~(\ref{eq_muI_general}),
 we get
 \begin{equation}
-  \mu_i(I) = \mu_i^0 + A_i {\left(  \frac{\dot{\gamma} d }{\sqrt{P/\rho}}\right) }^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P}.
+ \mu_i^0 + A_i {\left(  \frac{\dot{\gamma} d }{\sqrt{P/\rho}}\right) }^{ i \alpha_i} =  \frac{(\eta_i \dot{\gamma}^i + \kappa_i)}{P}.
 \label{eq_muI_I}
 \end{equation}
 We then can find the viscous terms~(\ref{eq_mu1_main}) and~(\ref{eq_mu2_main}),
