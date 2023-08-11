@@ -1,22 +1,25 @@
 
 \par
-Settling marine aggregates are essential in transporting dissolved carbon dioxide from the ocean surface to the deep sea. While sinking, they may accumulate in thin layers where density stratifications are present, becoming nutrient hotspots for bacteria and animal activities. We thus simulate settling aggregates both in ambient homogeneous and density-stratified fluid to study their dynamics. 
-% We consider both ambient homogeneous and density-stratified fluid. 
+Settling marine aggregates are essential in transporting dissolved carbon dioxide from the surface ocean to the deep sea. While sinking, they may accumulate in thin layers where density stratification is present, becoming nutrient hotspots for bacteria and animal activity. We simulate settling marine aggregates both in ambient homogeneous and density-stratified fluid to study their dynamics. 
+% We consider both ambient homogeneous and density-stratified fluid.
+% \par 
 We model a marine aggregate as a fractal collection of cubes. 
 % The homogeneous flow around the aggregate is computed in the limit of zero Reynolds number using a boundary integral method. 
-In a homogeneous fluid, 
-the flow is computed in the Stokes regime using a boundary integral method.
-We then focus on analyzing the forces acting on the aggregate in the presence of various background flows
-We have identified an effective hydrodynamic radius to understand the behavior of fractal aggregates.
-\par
-In the presence of a stratified ambient, a term involving a volume integral is added to the boundary integral formulation. We use the fast multipole method 
+In a homogeneous fluid, the flow is computed in the Stokes regime using a boundary integral method.
+We focus on analyzing the forces acting on the aggregate in the presence of various background flows.
+We have identified an effective hydrodynamic radius that captures the settling dynamics accurately.
+% In the presence of a stratified ambient, a term involving a volume integral is added to the boundary integral formulation. 
+% We use the fast multipole method 
 % with a modified Laplace's kernel 
-for rapid computation in three dimensions. We couple the velocity with the advection-diffusion equation to track the temperature or salt concentration in time. We use this method to quantify how the presence of stratification affects the settling speed and time of the aggregates.
+% for rapid computation in three dimensions.
+We couple the velocity with the advection-diffusion equation to track the heat density or salt concentration in time. We use this method to quantify how the presence of stratification affects the settling speed and time of the aggregates.
 
 \par
 We also present the study of complex fluids with higher-order rheology. We introduce rate-dependent flows having non-Newtonian behaviors. 
-We then focus on a flow of granular materials, which is the second most commonly used in industry after water.
-We are interested in a rheological model for granular material that is second-order in strain rate and exhibits yield stress.
-We implement a viscoplastic model within the Adaptive Mesh Refinement framework to solve for incompressible flows.
+We pay attention to a flow of granular material, which is the second most commonly used material in industry after water.
+We model a second-order stress tensor in strain rate for granular material
+% We are interested in a rheological model for granular material that is second-order in strain rate and exhibits yield stress.
+% We implement a viscoplastic model 
+within an Adaptive Mesh Refinement (AMR) framework, AMReX-incflo, to solve for incompressible flows.
 We also formulate a regularization of the yield stress terms to account for viscosity divergence at low strain rates. 
-To incorporate a higher-order strain tensor with the incompressible solver numerically, we may use an explicit method for time integrations. In addition to the default solver, the explicit Euler method, we added a two-stages Runge-Kutta scheme.
+To incorporate a higher-order strain rate tensor with the incompressible solver numerically, we added a two-stage Runge-Kutta scheme in the AMReX-incflo code and the default solver, the explicit Euler method.

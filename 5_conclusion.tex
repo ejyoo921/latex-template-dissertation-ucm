@@ -1,8 +1,10 @@
 
-Our motivation and essential goal for studying fluid dynamics in Applied Mathematics are to develop numerical methods for accurate and efficient computations, contributing to various scientific fields. In particular, modeling fluid interactions with other objects can deliver information we cannot easily obtain in physical experiments. To achieve this, we studied both Newtonian and non-Newtonian fluids by investigating marine aggregate models and granular rheology.
+% Our motivation and essential goal for studying fluid dynamics in Applied Mathematics are to develop numerical methods for accurate and efficient computations, contributing to various scientific fields. 
+% In particular, 
+Modeling fluid interactions with other objects can deliver information we cannot easily obtain in physical experiments. To achieve this, we studied both Newtonian and non-Newtonian fluids by investigating marine aggregate models and granular rheology.
 \par
 We discussed the settling marine aggregate simulations in the first two parts of this thesis. 
-We are motivated in exploring marine aggregates by their relevance to global climate change, which is the most significant environmental problem we face today.
+We are motivated to explore marine aggregates by their relevance to global climate change, which is the most significant environmental problem we face today.
 The ocean absorbs approximately 40\% of the carbon dioxide (CO$_2$) produced anthropogenically~\cite{omand_sinking_2020}. 
 A portion of the atmospheric CO$_2$ is dissolved at the surface of the ocean and fixed by marine aggregates. As they transport the dissolved carbon to the deep sea, marine aggregates contribute to reducing the atmospheric CO$_2$ level. 
 % This process is one of the most important factors playing a role in global warming.
@@ -10,8 +12,8 @@ While there are many active experimental works in oceanography, there are limita
 With a computational approach, we can reduce these restrictions and assist in research for marine aggregate dynamics. 
 Our ultimate goal for this project is thus to provide numerical tools to attain useful information related to biological or oceanic research.
 \par
-The methods we developed can create randomly formed aggregate models having a fractal dimension using two algorithms, individually-added aggregation and cluster-to-cluster aggregation. The parameters for surrounding fluid can be easily adjusted in the Stokes approximation. 
-In the homogeneous fluid, we found a suitable length scale for fractal aggregates to allow users to compute different force values acting on the aggregates to understand the behaviors of marine aggregates.
+The methods we developed can create randomly formed aggregate models having a fractal dimension using two algorithms, individually-added aggregation, and cluster-to-cluster aggregation. The parameters for surrounding fluid can be easily adjusted in the Stokes approximation. 
+In the homogeneous fluid, we found a suitable length scale for fractal aggregates to allow users to predict different forces acting on the aggregates as they settle.
 For a more realistic investigation, we simulate the settling marine aggregate model in a density-stratified fluid.
 We can quantify several values of interest, including settling speed, time to pass a fluid density gradient, and concentration perturbation.
 We hope to contribute to oceanic carbon cycle research by providing an understanding of the fluid dynamics of marine aggregates. 
@@ -20,9 +22,9 @@ We hope to contribute to oceanic carbon cycle research by providing an understan
 For the last chapter of this thesis, we introduced a general strain-to-stress relation for complex fluids that show non-Newtonian behaviors. 
 Since they tend to exhibit more complicated properties than Newtonian fluids,
 there are still many open questions in this field.
-In this project, we particularly focused on flows of granular materials, which are present everywhere in our daily lives. 
+In this project, we particularly focused on flows of granular materials, which can be found everywhere in our daily lives. 
 One example is the sand sliding in nature. A dune sliding due to its instability could be extremely hazardous and may even result in casualties depending on its location. In this case, measuring and predicting the slope of a dune is important to prevent any future accidents~\cite{xie_summary_2021}.
-Since their state can co-exist between solid, liquid, and gas, simulating granular material behaviors using computational programs is difficult in general. 
+Since their state can co-exist between solid, liquid, and gas, simulating granular material behaviors using computational programs is generally difficult. 
 The constitutive rheology code, AMReX-incflo, developed by researchers at Lawrence Berkeley National Laboratory, provides various rheological models by incorporating a viscous term into an incompressible flow. 
 In this library, we implemented the viscosity computation for granular rheology. 
 To explore a second-order shear rate behavior of complex fluids, we also coded the quadratic strain tensor computation for the incompressible flow solution. 

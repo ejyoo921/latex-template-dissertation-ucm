@@ -517,7 +517,7 @@ is approved, and it is acceptable in quality and form for publication
 \\
 \hline
 \fi
-& (\@chair, Chair) 
+& (\@chair, Co-Chair) 
 \end{tabular*}\\[\@approvalspace]
 {\fmfont University of California, {\@campus}} \\
 \vspace{-.25in}

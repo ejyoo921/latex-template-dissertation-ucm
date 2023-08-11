@@ -6,28 +6,26 @@ This process removes CO$_2$ from the atmospheric carbon cycle~\cite{honjo_unders
  \par
  It has been observed that larger sinking aggregates tend to accumulate in thin layers where the ambient fluid is density stratified~\cite{alldredge_occurrence_2002}. The highly concentrated thin layers become biological hotspots for bacterial activity and animal feeding. It is ecologically important to understand the marine aggregates' dynamics as they delay in settling.
 \par
-We consider flows around aggregates in the low Reynolds number regime, which is applicable for approximately the smallest 30\% of marine aggregates~\cite{alldredge_situ_1988}. Flow in this regime is governed by the Stokes equations, which allows solutions to be found via boundary integral methods~\cite{pozrikidis_boundary_1992}. Such methods have been implemented in several different contexts, typically via a combination of analytical integration near the singularities that arise and quadrature methods away from the singularities, see~\cite{pozrikidis_boundary_1992} for a review. Boundary integral methods
+We consider the flows around aggregates in the low Reynolds number regime, which is applicable for approximately the smallest 30\% of marine aggregates~\cite{alldredge_situ_1988}. Flow in this regime is governed by the Stokes equations, which allows solutions to be found via boundary integral methods~\cite{pozrikidis_boundary_1992}. Such methods have been implemented in several contexts, typically via a combination of analytical integration near the singularities that arise and quadrature methods away from the singularities. See~\cite{pozrikidis_boundary_1992} for a review. Boundary integral methods
 are particularly well suited to computations of flow around complex solids~\cite{zinchenko_boundary-integral_2006}  as velocity and forces may be expressed in terms of an integral over the boundary of the object. 
 They have also recently been combined with other methods, for example, to capture interactions between fluids and elastic solids~\cite{bao_immersed_2017} and stochastic fluctuations in suspensions~\cite{bao_fluctuating_2018}.
 Here, we form aggregates using cubic particles, which results in a simple boundary over which the resulting integrals can be computed analytically, as described in Chapter 2.
 This has the advantage of avoiding numerical singularities on the boundary, which otherwise require regularization~\cite{cortez_method_2001} or specialized numerical methods such as high-order product Nystr\"{o}m methods~\cite{atkinson_numerical_1997, delves_computational_1985}, adaptive sub-domain integration~\cite{chan_second-order_1992},
 or nearest-neighbor discretization of the regularized Stokeslet boundary integral equation~\cite{smith_nearest-neighbour_2018}.
  We introduce a novel implementation of boundary integral methods which is both simple and well-behaved numerically. 
-Details of this new methodology, along with its validation are presented in Section~\ref{sec:numerical}. We compare two approaches, using a single-layer and double-layer integral representation of the velocity~\cite{pozrikidis_boundary_1992, power_second_1987, ingber_comparison_1999}, and determine which is the most suitable for fluid flow simulations around marine aggregates with this new method.
-
-
- \par
-Our research is centered on computing the velocity field around settling marine aggregates and the forces acting on them. We do so using boundary integral equation (BIE) formulations. We construct marine aggregates using cubes to capture their fractal shape, as shown in Figure~\ref{fig_cube10}. 
+Details of this new methodology, along with its validation, are presented in Section~\ref{sec:numerical}. We compare two approaches, using a single-layer and double-layer integral representation of the velocity~\cite{pozrikidis_boundary_1992, power_second_1987, ingber_comparison_1999}, and determine which is the most suitable for fluid flow simulations around marine aggregates with this new method.
 \begin{figure}[ht]
 
 	\begin{center}
 		\includegraphics[scale=0.3]{figures/fig_sample_cube10.pdf}
 
-	\caption{Example aggregate model with 10 cubes. We denote $S$ as the aggregate boundary surface and $\hat{n}$ as its normal. The vectors $\vec{x}$ and $\vec{y}$ are points on and outside of $S$.} 
+	\caption{Example aggregate model with ten cubes. We denote $S$ as the aggregate boundary surface and $\hat{n}$ as its normal. The vectors $\vec{x}$ and $\vec{y}$ are points on and outside of $S$.} 
 
 \label{fig_cube10}
 \end{center}
 \end{figure}
+ \par
+Our research is centered on computing the velocity field around settling marine aggregates and the forces acting on them. We do so using boundary integral equation (BIE) formulations. We construct marine aggregates using cubes to capture their fractal shape, as shown in Figure~\ref{fig_cube10}. 
 
 \section{Fluid momentum equations}
 To describe the incompressible fluid motion that takes place around marine aggregates, we consider the Navier-Stokes equations,
@@ -42,7 +40,7 @@ To describe the incompressible fluid motion that takes place around marine aggre
 \label{eq_momentum_NS}
 \end{align}
 where $ \rho$ is fluid density (constant) and $\vec{u}, \ \vec{g}$ are fluid velocity and gravity vectors, respectively.
-The first equation~(\ref{eq_conserv_mass}) shows the conservation of mass and equation~(\ref{eq_momentum_NS}) describes the momentum conservation. 
+The first equation~(\ref{eq_conserv_mass}) shows the conservation of mass, and equation~(\ref{eq_momentum_NS}) describes the momentum conservation. 
 We also introduce the stress tensor, $\bar{\bar{\sigma}}$ as sum of the fluid pressure $P$ and deviatoric stress tensor $\bm{\tau}$,
 \begin{equation}
    \bar{\bar{\sigma}} =-P \bar{\bar{I}} + {\bm \tau} = -P \bar{\bar{I}} + 2{\tilde{\mu}} {\bm D},
@@ -71,7 +69,7 @@ To estimate the size of the main forces at play, we consider a radius of marine 
 	\label{eq_U_s}
 \end{equation}
 where $\rho_a \approx 1400\text{kg/m}^3$ is the aggregate mass density. 
-When we non-dimensionalize the momentum equation using the length scale, $R_a$ and velocity, $U_s$, we obtain the following equation:
+When we non-dimensionalize the momentum equation using the length scale, $R_a$, and velocity, $U_s$, we obtain the following equation:
 \begin{equation}
 	\left(\frac{\rho U_s R_a}{{\tilde{\mu}}} \right) 
    \left( 
@@ -99,7 +97,7 @@ In the settling marine aggregate project part of this thesis, we, therefore, con
 	{\tilde{\mu}} \nabla^2 \vec{u}    - \nabla P\ + \rho  \vec{g} = 0.
 	\label{eq_stokes2}
 \end{align}
-The solution of the system of equations are the fluid velocity, $\vec{u}$, and pressure, $P$. In general, pressure does not induce motion. We see the pressure at rest, denoted as $P_s$, contains the pressure of gravity,  $P_s(\vec{y}) = \rho \vec{g} \cdot \vec{y}$, where $\vec{y} \in \mathbb{R}^3$ is a point in the fluid. Using this static pressure term, we introduce the dynamic pressure $P_d$, defined as 
+The solutions of the system of equations are the fluid velocity, $\vec{u}$, and pressure, $P$. In general, pressure does not induce motion. We see the pressure at rest, denoted as $P_s$, contains the pressure of gravity,  $P_s(\vec{y}) = \rho \vec{g} \cdot \vec{y}$, where $\vec{y} \in \mathbb{R}^3$ is a point in the fluid. Using this static pressure term, we introduce the dynamic pressure $P_d$, defined as 
 \begin{equation}
    P_d(\vec{y}) = P(\vec{y}) - P_s(\vec{y}) = P(\vec{y}) - \rho \vec{g} \cdot \vec{y}.
    \label{eq_def_Pd}
@@ -145,7 +143,7 @@ The kernel $\bar{\bar{G}}(\vec{x},\vec{y})$ is the Green's function of the Stoke
   \label{eq_stresslet}
   \end{align}
 where $\| \cdot \|$ is the vector 2-norm. 
-The first integral distribution on the right-hand side of equation~(\ref{eq_BIE}) is called the \textit{single-layer potential} and the second one is called the \textit{double-layer potential}. 
+The first integral distribution on the right-hand side of equation~(\ref{eq_BIE}) is called the \textit{single-layer potential}, and the second one is called the \textit{double-layer potential}. 
 To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$, we use 
 \begin{equation}
    \vec{u}(\vec{x}_s) = - \frac{1}{4 \pi {\tilde{\mu}}} \int_S  \vec{f}(\vec{x}) \cdot \bar{\bar{G}}(\vec{x},\vec{x}_s) \ \text{d}S(\vec{x}) 
@@ -157,18 +155,18 @@ To compute the velocity at a point on the surface $S$, i.e., $ \vec{x}_s \in S$,
 \label{eq_BIE_onS}
 \end{equation}
 In general, $\vec{f}(\vec{x})$ is the unknown stress vector, or traction, on the surface, and $\vec{u}(\vec{x})$ is the, typically unknown, velocity on the surface $S$. 
-When $S$ is the boundary of a solid object, in our case an aggregate, the general representation formula may be simplified in two different ways, depending on the fluid domain characteristics and the object's surface. We will introduce those two formulae in Chapter 2. 
+When $S$ is the boundary of a solid object, in our case, an aggregate, the general representation formula may be simplified in two different ways, depending on the fluid domain characteristics and the object's surface. We will introduce those two formulae in Chapter 2. 
 
 
 \section{Complex fluids}
 \label{sec:intro_complex_fluid}
-In the last part of this thesis, we will turn our attention to non-Newtonian fluids. This topic is added to my thesis as an extension of a summer internship at the Lawrence Berkeley National Lab in 2022, under the guidance of Dr. Ishan Srivastava. 
+In the last part of this thesis, we will turn our attention to non-Newtonian fluids. This topic is added to my thesis as an extension of a summer internship at the Lawrence Berkeley National Lab in 2022 under the guidance of Dr. Ishan Srivastava. 
 \par
 \vphantom{text}
 \par
 A broad class of complex fluids encompasses various materials of natural, industrial, and medical importance, such as granular materials, suspensions of micro-scale materials, and biological molecules.
 Complex fluids show many interesting behaviors quite different than Newtonian fluids. 
-The major difference is that the viscosity (denoted $\tilde{\mu}$ in the Newtonian fluid case) is not constant anymore; rather it is attributed to the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$~\cite{kundu_chapter_2016}.
+The major difference is that the viscosity (denoted $\tilde{\mu}$ in the Newtonian fluid case) is not constant anymore; rather, it is attributed to the shear rate $\dot{\gamma} = \left| {\boldsymbol{D}} \right|$~\cite{kundu_chapter_2016}.
 Due to this varying viscosity, the constitutive behavior of non-Newtonian fluids is highly complex. 
 To understand their behaviors, we shall focus on the viscous stress tensor, $\bm \tau$, introduced in equation~(\ref{eq_stress_tensor}). 
 In particular, we explore four features of viscosity in complex fluids: 1) (shear) rate-dependent flow, 2) yield stress, 3) a second-order strain rate rheology, and 4) granular material flow.
@@ -182,7 +180,7 @@ Note that {\textit{rheology}} is the study of material deformation and flows as 
 \end{figure}
 \par
 Figure \ref{fig_rheology} demonstrates how the shear stress, $|\bm{\tau}|$, varies on the shear rate $\dot{\gamma}$, with an example.
-Two types of rate-dependent flow, shear-thinning and thickening, are plotted with the green and purple lines, respectively.
+Two types of rate-dependent flow, shear-thinning, and thickening, are plotted with the green and purple lines, respectively.
 The viscosity of a shear-thinning fluid, such as shampoo or mayonnaise, decreases as the shear rate increases~\cite{singh_introduction_2013}. On the other hand, shear-thickening fluid viscosity gets higher under shear strain~\cite{barnes_introduction_1989}. 
 Meanwhile, the orange straight line represents the Bingham plastic fluid.
 One defining characteristic of many complex fluids is the presence of yield stress, which is shown as the red star on the vertical axis. 
@@ -192,22 +190,23 @@ Examples of yield stress fluids include toothpaste, cement, mud, and blood.
 We will discuss more of the relationship between viscosity and shear rate in Chapters 4.2 and 4.3.
 
 \par
-While the viscous stress tensor of the rate-dependent fluids has a linear relationship with the strain rate, $\bm D$, there are other flow effects can be captured by a higher-order strain rate. In this thesis, we explore up to the second-order case and call them secondary flows.
+While the viscous stress tensor of the rate-dependent fluids has a linear relationship with the strain rate, $\bm D$, other flow effects can be captured by a higher-order strain rate. 
+In this thesis, we explore up to the second-order case and call them secondary flows.
 In the recent paper by~\cite{tanner_review_2018}, Tanner discussed several examples of non-colloidal suspensions and highlighted the importance of examining these secondary flows.
 For instance, a curvature in free-surface flows~\cite{couturier_suspensions_2011}, anomalous stress profile in cylindrical Couette flows~\cite{krishnaraj_dilation-driven_2016}, or negative rod climbing effect (Weissenberg effect)~\cite{boyer_dense_2011} are found for a non-linear strain rate effect. We thus want to implement computational tools to study the second-order strain rate effect.
 \par
-Lastly, we study a little deeper for the granular materials.
+Lastly, we present further work for granular materials.
 They are highly ubiquitous and the second most common material on earth after water~\cite{richard_slow_2005}. 
 For example, we can find grains in the food industry, pharmaceutical powder to make medicine tablets, and geological materials, such as sand or soil.
-One fascinating property is that they can behave like a liquid, solid, and gas, co-existing at the same time. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
+One fascinating property is that they can behave like a liquid, solid, and gas, coexisting simultaneously. For instance, sand in a desert can stay still like a solid without any external forces; it can also flow or slide like a fluid when there is wind.
 There are still many open questions we should study to understand the behaviors of granular materials due to the complicated dynamics.
 %  and their flow in a long cube-shaped channel. 
 \par
-Our ultimate goal for this project is to have a constitutive rheology code that can capture such complex continuum dynamics. 
-We use the exascale computing package \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. We work on the granular rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations with various types of rheology in complex geometries without subcycling in time. 
+Our ultimate goal for this project is to have a constitutive rheology code that can capture complex continuum dynamics. 
+We use the exascale computing package \href{https://amrex-codes.github.io/index.html}{{\color{blue}AMReX-Codes}}, which is a block-Structured Adaptive Mesh Refinement (AMR) Software Framework and Applications. We implement the granular rheology in an individual module of AMReX called \href{https://amrex-codes.github.io/incflo/}{{\color{blue}\textit{incflo}}}. This code allows us to model the incompressible Navier-Stokes equations with various types of rheology in complex geometries without subcycling in time. 
 We will describe the details of the numerical methods in Chapter 4.4.
 \par
-This dissertation is ordered as follows: In Chapter 2, we introduce the simulations of settling marine aggregates in a homogeneous fluid. As an extended study, we explore a density-stratified fluid to understand more realistic marine aggregate behaviors in Chapter 3. Lastly, in Chapter 4, we address complex fluid rheology with granular materials application using the AMReX-Codes.
+This dissertation is ordered as follows: in Chapter 2, we introduces the simulations of settling marine aggregates in a homogeneous fluid. As an extended study, we explore a density-stratified fluid to understand more realistic marine aggregate behaviors in Chapter 3. Lastly, Chapter 4 addresses complex fluid rheology and granular materials using the AMReX-Codes.
 
 
 
