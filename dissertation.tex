@@ -85,8 +85,12 @@
 \usepackage{cleveref}
 \usepackage[backend=biber,style=apa,sortcites=false,minnames=1,maxnames=3,maxbibnames=4]{biblatex}
 
+\bibliography{EY_thesis.bib}
+\let\cite\parencite
+
 \makeatletter
 \DeclareCiteCommand{\fullcite}
+
 {\defcounter{maxnames}{\blx@maxbibnames}%
 \usebibmacro{prenote}}
 {\usedriver
@@ -105,8 +109,7 @@
 \makeatother
 
 
-\bibliography{EY_thesis.bib}
-\let\cite\parencite
+
 
 \theoremstyle{plain}% default
 \newtheorem{theorem}{Theorem}[section]
