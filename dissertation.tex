@@ -54,9 +54,6 @@
 \usepackage{url}
 \usepackage{float}
 \usepackage{subcaption}
-\captionsetup[figure]{font=footnotesize}
-\usepackage{epstopdf}
-\epstopdfsetup{update} 
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -64,33 +61,16 @@
 \usepackage{pdfpages}
 \usepackage{graphbox}
 
-%--Additional packages--------------------------------------------------------------
-\usepackage{mathtools}
-\usepackage{arydshln}
-\usepackage{epsfig}
-\usepackage{framed}
-\usepackage{bm}
-\usepackage{palatino,verbatim}
-\usepackage{indentfirst}
-%-----------------------------------------------------------------------------------
-
 %% LATIN MODERN FONTS (replacements for Computer Modern)
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
-
-
 
 \usepackage{url}
 \usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=black, citecolor=black, urlcolor=black,plainpages=false,pdfpagelabels]{hyperref}
 \usepackage{cleveref}
 \usepackage[backend=biber,style=apa,sortcites=false,minnames=1,maxnames=3,maxbibnames=4]{biblatex}
-
-\bibliography{EY_thesis.bib}
-\let\cite\parencite
-
 \makeatletter
 \DeclareCiteCommand{\fullcite}
-
 {\defcounter{maxnames}{\blx@maxbibnames}%
 \usebibmacro{prenote}}
 {\usedriver
@@ -108,8 +88,8 @@
 {\usebibmacro{postnote}}
 \makeatother
 
-
-
+\addbibresource{EY_thesis.bib}
+\let\cite\parencite
 
 \theoremstyle{plain}% default
 \newtheorem{theorem}{Theorem}[section]
@@ -117,6 +97,17 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+
+%--Additional packages----------EY----------------------------------------------------
+\usepackage{mathtools}
+\usepackage{arydshln}
+\usepackage{epsfig}
+\usepackage{framed}
+\usepackage{bm}
+\usepackage{palatino,verbatim}
+\usepackage{indentfirst}
+%-----------------------------------------------------------------------------------
+
 
 \begin{document}
 
